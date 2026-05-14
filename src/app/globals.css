@@ -1,0 +1,85 @@
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&display=swap');
+
+@import "tailwindcss";
+@source "../../src";
+
+@theme {
+  --font-body: 'Bricolage Grotesque', system-ui, sans-serif;
+  --font-display: 'DM Serif Display', Georgia, serif;
+}
+
+:root {
+  --bg: #F2F2F7;
+  --surface: #EAEAEF;
+  --card: #FFFFFF;
+  --elevated: #FFFFFF;
+  --border: #D8D8E0;
+  --border-subtle: #E8E8EE;
+  --text-1: #111118;
+  --text-2: #555566;
+  --text-3: #8E8E9E;
+  --accent: #0D9488;
+  --accent-soft: rgba(13,148,136,0.08);
+  --accent-hover: #0F766E;
+  --gold: #C08B30;
+  --gold-soft: rgba(192,139,48,0.1);
+  --danger: #DC2626;
+  --glass: rgba(242,242,247,0.82);
+  --card-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.04);
+  --card-shadow-lg: 0 4px 16px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04);
+}
+
+.dark {
+  --bg: #0F1117;
+  --surface: #1A1C28;
+  --card: #1E2030;
+  --elevated: #252738;
+  --border: #2E3044;
+  --border-subtle: #262838;
+  --text-1: #EEEEF4;
+  --text-2: #9898AE;
+  --text-3: #5A5A72;
+  --accent: #2DD4BF;
+  --accent-soft: rgba(45,212,191,0.1);
+  --accent-hover: #5EEAD4;
+  --gold: #F0C050;
+  --gold-soft: rgba(240,192,80,0.1);
+  --danger: #F87171;
+  --glass: rgba(15,17,23,0.85);
+  --card-shadow: 0 1px 3px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.04);
+  --card-shadow-lg: 0 4px 16px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.04);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  background: var(--bg);
+  color: var(--text-1);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+body { min-height: 100dvh; }
+
+button {
+  cursor: pointer;
+  background: none;
+  border: none;
+  outline: none;
+  font-family: inherit;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+@keyframes enter-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.anim-enter {
+  animation: enter-up 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}

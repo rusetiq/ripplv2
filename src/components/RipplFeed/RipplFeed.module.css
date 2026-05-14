@@ -1,0 +1,346 @@
+.section {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 120px 32px;
+}
+
+.header {
+  text-align: center;
+  max-width: 640px;
+  margin: 0 auto 72px;
+}
+
+.label {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--leaf);
+  margin-bottom: 16px;
+  padding: 4px 12px;
+  border: 1px solid rgba(46, 204, 135, 0.2);
+  border-radius: 100px;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: clamp(36px, 5vw, 56px);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+  line-height: 1.05;
+}
+
+.desc {
+  font-size: 16px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+.feedGrid {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 32px;
+  align-items: start;
+}
+
+.feedCol {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.card {
+  background: var(--dusk-card);
+  border: 1px solid var(--dusk-border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  transition: border-color 0.3s ease, transform 0.2s ease;
+}
+
+.card:hover {
+  border-color: rgba(46, 204, 135, 0.2);
+  transform: translateY(-2px);
+}
+
+.cardTop {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.meta {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.handle {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+.city {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+.ago {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+.action {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--dusk-mid);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  margin-bottom: 16px;
+}
+
+.emoji {
+  font-size: 24px;
+}
+
+.actionInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.actionName {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.pts {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--leaf);
+  font-weight: 500;
+}
+
+.streak {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ember);
+  background: rgba(255, 107, 53, 0.1);
+  padding: 4px 10px;
+  border-radius: 100px;
+}
+
+.comment {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 16px;
+  border-left: 2px solid var(--dusk-border);
+  padding-left: 12px;
+}
+
+.cardActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.rippleBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 100px;
+  border: 1px solid var(--dusk-border);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: transparent;
+  transition: all 0.3s ease;
+  font-family: var(--font-body);
+}
+
+.rippleBtn:hover {
+  border-color: var(--leaf);
+  color: var(--leaf);
+}
+
+.rippleBtn.rippled {
+  background: var(--leaf-glow);
+  border-color: var(--leaf);
+  color: var(--leaf);
+}
+
+.rippleBtnIcon {
+  font-size: 14px;
+  display: inline-block;
+  transition: transform 0.3s ease;
+}
+
+.rippleBtn.rippled .rippleBtnIcon {
+  animation: ripple 0.6s ease forwards;
+}
+
+.challengeBtn {
+  padding: 8px 16px;
+  border-radius: 100px;
+  border: 1px solid var(--dusk-border);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted);
+  background: transparent;
+  transition: all 0.3s ease;
+  font-family: var(--font-body);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.challengeBtn:hover {
+  border-color: var(--sand);
+  color: var(--sand);
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: sticky;
+  top: 100px;
+}
+
+.sideCard {
+  background: var(--dusk-card);
+  border: 1px solid var(--dusk-border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+}
+
+.sideTitle {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  margin-bottom: 20px;
+}
+
+.rankRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--dusk-border);
+}
+
+.rankRow:last-child {
+  border-bottom: none;
+}
+
+.rank {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  width: 28px;
+}
+
+.rank.gold { color: #FFD700; }
+.rank.silver { color: #C0C0C0; }
+.rank.bronze { color: #CD7F32; }
+
+.rankInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.rankHandle {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.rankCity {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.rankPts {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--leaf);
+}
+
+.challengeItem {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--dusk-border);
+}
+
+.challengeItem:last-child {
+  border-bottom: none;
+}
+
+.challengeText {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+
+.challengeText strong {
+  color: var(--text-primary);
+}
+
+.challengeDesc {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  margin-bottom: 8px;
+}
+
+.challengeBar {
+  height: 3px;
+  background: var(--dusk-border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.challengeProgress {
+  height: 100%;
+  background: linear-gradient(90deg, var(--leaf), var(--sky));
+  border-radius: 2px;
+  transition: width 1s ease;
+}
+
+@media (max-width: 1024px) {
+  .feedGrid {
+    grid-template-columns: 1fr;
+  }
+  .sidebar { position: static; }
+}
