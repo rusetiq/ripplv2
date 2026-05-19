@@ -9,7 +9,7 @@ export interface VerificationResult {
 export async function verifyActionPhoto(imageBase64: string): Promise<VerificationResult> {
   const apiKey = import.meta.env.VITE_GEMINI_API_KEY
   if (!apiKey) {
-    return { confidence: 100, reason: 'No API key configured — auto-approved', action: 'Walked instead of drove', category: 'transport', points: 20 }
+    return { confidence: 100, reason: 'No API key configured - auto-approved', action: 'Walked instead of drove', category: 'transport', points: 20 }
   }
 
   const model = 'gemini-3.1-flash-lite'
@@ -39,7 +39,7 @@ Respond with ONLY valid JSON (no markdown, no backticks) in this exact format:
 
   if (!res.ok) {
     const err = await res.text()
-    throw new Error(`Gemini API error: ${res.status} — ${err}`)
+    throw new Error(`Gemini API error: ${res.status} - ${err}`)
   }
 
   const data = await res.json()

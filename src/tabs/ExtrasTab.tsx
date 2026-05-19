@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { Shield, CreditCard, Building2, Handshake, ChevronRight, Globe, Heart } from 'lucide-react'
+import { Shield, CreditCard, Building2, Handshake, ChevronRight, Globe, Heart, ScrollText } from 'lucide-react'
 import { useApp } from '../App'
 
 export function ExtrasTab() {
@@ -40,6 +40,13 @@ export function ExtrasTab() {
       desc: 'How we handle your data',
       icon: <Shield size={20} className="text-oasis-500" />,
       color: 'bg-oasis-500/10'
+    },
+    {
+      id: 'terms',
+      label: 'Terms of Service',
+      desc: 'Rules that govern your use of Rippl',
+      icon: <ScrollText size={20} className="text-text-muted" />,
+      color: 'bg-surface-overlay'
     }
   ]
 

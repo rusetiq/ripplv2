@@ -13,13 +13,14 @@ import { PricingTab } from './tabs/PricingTab'
 import { CorporateTab } from './tabs/CorporateTab'
 import { PartnershipsTab } from './tabs/PartnershipsTab'
 import { ExtrasTab } from './tabs/ExtrasTab'
+import { TermsTab } from './tabs/TermsTab'
 import { LandingPage } from './LandingPage'
 import { SignInModal } from './components/SignInModal'
 import { auth, db, googleProvider } from './firebase'
 import { signInWithPopup, onAuthStateChanged, signOut as fbSignOut, type User } from 'firebase/auth'
 import { doc, onSnapshot, setDoc, updateDoc, increment, collection, query, where, getDocs } from 'firebase/firestore'
 
-type Tab = 'feed' | 'log' | 'rewards' | 'rank' | 'impact' | 'profile' | 'admin' | 'privacy' | 'pricing' | 'corporate' | 'partnerships' | 'extras'
+type Tab = 'feed' | 'log' | 'rewards' | 'rank' | 'impact' | 'profile' | 'admin' | 'privacy' | 'pricing' | 'corporate' | 'partnerships' | 'extras' | 'terms'
 
 interface AppContextType {
   activeTab: Tab
@@ -254,6 +255,7 @@ function App() {
       case 'corporate': return <CorporateTab />
       case 'partnerships': return <PartnershipsTab />
       case 'extras': return <ExtrasTab />
+      case 'terms': return <TermsTab />
     }
   }
 
