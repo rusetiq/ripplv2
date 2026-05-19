@@ -1,73 +1,82 @@
-# React + TypeScript + Vite
+# RIPPL
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern digital platform that translates private daily habits into visible, verified environmental progress. RIPPL bridges the gap between individual goodwill and measurable ecological impact, introducing accountability and reward into the personal sustainability journey.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Core Vision and Philosophy
 
-## React Compiler
+Individual climate actions often feel isolated when viewed in isolation. RIPPL is designed around a simple principle: small, consistent choices, also referred to as ripples, made by many individuals accumulate into massive, measurable ecological shifts. 
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+By providing a trusted verification framework and a transparent ledger of actions, the platform empowers users to document their sustainability practices, celebrate local momentum, and earn tangible rewards for verified choices.
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Operational Architecture and Features
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### 1. Verifiable Action Logging
+Personal habit tracking has traditionally relied on unverified self-reporting. RIPPL introduces a rigorous proof-based workflow for documenting daily green actions. Users select from curated categories, each mapped to specific environmental benefits:
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+* **Transport**: Metro commuting, carpooling, cycling, and choosing walking routes over short vehicle trips.
+* **Food**: Plant-based meals, zero food waste practices, supporting local agricultural produce, and utilizing reusable containers.
+* **Energy**: Documenting solar energy utilization, maintaining air conditioning at efficient baselines (such as 24 degrees Celsius), unplugging idle electronics, and shifting to energy-efficient lighting.
+* **Water**: Time-managed showers, leak resolution, greywater reuse, and fully optimized laundry cycles.
+* **Waste**: Materials recycling, organic composting, refusing single-use plastics, and diverting durable items from landfills through donation.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+### 2. Advanced Proof Verification
+To preserve the integrity of the ecosystem and prevent artificial metrics, every logged action requires immediate photo evidence:
+* **Captured Intent**: Users submit a real-time photographic record of their activity (such as holding a reusable cup, riding the transit system, or verifying solar panels).
+* **Automated Assessment**: The platform performs an automatic verification check on the submitted visual proof. The system analyzes the image for contextual evidence, determining both the classification of the action and the confidence level of the proof before any credits are issued.
+* **Integrity Control**: Submissions that fail to reach the verification threshold or do not match the selected category are rejected, keeping the leaderboard reliable.
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 3. Gamification and Progress Tracking
+Sustainable choices are reinforced through an elegant progress engine that turns daily wins into structural milestones:
+* **Streaks**: Consecutive daily logs build active streaks, highlighting long-term commitment.
+* **Levels**: Earning points unlocks new player tiers, representing a user's cumulative growth.
+* **Badges**: Special milestones yield unlockable achievements (such as specific transit patterns, consistent water-saving targets, and high-frequency energy savings).
+* **Impact Quantification**: Beyond points, the platform translates actions into direct environmental metrics: kilograms of carbon dioxide prevented and liters of fresh water preserved.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### 4. The Rewards Ecosystem
+Points earned through confirmed activities hold real-world value. RIPPL partners with local transit operators, eco-friendly merchants, and environmental conservation projects to offer a robust redemption store:
+* **Transit Passages**: Unlimited public transit passes.
+* **Conscious Dining**: Vouchers for partner cafes serving organic, locally-sourced items.
+* **Coastal Reforestation**: Direct redemption to sponsor the planting of native coastal flora (such as mangroves) in critical regional zones.
+* **Reusable Gear**: Premium travel cups, zero-plastic household starter kits, and self-watering interior gardening systems.
+* **Clean Tech**: Portable high-capacity solar chargers for mobile electronics.
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+### 5. Competitive Rankings and Leaderboards
+RIPPL turns solitary choices into collaborative competition:
+* **Peer Competition**: Connect with friends and family to compare streaks and weekly point totals.
+* **National Standing**: Participate in a regional leaderboard (featuring UAE-wide standings) that highlights leading contributors and promotes nationwide momentum.
+* **Weekly Resets**: Leaderboard resets ensure that new participants always have a fair opportunity to reach the top rankings.
+
+### 6. Social Impact Stream
+A central feed compiles verified updates from the entire community. Users can view the real-time eco-choices of others, share verification cards, and draw daily inspiration from the collective momentum of the network.
+
+---
+
+## Corporate and Enterprise Integrations
+
+The platform extends its utility to organizations striving to meet environmental objectives and elevate employee engagement:
+* **Strategic ESG Dashboarding**: Organizations can track aggregated carbon offset metrics and water conservation figures generated by their workforce.
+* **Sponsorships and Branding**: Corporations can integrate their own sustainable initiatives, sponsor reward packages, or run targeted campaign pathways within the application.
+* **Verification Integrations**: Custom interfaces allow corporate partners to validate carbon-conscious commutes and office habits on-site.
+
+---
+
+## User Journey
+
+### Capture
+Initiate a green action in your daily routine. Take a quick photo of the activity as it occurs.
+
+### Verify
+Upload the image directly through the platform interface. The automated validation check assesses the context and confirms the category.
+
+### Score
+Receive points and watch your carbon and water savings grow. Climb the leaderboards, unlock achievement badges, and redeem your hard-earned points for premium eco-rewards.
+
+---
+
+## Quality and Data Protection
+
+RIPPL is committed to operational excellence and security. Detailed parameters regarding data handling, community standards, and verification guidelines are strictly governed by the official Terms of Service and Privacy Policy integrated directly into the application shell.
