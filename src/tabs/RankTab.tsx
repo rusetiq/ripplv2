@@ -6,7 +6,7 @@ import { db } from '../firebase'
 import { collection, query, orderBy, limit, onSnapshot } from 'firebase/firestore'
 import { SkeletonRow } from '../components/Skeleton'
 
-type Scope = 'friends' | 'dubai' | 'uae'
+type Scope = 'friends' | 'uae'
 
 interface Player {
   rank: number
@@ -19,7 +19,6 @@ interface Player {
 
 const scopeLabels: Record<Scope, string> = {
   friends: 'Friends',
-  dubai: 'Dubai',
   uae: 'UAE',
 }
 
@@ -70,9 +69,8 @@ export function RankTab() {
           <button
             key={s}
             onClick={() => setScope(s)}
-            className={`relative flex-1 py-2 rounded-lg font-body text-[11px] font-medium transition-all duration-200 ${
-              scope === s ? 'text-oasis-400' : 'text-text-muted hover:text-text-secondary'
-            }`}
+            className={`relative flex-1 py-2 rounded-lg font-body text-[11px] font-medium transition-all duration-200 ${scope === s ? 'text-oasis-400' : 'text-text-muted hover:text-text-secondary'
+              }`}
           >
             {scope === s && (
               <motion.div
@@ -97,7 +95,7 @@ export function RankTab() {
         </div>
       ) : (
         <div className="flex items-end justify-center gap-4 h-64 mb-8">
-          {[1,0,2].map((idx) => {
+          {[1, 0, 2].map((idx) => {
             const p = board[idx]
             if (!p) return null
             const rank = idx === 0 ? 1 : idx === 1 ? 2 : 3
