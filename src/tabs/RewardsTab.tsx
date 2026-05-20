@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion'
-import { Gift, TreePine, Droplets, Zap, Shield, Leaf, ShoppingBag, Recycle, Award, Check, Sparkles, ArrowLeft, Lock, ExternalLink } from 'lucide-react'
+import { Gift, TreePine, Droplets, Zap, Shield, Leaf, ShoppingBag, Recycle, Award, Check, Sparkles, ArrowLeft, Lock } from 'lucide-react'
 import { useState } from 'react'
 import { useApp } from '../App'
 import { db } from '../firebase'
@@ -224,79 +224,88 @@ export function RewardsTab() {
           </motion.div>
         ) : (
           <motion.div key="list" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-            <div className="mb-4 pt-1 flex items-start justify-between">
+            <div className="mb-6 pt-1 flex items-start justify-between">
               <div>
-                <p className="font-mono text-[9px] tracking-[0.25em] text-text-muted uppercase mb-0.5">Rippl</p>
-                <h2 className="font-display text-[22px] tracking-[0.15em] text-text-primary uppercase">Rewards</h2>
+                <h2 className="font-display text-[28px] tracking-[0.1em] text-text-primary uppercase leading-none">REWARDS</h2>
+                <p className="font-body text-[11px] text-text-muted tracking-wide mt-1.5 lowercase">redeem points for a better world</p>
               </div>
               <div
-                className="flex items-center gap-1.5 rounded-full px-3 py-1.5 mt-1"
-                style={{ background: 'rgba(52,211,153,0.08)', border: '1px solid rgba(52,211,153,0.18)' }}
+                className="flex items-center gap-1.5 rounded-full px-3 py-1.5 mt-1 border border-oasis-500/20"
+                style={{ background: 'rgba(52,211,153,0.08)' }}
               >
                 <Award size={11} className="text-oasis-400" />
                 <span className="font-mono text-[10px] text-oasis-400 font-medium">{points.toLocaleString()} pts</span>
               </div>
             </div>
 
-            <div className="space-y-2.5">
-              <motion.div
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <motion.a
+                href="https://www.enova.com"
+                target="_blank"
+                rel="noopener noreferrer"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mb-6"
+                className="col-span-1 md:col-span-2 h-60 md:h-72 rounded-[2rem] overflow-hidden relative border border-white/[0.08] hover:border-oasis-400/30 transition-all duration-300 block group"
               >
-                <p className="font-mono text-[8px] text-text-muted uppercase tracking-widest mb-3 px-0.5">Sponsored</p>
-                <div className="space-y-3">
-                  <a
-                    href="https://www.enova.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-5 p-5 rounded-2xl transition-all duration-300 group relative overflow-hidden"
-                    style={{ background: 'rgba(251,191,36,0.04)', border: '1px solid rgba(251,191,36,0.12)' }}
-                  >
-                    <div
-                      className="absolute inset-0 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-300"
-                      style={{ background: 'radial-gradient(ellipse at 20% 50%, rgba(251,191,36,0.07), transparent 60%)' }}
-                    />
-                    <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-dune-400 to-ember-400 flex items-center justify-center shrink-0">
-                      <Zap size={28} className="text-surface" />
-                    </div>
-                    <div className="flex-1 text-left relative z-10">
-                      <p className="font-body text-[15px] font-semibold text-text-primary">Go Solar This Summer</p>
-                      <p className="font-mono text-[11px] text-text-muted">Home solar plans from 299 AED / month</p>
-                      <p className="font-mono text-[10px] text-dune-400 mt-1">Enova Energy</p>
-                    </div>
-                    <ExternalLink size={14} className="text-text-muted shrink-0 relative z-10" />
-                    <span className="absolute top-3 right-3 font-mono text-[7px] text-text-muted uppercase tracking-widest bg-surface-overlay px-1.5 py-0.5 rounded-full">Ad</span>
-                  </a>
-
-                  <a
-                    href="https://www.luluhypermarket.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-5 p-5 rounded-2xl transition-all duration-300 group relative overflow-hidden"
-                    style={{ background: 'rgba(52,211,153,0.04)', border: '1px solid rgba(52,211,153,0.12)' }}
-                  >
-                    <div
-                      className="absolute inset-0 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-300"
-                      style={{ background: 'radial-gradient(ellipse at 20% 50%, rgba(52,211,153,0.07), transparent 60%)' }}
-                    />
-                    <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-oasis-400 to-gulf-400 flex items-center justify-center shrink-0">
-                      <ShoppingBag size={28} className="text-surface" />
-                    </div>
-                    <div className="flex-1 text-left relative z-10">
-                      <p className="font-body text-[15px] font-semibold text-text-primary">Eco Aisle at Lulu</p>
-                      <p className="font-mono text-[11px] text-text-muted">Sustainable groceries delivered same-day</p>
-                      <p className="font-mono text-[10px] text-oasis-400 mt-1">Lulu Hypermarket</p>
-                    </div>
-                    <ExternalLink size={14} className="text-text-muted shrink-0 relative z-10" />
-                    <span className="absolute top-3 right-3 font-mono text-[7px] text-text-muted uppercase tracking-widest bg-surface-overlay px-1.5 py-0.5 rounded-full">Ad</span>
-                  </a>
+                <div
+                  className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
+                  style={{ backgroundImage: `url('https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?auto=format&fit=crop&w=800&q=80')` }}
+                />
+                <div
+                  className="absolute inset-0 transition-opacity duration-300"
+                  style={{ background: 'linear-gradient(to top, rgba(10, 15, 13, 0.95) 0%, rgba(10, 15, 13, 0.4) 50%, transparent 100%)' }}
+                />
+                <span className="absolute top-4 right-4 px-2.5 py-0.5 rounded-full bg-black/60 border border-white/20 font-display text-[8px] sm:text-[9px] text-white tracking-widest uppercase">
+                  AD
+                </span>
+                <span className="absolute top-4 left-4 px-2.5 py-1 rounded-full bg-black/35 border border-white/5 font-mono text-[8px] text-text-secondary uppercase tracking-widest">
+                  Sponsored
+                </span>
+                <div className="absolute bottom-6 left-6 right-6 text-left">
+                  <h3 className="font-display text-[20px] sm:text-[24px] text-white uppercase tracking-[0.05em] leading-tight mb-1">
+                    ENOVA SOLAR
+                  </h3>
+                  <p className="font-display text-[12px] sm:text-[14px] text-white/80 uppercase tracking-[0.05em]">
+                    200PTS
+                  </p>
                 </div>
-              </motion.div>
+              </motion.a>
+
+              <motion.a
+                href="https://www.luluhypermarket.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.05 }}
+                className="col-span-1 md:col-span-2 h-60 md:h-72 rounded-[2rem] overflow-hidden relative border border-white/[0.08] hover:border-oasis-400/30 transition-all duration-300 block group"
+              >
+                <div
+                  className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
+                  style={{ backgroundImage: `url('https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?auto=format&fit=crop&w=800&q=80')` }}
+                />
+                <div
+                  className="absolute inset-0 transition-opacity duration-300"
+                  style={{ background: 'linear-gradient(to top, rgba(10, 15, 13, 0.95) 0%, rgba(10, 15, 13, 0.4) 50%, transparent 100%)' }}
+                />
+                <span className="absolute top-4 right-4 px-2.5 py-0.5 rounded-full bg-black/60 border border-white/20 font-display text-[8px] sm:text-[9px] text-white tracking-widest uppercase">
+                  AD
+                </span>
+                <span className="absolute top-4 left-4 px-2.5 py-1 rounded-full bg-black/35 border border-white/5 font-mono text-[8px] text-text-secondary uppercase tracking-widest">
+                  Sponsored
+                </span>
+                <div className="absolute bottom-6 left-6 right-6 text-left">
+                  <h3 className="font-display text-[20px] sm:text-[24px] text-white uppercase tracking-[0.05em] leading-tight mb-1">
+                    LULU ECO MARKET
+                  </h3>
+                  <p className="font-display text-[12px] sm:text-[14px] text-white/80 uppercase tracking-[0.05em]">
+                    200PTS
+                  </p>
+                </div>
+              </motion.a>
 
               {rewards.map((reward, i) => {
                 const own = redeemed.includes(reward.id)
-                const affordable = points >= reward.cost
                 const unlocked = level >= reward.level
 
                 return (
@@ -304,66 +313,41 @@ export function RewardsTab() {
                     key={reward.id}
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: i * 0.04, duration: 0.25 }}
+                    transition={{ delay: (i + 2) * 0.04, duration: 0.25 }}
                     onClick={() => unlocked && setSelectedReward(reward)}
                     disabled={!unlocked}
-                    className="w-full group relative overflow-hidden rounded-2xl transition-all duration-300"
-                    style={{
-                      background: own
-                        ? 'rgba(52,211,153,0.06)'
-                        : 'rgba(17,25,22,0.8)',
-                      border: own
-                        ? '1px solid rgba(52,211,153,0.25)'
-                        : affordable && unlocked
-                          ? '1px solid rgba(167,154,124,0.14)'
-                          : '1px solid rgba(167,154,124,0.07)',
-                      opacity: !unlocked ? 0.5 : 1,
-                      boxShadow: own ? '0 0 20px rgba(52,211,153,0.06)' : 'none',
-                    }}
+                    className="col-span-1 h-44 md:h-56 rounded-[2rem] overflow-hidden relative border border-white/[0.08] hover:border-oasis-400/30 transition-all duration-300 block group disabled:opacity-50 cursor-pointer"
                   >
-                    {affordable && unlocked && !own && (
-                      <div
-                        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
-                        style={{ background: `radial-gradient(ellipse at 20% 50%, ${reward.glowColor}, transparent 60%)` }}
-                      />
+                    <div
+                      className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
+                      style={{ backgroundImage: `url('https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?auto=format&fit=crop&w=800&q=80')` }}
+                    />
+                    <div
+                      className="absolute inset-0 transition-opacity duration-300"
+                      style={{ background: 'linear-gradient(to top, rgba(10, 15, 13, 0.95) 0%, rgba(10, 15, 13, 0.4) 50%, transparent 100%)' }}
+                    />
+
+                    {own ? (
+                      <span className="absolute top-4 left-4 px-2.5 py-1 rounded-full bg-oasis-500/20 border border-oasis-400/40 flex items-center gap-1 font-mono text-[9px] text-oasis-400 uppercase tracking-wider">
+                        <Check size={10} /> OWNED
+                      </span>
+                    ) : !unlocked ? (
+                      <span className="absolute top-4 left-4 px-2.5 py-1 rounded-full bg-black/50 border border-white/10 flex items-center gap-1 font-mono text-[9px] text-text-muted uppercase tracking-wider">
+                        <Lock size={10} /> LVL {reward.level}
+                      </span>
+                    ) : (
+                      <span className="absolute top-4 left-4 px-2.5 py-1 rounded-full bg-black/35 border border-white/5 font-mono text-[8px] text-text-secondary uppercase tracking-widest">
+                        {reward.tag}
+                      </span>
                     )}
 
-                    <div className="flex items-center gap-3.5 p-3.5 relative z-10">
-                      <div
-                        className={`w-12 h-12 rounded-xl bg-gradient-to-br ${reward.gradient} flex items-center justify-center shrink-0`}
-                        style={{ boxShadow: unlocked ? `0 4px 16px ${reward.glowColor}` : 'none' }}
-                      >
-                        {unlocked ? (
-                          <reward.Icon size={22} className="text-surface" />
-                        ) : (
-                          <Lock size={16} className="text-surface/60" />
-                        )}
-                      </div>
-
-                      <div className="flex-1 text-left min-w-0">
-                        <div className="flex items-center gap-2 mb-0.5">
-                          <p className={`font-body text-[13px] font-semibold truncate ${own ? 'text-oasis-400' : unlocked ? 'text-text-primary' : 'text-text-muted'}`}>
-                            {reward.name}
-                          </p>
-                          <span
-                            className="font-mono text-[7px] tracking-widest uppercase px-1.5 py-0.5 rounded-full shrink-0"
-                            style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(167,154,124,0.1)', color: 'var(--color-text-muted)' }}
-                          >
-                            {reward.tag}
-                          </span>
-                        </div>
-                        <p className="font-mono text-[10px] text-text-muted truncate">{reward.description}</p>
-                      </div>
-
-                      <div className="text-right shrink-0 pl-2">
-                        {own ? (
-                          <Check size={14} className="text-oasis-400 ml-auto mb-0.5" />
-                        ) : null}
-                        <p className={`font-mono text-[11px] font-medium ${affordable && unlocked ? 'text-oasis-400' : 'text-text-muted'}`}>
-                          {reward.cost.toLocaleString()}
-                        </p>
-                        <p className="font-mono text-[8px] text-text-muted">pts · Lv{reward.level}</p>
-                      </div>
+                    <div className="absolute bottom-6 left-6 right-6 text-left">
+                      <h3 className="font-display text-[16px] sm:text-[20px] text-white uppercase tracking-[0.05em] leading-tight mb-1 truncate">
+                        {reward.name}
+                      </h3>
+                      <p className="font-display text-[11px] sm:text-[13px] text-white/80 uppercase tracking-[0.05em]">
+                        {reward.cost}PTS
+                      </p>
                     </div>
                   </motion.button>
                 )
