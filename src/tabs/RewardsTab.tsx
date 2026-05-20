@@ -239,6 +239,61 @@ export function RewardsTab() {
             </div>
 
             <div className="space-y-2.5">
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mb-6"
+              >
+                <p className="font-mono text-[8px] text-text-muted uppercase tracking-widest mb-3 px-0.5">Sponsored</p>
+                <div className="space-y-3">
+                  <a
+                    href="https://www.enova.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-5 p-5 rounded-2xl transition-all duration-300 group relative overflow-hidden"
+                    style={{ background: 'rgba(251,191,36,0.04)', border: '1px solid rgba(251,191,36,0.12)' }}
+                  >
+                    <div
+                      className="absolute inset-0 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-300"
+                      style={{ background: 'radial-gradient(ellipse at 20% 50%, rgba(251,191,36,0.07), transparent 60%)' }}
+                    />
+                    <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-dune-400 to-ember-400 flex items-center justify-center shrink-0">
+                      <Zap size={28} className="text-surface" />
+                    </div>
+                    <div className="flex-1 text-left relative z-10">
+                      <p className="font-body text-[15px] font-semibold text-text-primary">Go Solar This Summer</p>
+                      <p className="font-mono text-[11px] text-text-muted">Home solar plans from 299 AED / month</p>
+                      <p className="font-mono text-[10px] text-dune-400 mt-1">Enova Energy</p>
+                    </div>
+                    <ExternalLink size={14} className="text-text-muted shrink-0 relative z-10" />
+                    <span className="absolute top-3 right-3 font-mono text-[7px] text-text-muted uppercase tracking-widest bg-surface-overlay px-1.5 py-0.5 rounded-full">Ad</span>
+                  </a>
+
+                  <a
+                    href="https://www.luluhypermarket.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-5 p-5 rounded-2xl transition-all duration-300 group relative overflow-hidden"
+                    style={{ background: 'rgba(52,211,153,0.04)', border: '1px solid rgba(52,211,153,0.12)' }}
+                  >
+                    <div
+                      className="absolute inset-0 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-300"
+                      style={{ background: 'radial-gradient(ellipse at 20% 50%, rgba(52,211,153,0.07), transparent 60%)' }}
+                    />
+                    <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-oasis-400 to-gulf-400 flex items-center justify-center shrink-0">
+                      <ShoppingBag size={28} className="text-surface" />
+                    </div>
+                    <div className="flex-1 text-left relative z-10">
+                      <p className="font-body text-[15px] font-semibold text-text-primary">Eco Aisle at Lulu</p>
+                      <p className="font-mono text-[11px] text-text-muted">Sustainable groceries delivered same-day</p>
+                      <p className="font-mono text-[10px] text-oasis-400 mt-1">Lulu Hypermarket</p>
+                    </div>
+                    <ExternalLink size={14} className="text-text-muted shrink-0 relative z-10" />
+                    <span className="absolute top-3 right-3 font-mono text-[7px] text-text-muted uppercase tracking-widest bg-surface-overlay px-1.5 py-0.5 rounded-full">Ad</span>
+                  </a>
+                </div>
+              </motion.div>
+
               {rewards.map((reward, i) => {
                 const own = redeemed.includes(reward.id)
                 const affordable = points >= reward.cost
@@ -313,62 +368,6 @@ export function RewardsTab() {
                   </motion.button>
                 )
               })}
-
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: rewards.length * 0.04 }}
-                className="mt-1"
-              >
-                <p className="font-mono text-[8px] text-text-muted uppercase tracking-widest mb-2 px-0.5">Sponsored</p>
-                <div className="space-y-2">
-                  <a
-                    href="https://www.enova.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-3.5 p-3.5 rounded-2xl transition-all duration-300 group relative overflow-hidden"
-                    style={{ background: 'rgba(251,191,36,0.04)', border: '1px solid rgba(251,191,36,0.12)' }}
-                  >
-                    <div
-                      className="absolute inset-0 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-300"
-                      style={{ background: 'radial-gradient(ellipse at 20% 50%, rgba(251,191,36,0.07), transparent 60%)' }}
-                    />
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-dune-400 to-ember-400 flex items-center justify-center shrink-0">
-                      <Zap size={22} className="text-surface" />
-                    </div>
-                    <div className="flex-1 text-left relative z-10">
-                      <p className="font-body text-[13px] font-semibold text-text-primary">Go Solar This Summer</p>
-                      <p className="font-mono text-[10px] text-text-muted">Home solar plans from 299 AED / month</p>
-                      <p className="font-mono text-[9px] text-dune-400 mt-1">Enova Energy</p>
-                    </div>
-                    <ExternalLink size={12} className="text-text-muted shrink-0 relative z-10" />
-                    <span className="absolute top-2 right-2 font-mono text-[7px] text-text-muted uppercase tracking-widest bg-surface-overlay px-1.5 py-0.5 rounded-full">Ad</span>
-                  </a>
-
-                  <a
-                    href="https://www.luluhypermarket.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-3.5 p-3.5 rounded-2xl transition-all duration-300 group relative overflow-hidden"
-                    style={{ background: 'rgba(52,211,153,0.04)', border: '1px solid rgba(52,211,153,0.12)' }}
-                  >
-                    <div
-                      className="absolute inset-0 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-300"
-                      style={{ background: 'radial-gradient(ellipse at 20% 50%, rgba(52,211,153,0.07), transparent 60%)' }}
-                    />
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-oasis-400 to-gulf-400 flex items-center justify-center shrink-0">
-                      <ShoppingBag size={22} className="text-surface" />
-                    </div>
-                    <div className="flex-1 text-left relative z-10">
-                      <p className="font-body text-[13px] font-semibold text-text-primary">Eco Aisle at Lulu</p>
-                      <p className="font-mono text-[10px] text-text-muted">Sustainable groceries delivered same-day</p>
-                      <p className="font-mono text-[9px] text-oasis-400 mt-1">Lulu Hypermarket</p>
-                    </div>
-                    <ExternalLink size={12} className="text-text-muted shrink-0 relative z-10" />
-                    <span className="absolute top-2 right-2 font-mono text-[7px] text-text-muted uppercase tracking-widest bg-surface-overlay px-1.5 py-0.5 rounded-full">Ad</span>
-                  </a>
-                </div>
-              </motion.div>
             </div>
           </motion.div>
         )}
