@@ -1,9 +1,9 @@
 import { motion, AnimatePresence } from 'framer-motion'
-import { Gift, TreePine, Droplets, Zap, Shield, Leaf, ShoppingBag, Recycle, Award, Check, Sparkles, ArrowLeft, Lock } from 'lucide-react'
-import { useState } from 'react'
+import { Gift, TreePine, Droplets, Zap, Shield, Leaf, ShoppingBag, Recycle, Award, Check, Sparkles, ArrowLeft, Lock, ExternalLink } from 'lucide-react'
+import { useState, useEffect } from 'react'
 import { useApp } from '../App'
 import { db } from '../firebase'
-import { doc, updateDoc, arrayUnion, increment as fbIncrement } from 'firebase/firestore'
+import { doc, updateDoc, arrayUnion, increment as fbIncrement, collection, onSnapshot, orderBy, query } from 'firebase/firestore'
 
 interface Reward {
   id: string
@@ -19,15 +19,60 @@ interface Reward {
   tag: string
 }
 
+interface SponsoredReward {
+  id: string
+  name: string
+  subtitle: string
+  href: string
+  imageUrl: string
+  points: number
+  badge?: string
+  order?: number
+}
+
+const REWARD_IMAGES: Record<string, string> = {
+  r1: 'https://images.unsplash.com/photo-1568844293986-ca9c5b825c37?auto=format&fit=crop&w=800&q=80',
+  r2: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=800&q=80',
+  r3: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=800&q=80',
+  r4: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=800&q=80',
+  r5: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=800&q=80',
+  r6: 'https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?auto=format&fit=crop&w=800&q=80',
+  r7: 'https://images.unsplash.com/photo-1585421514284-efb74c2b69ba?auto=format&fit=crop&w=800&q=80',
+  r8: 'https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?auto=format&fit=crop&w=800&q=80',
+}
+
 const rewards: Reward[] = [
-  { id: 'r1', name: 'Metro Day Pass', description: 'Unlimited travel on the Dubai Metro for one full day', cost: 220, level: 1, image: '', Icon: Recycle, gradient: 'from-oasis-400 to-oasis-500', glowColor: 'rgba(52,211,153,0.18)', accent: 'text-oasis-400', tag: 'Transit' },
-  { id: 'r2', name: 'Organic Coffee', description: 'Single cup of specialty organic coffee at partner cafes', cost: 700, level: 1, image: '', Icon: Leaf, gradient: 'from-oasis-300 to-gulf-400', glowColor: 'rgba(103,232,249,0.15)', accent: 'text-gulf-400', tag: 'Food' },
-  { id: 'r3', name: 'Plant a Mangrove', description: 'One native mangrove planted in the UAE coastal zone', cost: 750, level: 2, image: '', Icon: TreePine, gradient: 'from-gulf-400 to-gulf-500', glowColor: 'rgba(34,211,238,0.18)', accent: 'text-gulf-400', tag: 'Planet' },
-  { id: 'r4', name: 'Thermal Travel Cup', description: 'Double-walled stainless steel insulated travel mug', cost: 1500, level: 3, image: '', Icon: Droplets, gradient: 'from-gulf-300 to-oasis-400', glowColor: 'rgba(103,232,249,0.18)', accent: 'text-gulf-300', tag: 'Gear' },
-  { id: 'r5', name: 'Dining Voucher', description: '50 AED voucher for certified organic local restaurants', cost: 2000, level: 4, image: '', Icon: ShoppingBag, gradient: 'from-oasis-500 to-oasis-600', glowColor: 'rgba(16,185,129,0.18)', accent: 'text-oasis-500', tag: 'Food' },
-  { id: 'r6', name: 'Solar Power Bank', description: 'Compact 10,000 mAh solar charger for mobile devices', cost: 3600, level: 5, image: '', Icon: Zap, gradient: 'from-dune-400 to-ember-400', glowColor: 'rgba(251,191,36,0.18)', accent: 'text-dune-400', tag: 'Tech' },
-  { id: 'r7', name: 'Eco Cleaning Kit', description: 'Three zero-plastic concentrated cleaning refill pods', cost: 5000, level: 6, image: '', Icon: Shield, gradient: 'from-oasis-400 to-dune-400', glowColor: 'rgba(52,211,153,0.15)', accent: 'text-oasis-400', tag: 'Home' },
-  { id: 'r8', name: 'Premium Plant Pod', description: 'Self-watering seed kit for a home herb garden', cost: 8000, level: 8, image: '', Icon: Sparkles, gradient: 'from-ember-400 to-dune-300', glowColor: 'rgba(251,146,60,0.18)', accent: 'text-ember-400', tag: 'Rare' },
+  { id: 'r1', name: 'Metro Day Pass', description: 'Unlimited travel on the Dubai Metro for one full day', cost: 220, level: 1, image: REWARD_IMAGES.r1, Icon: Recycle, gradient: 'from-oasis-400 to-oasis-500', glowColor: 'rgba(52,211,153,0.18)', accent: 'text-oasis-400', tag: 'Transit' },
+  { id: 'r2', name: 'Organic Coffee', description: 'Single cup of specialty organic coffee at partner cafes', cost: 700, level: 1, image: REWARD_IMAGES.r2, Icon: Leaf, gradient: 'from-oasis-300 to-gulf-400', glowColor: 'rgba(103,232,249,0.15)', accent: 'text-gulf-400', tag: 'Food' },
+  { id: 'r3', name: 'Plant a Mangrove', description: 'One native mangrove planted in the UAE coastal zone', cost: 750, level: 2, image: REWARD_IMAGES.r3, Icon: TreePine, gradient: 'from-gulf-400 to-gulf-500', glowColor: 'rgba(34,211,238,0.18)', accent: 'text-gulf-400', tag: 'Planet' },
+  { id: 'r4', name: 'Thermal Travel Cup', description: 'Double-walled stainless steel insulated travel mug', cost: 1500, level: 3, image: REWARD_IMAGES.r4, Icon: Droplets, gradient: 'from-gulf-300 to-oasis-400', glowColor: 'rgba(103,232,249,0.18)', accent: 'text-gulf-300', tag: 'Gear' },
+  { id: 'r5', name: 'Dining Voucher', description: '50 AED voucher for certified organic local restaurants', cost: 2000, level: 4, image: REWARD_IMAGES.r5, Icon: ShoppingBag, gradient: 'from-oasis-500 to-oasis-600', glowColor: 'rgba(16,185,129,0.18)', accent: 'text-oasis-500', tag: 'Food' },
+  { id: 'r6', name: 'Solar Power Bank', description: 'Compact 10,000 mAh solar charger for mobile devices', cost: 3600, level: 5, image: REWARD_IMAGES.r6, Icon: Zap, gradient: 'from-dune-400 to-ember-400', glowColor: 'rgba(251,191,36,0.18)', accent: 'text-dune-400', tag: 'Tech' },
+  { id: 'r7', name: 'Eco Cleaning Kit', description: 'Three zero-plastic concentrated cleaning refill pods', cost: 5000, level: 6, image: REWARD_IMAGES.r7, Icon: Shield, gradient: 'from-oasis-400 to-dune-400', glowColor: 'rgba(52,211,153,0.15)', accent: 'text-oasis-400', tag: 'Home' },
+  { id: 'r8', name: 'Premium Plant Pod', description: 'Self-watering seed kit for a home herb garden', cost: 8000, level: 8, image: REWARD_IMAGES.r8, Icon: Sparkles, gradient: 'from-ember-400 to-dune-300', glowColor: 'rgba(251,146,60,0.18)', accent: 'text-ember-400', tag: 'Rare' },
+]
+
+const DEFAULT_SPONSORED: SponsoredReward[] = [
+  {
+    id: 'sp-enova',
+    name: 'ENOVA SOLAR',
+    subtitle: '200 PTS reward on first install',
+    href: 'https://www.enova.com',
+    imageUrl: 'https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=900&q=80',
+    points: 200,
+    badge: 'Energy',
+    order: 0,
+  },
+  {
+    id: 'sp-lulu',
+    name: 'LULU ECO MARKET',
+    subtitle: 'Earn on every sustainable purchase',
+    href: 'https://www.luluhypermarket.com',
+    imageUrl: 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=900&q=80',
+    points: 150,
+    badge: 'Grocery',
+    order: 1,
+  },
 ]
 
 export function RewardsTab() {
@@ -35,6 +80,17 @@ export function RewardsTab() {
   const [selectedReward, setSelectedReward] = useState<Reward | null>(null)
   const [confirming, setConfirming] = useState(false)
   const [justRedeemed, setJustRedeemed] = useState(false)
+  const [sponsored, setSponsored] = useState<SponsoredReward[]>(DEFAULT_SPONSORED)
+
+  useEffect(() => {
+    const q = query(collection(db, 'sponsoredRewards'), orderBy('order', 'asc'))
+    const unsub = onSnapshot(q, (snap) => {
+      if (!snap.empty) {
+        setSponsored(snap.docs.map(d => ({ id: d.id, ...(d.data() as Omit<SponsoredReward, 'id'>) })))
+      }
+    })
+    return unsub
+  }, [])
 
   const redeemed = userData?.redeemedRewards || []
 
@@ -78,9 +134,7 @@ export function RewardsTab() {
         >
           <div
             className="absolute inset-0 pointer-events-none"
-            style={{
-              background: 'radial-gradient(ellipse at 60% 0%, rgba(52,211,153,0.08), transparent 60%)',
-            }}
+            style={{ background: 'radial-gradient(ellipse at 60% 0%, rgba(52,211,153,0.08), transparent 60%)' }}
           />
           <div className="p-8 flex flex-col items-center text-center relative z-10">
             <div
@@ -148,17 +202,22 @@ export function RewardsTab() {
             >
               <div
                 className="absolute inset-0 pointer-events-none"
-                style={{
-                  background: `radial-gradient(ellipse at 50% 0%, ${selectedReward.glowColor}, transparent 55%)`,
-                }}
+                style={{ background: `radial-gradient(ellipse at 50% 0%, ${selectedReward.glowColor}, transparent 55%)` }}
               />
 
-              <div className="p-6 relative z-10 text-center">
+              <div
+                className="w-full h-48 bg-cover bg-center relative"
+                style={{ backgroundImage: `url('${selectedReward.image}')` }}
+              >
+                <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, transparent 40%, #131f18 100%)' }} />
+              </div>
+
+              <div className="p-6 relative z-10 text-center -mt-8">
                 <div
-                  className={`w-20 h-20 rounded-2xl bg-gradient-to-br ${selectedReward.gradient} flex items-center justify-center mx-auto mb-4`}
+                  className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${selectedReward.gradient} flex items-center justify-center mx-auto mb-4`}
                   style={{ boxShadow: `0 8px 32px ${selectedReward.glowColor}` }}
                 >
-                  <selectedReward.Icon size={34} className="text-surface" />
+                  <selectedReward.Icon size={28} className="text-surface" />
                 </div>
 
                 <span className="font-mono text-[8px] tracking-[0.3em] text-text-muted uppercase mb-2 block">{selectedReward.tag}</span>
@@ -238,72 +297,62 @@ export function RewardsTab() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <motion.a
-                href="https://www.enova.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="col-span-1 md:col-span-2 h-60 md:h-72 rounded-[2rem] overflow-hidden relative border border-white/[0.08] hover:border-oasis-400/30 transition-all duration-300 block group"
-              >
-                <div
-                  className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
-                  style={{ backgroundImage: `url('https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?auto=format&fit=crop&w=800&q=80')` }}
-                />
-                <div
-                  className="absolute inset-0 transition-opacity duration-300"
-                  style={{ background: 'linear-gradient(to top, rgba(10, 15, 13, 0.95) 0%, rgba(10, 15, 13, 0.4) 50%, transparent 100%)' }}
-                />
-                <span className="absolute top-4 right-4 px-2.5 py-0.5 rounded-full bg-black/60 border border-white/20 font-display text-[8px] sm:text-[9px] text-white tracking-widest uppercase">
-                  AD
-                </span>
-                <span className="absolute top-4 left-4 px-2.5 py-1 rounded-full bg-black/35 border border-white/5 font-mono text-[8px] text-text-secondary uppercase tracking-widest">
-                  Sponsored
-                </span>
-                <div className="absolute bottom-6 left-6 right-6 text-left">
-                  <h3 className="font-display text-[20px] sm:text-[24px] text-white uppercase tracking-[0.05em] leading-tight mb-1">
-                    ENOVA SOLAR
-                  </h3>
-                  <p className="font-display text-[12px] sm:text-[14px] text-white/80 uppercase tracking-[0.05em]">
-                    200PTS
-                  </p>
-                </div>
-              </motion.a>
+            <div className="mb-3">
+              <p className="font-mono text-[9px] tracking-[0.25em] text-text-muted uppercase mb-3">Sponsored</p>
+              <div className="grid grid-cols-2 gap-3 mb-6">
+                {sponsored.slice(0, 2).map((sp, i) => (
+                  <motion.a
+                    key={sp.id}
+                    href={sp.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: i * 0.06 }}
+                    className="h-52 rounded-[1.6rem] overflow-hidden relative border border-white/[0.07] hover:border-oasis-400/30 transition-all duration-300 block group"
+                  >
+                    <div
+                      className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
+                      style={{ backgroundImage: `url('${sp.imageUrl}')` }}
+                    />
+                    <div
+                      className="absolute inset-0"
+                      style={{ background: 'linear-gradient(to top, rgba(5,10,8,0.97) 0%, rgba(5,10,8,0.45) 50%, transparent 100%)' }}
+                    />
+                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" style={{ background: 'rgba(52,211,153,0.04)' }} />
 
-              <motion.a
-                href="https://www.luluhypermarket.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.05 }}
-                className="col-span-1 md:col-span-2 h-60 md:h-72 rounded-[2rem] overflow-hidden relative border border-white/[0.08] hover:border-oasis-400/30 transition-all duration-300 block group"
-              >
-                <div
-                  className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
-                  style={{ backgroundImage: `url('https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?auto=format&fit=crop&w=800&q=80')` }}
-                />
-                <div
-                  className="absolute inset-0 transition-opacity duration-300"
-                  style={{ background: 'linear-gradient(to top, rgba(10, 15, 13, 0.95) 0%, rgba(10, 15, 13, 0.4) 50%, transparent 100%)' }}
-                />
-                <span className="absolute top-4 right-4 px-2.5 py-0.5 rounded-full bg-black/60 border border-white/20 font-display text-[8px] sm:text-[9px] text-white tracking-widest uppercase">
-                  AD
-                </span>
-                <span className="absolute top-4 left-4 px-2.5 py-1 rounded-full bg-black/35 border border-white/5 font-mono text-[8px] text-text-secondary uppercase tracking-widest">
-                  Sponsored
-                </span>
-                <div className="absolute bottom-6 left-6 right-6 text-left">
-                  <h3 className="font-display text-[20px] sm:text-[24px] text-white uppercase tracking-[0.05em] leading-tight mb-1">
-                    LULU ECO MARKET
-                  </h3>
-                  <p className="font-display text-[12px] sm:text-[14px] text-white/80 uppercase tracking-[0.05em]">
-                    200PTS
-                  </p>
-                </div>
-              </motion.a>
+                    <div className="absolute top-3 left-3 flex items-center gap-1.5">
+                      <span className="px-2 py-0.5 rounded-full bg-black/50 border border-white/10 font-mono text-[7px] text-text-secondary uppercase tracking-widest">
+                        Sponsored
+                      </span>
+                      {sp.badge && (
+                        <span className="px-2 py-0.5 rounded-full font-mono text-[7px] uppercase tracking-widest" style={{ background: 'rgba(52,211,153,0.15)', color: '#34d399', border: '1px solid rgba(52,211,153,0.25)' }}>
+                          {sp.badge}
+                        </span>
+                      )}
+                    </div>
+                    <span className="absolute top-3 right-3 px-2 py-0.5 rounded-full bg-black/60 border border-white/15 font-display text-[7px] text-white/70 tracking-widest uppercase">AD</span>
 
+                    <div className="absolute bottom-4 left-4 right-4">
+                      <h3 className="font-display text-[15px] text-white uppercase tracking-[0.04em] leading-tight mb-1 truncate">
+                        {sp.name}
+                      </h3>
+                      <div className="flex items-center justify-between">
+                        <p className="font-mono text-[9px] text-white/55 leading-snug line-clamp-1">{sp.subtitle}</p>
+                        <div className="flex items-center gap-1 shrink-0 ml-2">
+                          <span className="font-display text-[11px] text-oasis-400">{sp.points}</span>
+                          <span className="font-mono text-[7px] text-oasis-400/70 uppercase">pts</span>
+                          <ExternalLink size={8} className="text-white/30 ml-0.5" />
+                        </div>
+                      </div>
+                    </div>
+                  </motion.a>
+                ))}
+              </div>
+            </div>
+
+            <p className="font-mono text-[9px] tracking-[0.25em] text-text-muted uppercase mb-3">Rewards</p>
+            <div className="grid grid-cols-3 gap-2.5">
               {rewards.map((reward, i) => {
                 const own = redeemed.includes(reward.id)
                 const unlocked = level >= reward.level
@@ -311,42 +360,42 @@ export function RewardsTab() {
                 return (
                   <motion.button
                     key={reward.id}
-                    initial={{ opacity: 0, y: 10 }}
+                    initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: (i + 2) * 0.04, duration: 0.25 }}
+                    transition={{ delay: i * 0.04 + 0.12, duration: 0.22 }}
                     onClick={() => unlocked && setSelectedReward(reward)}
                     disabled={!unlocked}
-                    className="col-span-1 h-44 md:h-56 rounded-[2rem] overflow-hidden relative border border-white/[0.08] hover:border-oasis-400/30 transition-all duration-300 block group disabled:opacity-50 cursor-pointer"
+                    className="h-36 rounded-[1.2rem] overflow-hidden relative border border-white/[0.07] hover:border-oasis-400/25 transition-all duration-300 block group text-left cursor-pointer disabled:opacity-40"
                   >
                     <div
-                      className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
-                      style={{ backgroundImage: `url('https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?auto=format&fit=crop&w=800&q=80')` }}
+                      className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
+                      style={{ backgroundImage: `url('${reward.image}')` }}
                     />
                     <div
-                      className="absolute inset-0 transition-opacity duration-300"
-                      style={{ background: 'linear-gradient(to top, rgba(10, 15, 13, 0.95) 0%, rgba(10, 15, 13, 0.4) 50%, transparent 100%)' }}
+                      className="absolute inset-0"
+                      style={{ background: 'linear-gradient(to top, rgba(5,10,8,0.98) 0%, rgba(5,10,8,0.4) 55%, transparent 100%)' }}
                     />
 
                     {own ? (
-                      <span className="absolute top-4 left-4 px-2.5 py-1 rounded-full bg-oasis-500/20 border border-oasis-400/40 flex items-center gap-1 font-mono text-[9px] text-oasis-400 uppercase tracking-wider">
-                        <Check size={10} /> OWNED
+                      <span className="absolute top-2 left-2 w-5 h-5 rounded-full bg-oasis-500/25 border border-oasis-400/40 flex items-center justify-center">
+                        <Check size={9} className="text-oasis-400" />
                       </span>
                     ) : !unlocked ? (
-                      <span className="absolute top-4 left-4 px-2.5 py-1 rounded-full bg-black/50 border border-white/10 flex items-center gap-1 font-mono text-[9px] text-text-muted uppercase tracking-wider">
-                        <Lock size={10} /> LVL {reward.level}
+                      <span className="absolute top-2 left-2 w-5 h-5 rounded-full bg-black/50 border border-white/10 flex items-center justify-center">
+                        <Lock size={8} className="text-text-muted" />
                       </span>
                     ) : (
-                      <span className="absolute top-4 left-4 px-2.5 py-1 rounded-full bg-black/35 border border-white/5 font-mono text-[8px] text-text-secondary uppercase tracking-widest">
+                      <span className="absolute top-2 left-2 px-1.5 py-0.5 rounded-full bg-black/40 border border-white/5 font-mono text-[6px] text-text-secondary uppercase tracking-widest">
                         {reward.tag}
                       </span>
                     )}
 
-                    <div className="absolute bottom-6 left-6 right-6 text-left">
-                      <h3 className="font-display text-[16px] sm:text-[20px] text-white uppercase tracking-[0.05em] leading-tight mb-1 truncate">
+                    <div className="absolute bottom-2.5 left-2.5 right-2.5">
+                      <h3 className="font-display text-[10px] text-white uppercase tracking-[0.03em] leading-tight mb-0.5 truncate">
                         {reward.name}
                       </h3>
-                      <p className="font-display text-[11px] sm:text-[13px] text-white/80 uppercase tracking-[0.05em]">
-                        {reward.cost}PTS
+                      <p className="font-mono text-[8px] text-white/60 uppercase">
+                        {reward.cost.toLocaleString()}pts
                       </p>
                     </div>
                   </motion.button>
