@@ -1,51 +1,69 @@
-"use client";
+import { useApp } from '../App'
+import { motion } from 'framer-motion'
+import { Newspaper, ClipboardList, Trophy, User, Gift, Shield, MoreHorizontal } from 'lucide-react'
 
-import { TabId } from "./AppShell";
-import { Home, Plus, Trophy, BarChart3, User } from "lucide-react";
+const tabs = [
+  { id: 'feed' as const, label: 'Feed', icon: Newspaper },
+  { id: 'log' as const, label: 'Log', icon: ClipboardList },
+  { id: 'rewards' as const, label: 'Rewards', icon: Gift },
+  { id: 'rank' as const, label: 'Rank', icon: Trophy },
+  { id: 'profile' as const, label: 'Profile', icon: User },
+  { id: 'extras' as const, label: 'Extras', icon: MoreHorizontal },
+]
 
-const TABS: { id: TabId; label: string; Icon: typeof Home }[] = [
-  { id: "feed", label: "Feed", Icon: Home },
-  { id: "leaderboard", label: "Rank", Icon: Trophy },
-  { id: "log", label: "Log", Icon: Plus },
-  { id: "impact", label: "Impact", Icon: BarChart3 },
-  { id: "profile", label: "You", Icon: User },
-];
+export function BottomNav() {
+  const { activeTab, setActiveTab, userData } = useApp()
+  const isAdmin = (userData as any)?.isAdmin
 
-export default function BottomNav({ active, onChange }: { active: TabId; onChange: (t: TabId) => void }) {
   return (
-    <nav style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-around", padding: "8px 8px 10px" }}>
-      {TABS.map(({ id, label, Icon }) => {
-        const on = active === id;
-        const isLog = id === "log";
-
-        if (isLog) {
+    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-32px)] max-w-[400px]">
+      <nav
+        className="flex items-center justify-around px-2 py-2 rounded-[999px] border border-[rgba(255,255,255,0.15)] bg-[rgba(255,255,255,0.1)] backdrop-blur-[30px] backdrop-saturate-[150%] shadow-[inset_0_1px_0_rgba(255,255,255,0.15),0_8px_32px_rgba(0,0,0,0.3)]"
+      >
+        {tabs.map(tab => {
+          const isActive = activeTab === tab.id
+          const Icon = tab.icon
           return (
-            <button key={id} onClick={() => onChange(id)} style={{ display: "flex", flexDirection: "column", alignItems: "center", marginTop: -16 }}>
-              <div style={{
-                width: 48, height: 48, borderRadius: 14,
-                display: "flex", alignItems: "center", justifyContent: "center",
-                background: on ? "var(--accent)" : "var(--card)",
-                border: `1.5px solid ${on ? "var(--accent)" : "var(--border)"}`,
-                boxShadow: on ? "0 4px 16px rgba(13,148,136,0.3)" : "var(--card-shadow)",
-                color: on ? "#fff" : "var(--accent)",
-                transition: "all 0.2s",
-              }}>
-                <Icon size={22} strokeWidth={2.5} />
-              </div>
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className="relative flex flex-col items-center gap-0.5 py-2 px-3 rounded-full transition-all duration-300 active:scale-90"
+            >
+              {isActive && (
+                <motion.div
+                  layoutId="navIndicator"
+                  className="absolute inset-0 bg-oasis-400/20 rounded-full"
+                  transition={{ type: 'spring', stiffness: 500, damping: 35 }}
+                />
+              )}
+              <Icon
+                size={18}
+                strokeWidth={isActive ? 2.5 : 2}
+                className={`transition-colors duration-300 mix-blend-difference ${isActive ? 'text-oasis-400' : 'text-white opacity-70'}`}
+              />
+              <span className={`font-mono text-[8px] font-bold tracking-[0.1em] uppercase transition-colors duration-300 mix-blend-difference ${isActive ? 'text-oasis-400' : 'text-white opacity-70'}`}>
+                {tab.label}
+              </span>
             </button>
-          );
-        }
-
-        return (
-          <button key={id} onClick={() => onChange(id)} style={{
-            display: "flex", flexDirection: "column", alignItems: "center", gap: 4,
-            padding: "6px 12px", color: on ? "var(--accent)" : "var(--text-3)", transition: "color 0.2s",
-          }}>
-            <Icon size={20} strokeWidth={on ? 2.5 : 2} />
-            <span style={{ fontSize: 10, fontWeight: 600, letterSpacing: "0.03em" }}>{label}</span>
+          )
+        })}
+        {isAdmin && (
+          <button
+            onClick={() => setActiveTab('admin')}
+            className={`relative flex flex-col items-center gap-0.5 py-2 px-3 rounded-full transition-all duration-300 active:scale-90 ${activeTab === 'admin' ? '' : 'opacity-50'}`}
+          >
+            {activeTab === 'admin' && (
+              <motion.div
+                layoutId="navIndicator"
+                className="absolute inset-0 bg-oasis-400/20 rounded-full"
+                transition={{ type: 'spring', stiffness: 500, damping: 35 }}
+              />
+            )}
+            <Shield size={18} className={`transition-colors duration-300 mix-blend-difference ${activeTab === 'admin' ? 'text-oasis-400' : 'text-white'}`} />
+            <span className={`font-mono text-[8px] font-bold tracking-[0.1em] uppercase transition-colors duration-300 mix-blend-difference ${activeTab === 'admin' ? 'text-oasis-400' : 'text-white'}`}>Admin</span>
           </button>
-        );
-      })}
-    </nav>
-  );
+        )}
+      </nav>
+    </div>
+  )
 }
