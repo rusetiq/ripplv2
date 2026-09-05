@@ -238,21 +238,52 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 16px;
-  max-width: 580px;
+  max-width: 620px;
 }
 
-.hero-stat-box {
-  background: rgba(255, 255, 255, 0.65);
-  border: 1px solid rgba(17, 21, 18, 0.08);
-  border-radius: 20px;
-  padding: 14px 16px;
-  backdrop-filter: blur(8px);
+.hero-stat-card {
+  border-radius: 24px;
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 94px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 12px 28px -6px rgba(0, 0, 0, 0.22), inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+  color: #ffffff;
 }
 
-.hero-stat-box .dot-number {
+.hero-stat-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 1.5px 0 rgba(255, 255, 255, 0.45), inset 0 -1.5px 0 rgba(0, 0, 0, 0.2);
+  pointer-events: none;
+}
+
+.hero-stat-card .dot-number {
   height: 28px;
-  color: #111512;
-  fill: #111512;
+  color: #ffffff;
+  fill: #ffffff;
+}
+
+.hero-stat-unit {
+  font-size: 13px;
+  font-weight: 600;
+  color: #ffffff;
+  opacity: 0.92;
+}
+
+.hero-stat-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #ffffff;
+  opacity: 0.85;
+  margin: 6px 0 0;
 }
 
 .hero-art {
@@ -372,12 +403,16 @@
     linear-gradient(165deg, #93c5fd 0%, #60a5fa 22%, #2563eb 50%, #1d4ed8 75%, #312e81 100%);
 }
 
-.rippl-landing .silver-card,
 .rippl-landing .twilight-card {
   background:
-    radial-gradient(ellipse 85% 45% at 50% 0%, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.15) 50%, transparent 85%),
-    radial-gradient(ellipse 80% 40% at 50% 100%, #1e293b 0%, #334155 45%, transparent 100%),
-    linear-gradient(155deg, #ffffff 0%, #e2e8f0 20%, #cbd5e1 38%, #94a3b8 62%, #64748b 82%, #334155 100%);
+    radial-gradient(ellipse 75% 35% at 50% 90%, #0f172a 0%, #1e293b 40%, transparent 100%),
+    linear-gradient(165deg, #475569 0%, #334155 30%, #1e293b 65%, #0f172a 100%);
+}
+
+.rippl-landing .silver-card {
+  background:
+    radial-gradient(ellipse 75% 35% at 50% 90%, #1e293b 0%, #0f172a 40%, transparent 100%),
+    linear-gradient(165deg, #64748b 0%, #475569 30%, #334155 65%, #1e293b 100%);
 }
 
 .rippl-landing .forest-card {
@@ -480,6 +515,34 @@
   border: 1px solid rgba(17, 21, 18, 0.08);
   width: fit-content;
   margin-bottom: 20px;
+}
+
+.step-num-card {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 18px;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px -4px rgba(0, 0, 0, 0.25), inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+  margin-bottom: 20px;
+  width: fit-content;
+  position: relative;
+  overflow: hidden;
+}
+
+.step-num-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 1.5px 0 rgba(255, 255, 255, 0.45), inset 0 -1.5px 0 rgba(0, 0, 0, 0.2);
+  pointer-events: none;
+}
+
+.step-num-card .dot-number {
+  height: 20px;
+  color: #ffffff;
+  fill: #ffffff;
 }
 
 .step-card h3 {
@@ -606,6 +669,25 @@
   gap: 8px;
 }
 
+.feature-number-pill {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 18px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  backdrop-filter: blur(8px);
+  margin-bottom: 16px;
+  width: fit-content;
+}
+
+.feature-number-pill .dot-number {
+  height: 32px;
+  color: #ffffff;
+  fill: #ffffff;
+}
+
 .feature-hero-number .dot-number {
   height: 34px;
 }
@@ -614,6 +696,23 @@
   font-size: 12px;
   font-weight: 500;
   opacity: 0.85;
+}
+
+.pricing-number-card {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 14px;
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(8px);
+}
+
+.pricing-number-card .dot-number {
+  height: 32px;
+  color: #ffffff;
+  fill: #ffffff;
 }
 
 .pricing-grid {

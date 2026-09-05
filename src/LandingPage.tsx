@@ -100,28 +100,28 @@ export default function LandingPage() {
           </div>
 
           <div className="hero-stats-strip">
-            <div className="hero-stat-box">
+            <div className="hero-stat-card aurora-card">
               <div className="flex items-baseline gap-1.5">
                 <DotNumber value="12.4k" />
-                <span className="text-[12px] font-semibold text-[#4b5563]">kg</span>
+                <span className="hero-stat-unit">kg</span>
               </div>
-              <p className="text-[11px] text-[#6b7280] uppercase tracking-wider mt-1 font-medium">CO₂ offset</p>
+              <p className="hero-stat-label">CO₂ offset</p>
             </div>
 
-            <div className="hero-stat-box">
+            <div className="hero-stat-card sapphire-card">
               <div className="flex items-baseline gap-1.5">
                 <DotNumber value="38.2k" />
-                <span className="text-[12px] font-semibold text-[#4b5563]">L</span>
+                <span className="hero-stat-unit">L</span>
               </div>
-              <p className="text-[11px] text-[#6b7280] uppercase tracking-wider mt-1 font-medium">water saved</p>
+              <p className="hero-stat-label">water saved</p>
             </div>
 
-            <div className="hero-stat-box">
+            <div className="hero-stat-card solar-card">
               <div className="flex items-baseline gap-1.5">
                 <DotNumber value="84%" />
-                <span className="text-[12px] font-semibold text-[#4b5563]">verified</span>
+                <span className="hero-stat-unit">rate</span>
               </div>
-              <p className="text-[11px] text-[#6b7280] uppercase tracking-wider mt-1 font-medium">habit accuracy</p>
+              <p className="hero-stat-label">verified habits</p>
             </div>
           </div>
         </div>
@@ -157,7 +157,9 @@ export default function LandingPage() {
         <div className="steps-grid">
           <article className="step-card">
             <div>
-              <span className="step-badge">01</span>
+              <div className="step-num-card aurora-card">
+                <DotNumber value="01" />
+              </div>
               <h3>Choose your action</h3>
               <p>Pick from curated everyday choices: take the Dubai Metro, choose a plant-based lunch, refill a water canister, or conserve energy at home.</p>
             </div>
@@ -165,7 +167,9 @@ export default function LandingPage() {
 
           <article className="step-card">
             <div>
-              <span className="step-badge">02</span>
+              <div className="step-num-card solar-card">
+                <DotNumber value="02" />
+              </div>
               <h3>Snap photo proof</h3>
               <p>Capture real photographic evidence. Our multimodal AI instantly validates your action, calculates carbon & water savings, and credits your streak.</p>
             </div>
@@ -173,7 +177,9 @@ export default function LandingPage() {
 
           <article className="step-card">
             <div>
-              <span className="step-badge">03</span>
+              <div className="step-num-card sapphire-card">
+                <DotNumber value="03" />
+              </div>
               <h3>Build your ripple</h3>
               <p>Convert your earned impact points into UAE eco-brand vouchers, tree planting contributions, and climb corporate and regional leaderboards.</p>
             </div>
@@ -198,7 +204,7 @@ export default function LandingPage() {
               </div>
               <span className="pricing-badge">emissions intelligence</span>
             </div>
-            <div className="feature-hero-number">
+            <div className="feature-number-pill">
               <DotNumber value="1.8k" />
               <span className="feature-hero-unit">kg CO₂ avg / citizen</span>
             </div>
@@ -215,7 +221,7 @@ export default function LandingPage() {
               </div>
               <span className="pricing-badge">vision intelligence</span>
             </div>
-            <div className="feature-hero-number">
+            <div className="feature-number-pill">
               <DotNumber value="99.2%" />
               <span className="feature-hero-unit">verification accuracy</span>
             </div>
@@ -232,7 +238,7 @@ export default function LandingPage() {
               </div>
               <span className="pricing-badge">community momentum</span>
             </div>
-            <div className="feature-hero-number">
+            <div className="feature-number-pill">
               <DotNumber value="500+" />
               <span className="feature-hero-unit">pts per challenge</span>
             </div>
@@ -249,7 +255,7 @@ export default function LandingPage() {
               </div>
               <span className="pricing-badge">tangible restoration</span>
             </div>
-            <div className="feature-hero-number">
+            <div className="feature-number-pill">
               <DotNumber value="100%" />
               <span className="feature-hero-unit">certified mangrove credits</span>
             </div>
@@ -343,14 +349,16 @@ export default function LandingPage() {
         </div>
 
         <div className="pricing-grid">
-          <div className="expressive-card silver-card pricing-card">
+          <div className="expressive-card twilight-card pricing-card">
             <div>
               <span className="pricing-badge">standard plan</span>
               <h3 className="pricing-plan-title">Free Tier</h3>
               <p className="pricing-plan-desc">For individual citizens building daily green routines across the Emirates.</p>
 
               <div className="pricing-price-row">
-                <DotNumber value="0" />
+                <div className="pricing-number-card">
+                  <DotNumber value="0" />
+                </div>
                 <span className="pricing-price-currency">AED</span>
                 <span className="pricing-price-period">/ forever</span>
               </div>
@@ -395,7 +403,9 @@ export default function LandingPage() {
               <p className="pricing-plan-desc">Direct monthly carbon offsetting, verified partner perks, and certified personal ESG reporting.</p>
 
               <div className="pricing-price-row">
-                <DotNumber value="20" />
+                <div className="pricing-number-card">
+                  <DotNumber value="20" />
+                </div>
                 <span className="pricing-price-currency">AED</span>
                 <span className="pricing-price-period">/ month</span>
               </div>
@@ -440,7 +450,9 @@ export default function LandingPage() {
               <p className="pricing-plan-desc">Turn company culture into measurable Scope 3 emissions reduction with audit-ready proof.</p>
 
               <div className="pricing-price-row">
-                <DotNumber value="45" />
+                <div className="pricing-number-card">
+                  <DotNumber value="45" />
+                </div>
                 <span className="pricing-price-currency">AED</span>
                 <span className="pricing-price-period">/ seat / month</span>
               </div>
