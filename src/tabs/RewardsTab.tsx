@@ -156,7 +156,7 @@ export function RewardsTab() {
           </p>
           <button
             onClick={() => setShowSignIn(true)}
-            className="inline-flex items-center gap-2.5 px-6 py-3 rounded-full bg-white text-black font-body text-[13px] font-medium shadow-md hover:bg-white/90 active:scale-95 transition-all"
+            className="gradient-card-action inline-flex items-center gap-2.5 px-6 py-3 rounded-full font-body text-[13px] font-medium shadow-md active:scale-95 transition-all"
           >
             <svg viewBox="0 0 24 24" className="w-4 h-4">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" />
@@ -260,7 +260,7 @@ export function RewardsTab() {
                     <button
                       onClick={() => handleRedeem(selectedReward)}
                       disabled={confirming}
-                      className="w-full max-w-sm mx-auto py-3.5 rounded-full bg-white text-black font-body text-[14px] font-medium shadow-lg hover:bg-white/95 active:scale-95 transition-all flex items-center justify-center gap-2"
+                      className="gradient-card-action w-full max-w-sm mx-auto py-3.5 rounded-full font-body text-[14px] font-medium shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2"
                     >
                       <span>{confirming ? 'redeeming...' : 'confirm redemption'}</span>
                       <ArrowRight size={15} />

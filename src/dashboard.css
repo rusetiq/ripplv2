@@ -156,9 +156,9 @@
   text-align: center;
   letter-spacing: -.025em;
 }
-.impact-card-value { padding: 28px 0 21px; gap: 12px; }
-.impact-card-value .dot-number { height: 58px; }
-.impact-card-value>span { font-size: 14px; }
+.impact-card-value { padding: 28px 0 21px; gap: 12px; color: #ffffff; }
+.impact-card-value .dot-number { height: 58px; color: #ffffff; fill: #ffffff; }
+.impact-card-value>span { font-size: 14px; color: #ffffff; }
 .impact-card-dots {
   display: block;
   width: 100%;
@@ -183,7 +183,9 @@
 .light-mode .dashboard-shell .rippl-brand-mark { background: #365c92; }
 .dashboard-shell .gallery-nav-text-active { color: #253b54; }
 .dashboard-shell .impact-card-heading { color: #334a37; }
-.dashboard-shell .impact-card-value { color: #102c18; }
+.dashboard-shell .impact-card-value,
+.dashboard-shell .impact-card-value .dot-number,
+.dashboard-shell .impact-card-value > span { color: #ffffff; }
 .dashboard-shell ::selection { background: #c5d6ea; color: #182d44; }
 @media(max-width:600px) { .dashboard-brand .rippl-brand-mark { width: 34px; height: 34px; } }
 
@@ -248,7 +250,9 @@ html:not(.light-mode) .dashboard-shell .mobile-glass-nav .text-text-muted { colo
   box-shadow: inset 14px 0 24px #d9edff42, inset -14px 0 24px #d3e9f938, inset 0 -13px 22px #b4d4f140;
 }
 .dashboard-shell .water-card .impact-card-heading { color: #233d59; }
-.dashboard-shell .water-card .impact-card-value { color: #071c30; }
+.dashboard-shell .water-card .impact-card-value,
+.dashboard-shell .water-card .impact-card-value .dot-number,
+.dashboard-shell .water-card .impact-card-value > span { color: #ffffff; }
 .water-card .impact-card-dots { background-image: radial-gradient(circle, #d5efff 1.25px, transparent 1.7px); }
 
 .app-gallery .expressive-card {
@@ -315,4 +319,28 @@ html:not(.light-mode) .dashboard-shell .mobile-glass-nav .text-text-muted { colo
 }
 .app-gallery .expressive-card .dot-number {
   fill: #ffffff;
+}
+.app-gallery .gradient-card-action {
+  background: rgba(8, 18, 18, 0.34);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+.app-gallery .gradient-card-action:hover {
+  background: rgba(8, 18, 18, 0.46);
+}
+.app-gallery .silver-card .gradient-card-action,
+.app-gallery .twilight-card .gradient-card-action {
+  background: rgba(255, 255, 255, 0.78);
+  color: #111512;
+  border-color: rgba(17, 21, 18, 0.14);
+}
+.app-gallery .silver-card .gradient-card-action span,
+.app-gallery .twilight-card .gradient-card-action span {
+  color: #111512;
+}
+.app-gallery .silver-card .gradient-card-action:hover,
+.app-gallery .twilight-card .gradient-card-action:hover {
+  background: rgba(255, 255, 255, 0.92);
 }

@@ -89,7 +89,7 @@ export function PricingTab() {
             ))}
           </div>
 
-          <button className="w-full py-4 rounded-full bg-white text-black font-body text-[14px] font-semibold shadow-lg hover:bg-white/95 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+          <button className="gradient-card-action w-full py-4 rounded-full font-body text-[14px] font-semibold shadow-lg active:scale-[0.98] transition-all flex items-center justify-center gap-2">
             <span>subscribe for 20 aed</span>
             <ArrowRight size={15} />
           </button>
@@ -166,7 +166,7 @@ export function PricingTab() {
 
           <button
             onClick={() => setActiveTab('corporate')}
-            className="w-full py-3.5 rounded-full bg-white text-black font-body text-[13px] font-semibold shadow-md hover:bg-white/95 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+            className="gradient-card-action w-full py-3.5 rounded-full font-body text-[13px] font-semibold shadow-md active:scale-[0.98] transition-all flex items-center justify-center gap-2"
           >
             <span>explore corporate esg & request demo</span>
             <ArrowRight size={14} />
