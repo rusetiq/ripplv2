@@ -96,7 +96,7 @@ export function ImpactTab() {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.2 }}
-      className="px-4 pb-8 md:px-0"
+      className="px-4 pb-14 md:px-0"
     >
       <div className="mb-5 pt-1">
         <p className="gallery-label mb-1.5 text-text-muted">all time</p>
@@ -104,33 +104,35 @@ export function ImpactTab() {
         <p className="mt-1 text-[13px] text-text-muted">tangible environmental progress from your daily routines.</p>
       </div>
 
-      <div className="gallery-card p-6 mb-5 rounded-[28px] border border-border">
+      <div className="expressive-card aurora-card p-6 md:p-8 mb-6 rounded-[34px] shadow-xl text-white relative">
         <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-surface-overlay flex items-center justify-center text-oasis-400">
-              <Target size={16} />
+          <div className="flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-white border border-white/20">
+              <Target size={18} />
             </div>
-            <span className="font-display text-[15px] text-text-primary">net zero milestone</span>
+            <span className="font-display text-[17px] text-white">net zero milestone</span>
           </div>
-          <span className="font-mono text-[11px] text-text-muted">{Math.round(netZeroProgress)}% completed</span>
+          <span className="font-mono text-[12px] text-white bg-white/20 backdrop-blur-md px-3 py-1 rounded-full border border-white/20 font-semibold">
+            {Math.round(netZeroProgress)}% completed
+          </span>
         </div>
 
-        <div className="relative h-2 bg-surface-overlay rounded-full overflow-hidden mb-3">
+        <div className="relative h-2.5 bg-black/20 rounded-full overflow-hidden mb-3 border border-white/10">
           <motion.div
             initial={{ width: 0 }}
             animate={{ width: `${netZeroProgress}%` }}
             transition={{ duration: 1.2, ease: [0.25, 0.46, 0.45, 0.94], delay: 0.2 }}
-            className="h-full rounded-full bg-gradient-to-r from-oasis-500 to-gulf-400"
+            className="h-full rounded-full bg-white shadow-sm"
           />
         </div>
 
-        <div className="flex justify-between items-center text-[12px]">
-          <span className="font-mono font-medium text-text-primary">{co2Saved.toFixed(1)} kg CO₂ avoided</span>
-          <span className="font-mono text-text-muted">{netZeroTarget} kg target</span>
+        <div className="flex justify-between items-center text-[13px] text-white/95">
+          <span className="font-mono font-semibold">{co2Saved.toFixed(1)} kg CO₂ avoided</span>
+          <span className="font-mono text-white/80">{netZeroTarget} kg target</span>
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-3 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 mb-7">
         {!user ? (
           <>
             <SkeletonMetricCard />
@@ -139,46 +141,69 @@ export function ImpactTab() {
           </>
         ) : (
           <>
-            <MetricCard
-              icon={<Wind size={16} className="text-oasis-400" />}
-              value={`${co2Saved.toFixed(1)}`}
-              unit="kg CO₂"
-              label="avoided"
-              delay={0.08}
-            />
-            <MetricCard
-              icon={<Droplets size={16} className="text-gulf-300" />}
-              value={`${(waterSaved / 1000).toFixed(1)}k`}
-              unit="litres"
-              label="water saved"
-              delay={0.12}
-            />
-            <MetricCard
-              icon={<TreePine size={16} className="text-oasis-500" />}
-              value={treesEquivalent}
-              unit="trees"
-              label="equivalent"
-              delay={0.16}
-            />
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.08 }}
+              className="expressive-card forest-card p-5 rounded-[26px] shadow-md flex flex-col justify-between min-h-[140px] text-white"
+            >
+              <div className="w-9 h-9 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-white">
+                <Wind size={18} />
+              </div>
+              <div className="mt-4">
+                <span className="block font-display text-[30px] font-bold text-white leading-none">{co2Saved.toFixed(1)}</span>
+                <span className="font-mono text-[11px] text-white/85 mt-1 block">kg CO₂ avoided</span>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.12 }}
+              className="expressive-card sapphire-card p-5 rounded-[26px] shadow-md flex flex-col justify-between min-h-[140px] text-white"
+            >
+              <div className="w-9 h-9 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-white">
+                <Droplets size={18} />
+              </div>
+              <div className="mt-4">
+                <span className="block font-display text-[30px] font-bold text-white leading-none">{(waterSaved / 1000).toFixed(1)}k</span>
+                <span className="font-mono text-[11px] text-white/85 mt-1 block">litres water saved</span>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.16 }}
+              className="expressive-card solar-card p-5 rounded-[26px] shadow-md flex flex-col justify-between min-h-[140px] text-white"
+            >
+              <div className="w-9 h-9 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-white">
+                <TreePine size={18} />
+              </div>
+              <div className="mt-4">
+                <span className="block font-display text-[30px] font-bold text-white leading-none">{treesEquivalent}</span>
+                <span className="font-mono text-[11px] text-white/85 mt-1 block">trees equivalent</span>
+              </div>
+            </motion.div>
           </>
         )}
       </div>
 
       {!user ? (
-        <div className="gallery-card p-10 flex flex-col items-center justify-center text-center rounded-[30px] border border-border">
-          <div className="w-14 h-14 rounded-2xl bg-surface-overlay flex items-center justify-center mb-4 text-text-muted">
+        <div className="expressive-card twilight-card p-10 flex flex-col items-center justify-center text-center rounded-[34px] shadow-lg text-white">
+          <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center mb-4 text-white">
             <LogIn size={26} strokeWidth={1.8} />
           </div>
-          <p className="font-display text-[18px] text-text-primary mb-1">sign in to track impact</p>
-          <p className="font-body text-[13px] text-text-muted mb-6 max-w-[280px]">
+          <p className="font-display text-[22px] text-white mb-2">sign in to track impact</p>
+          <p className="font-body text-[13px] text-white/90 mb-6 max-w-[280px]">
             see personal emissions avoided, water saved, and collect milestone badges.
           </p>
           <button
             onClick={() => setShowSignIn(true)}
-            className="gallery-primary inline-flex items-center gap-2.5 px-6 py-3 transition-all"
+            className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-full bg-white text-[#162228] font-body text-[13px] font-semibold shadow-md hover:bg-white/95 active:scale-95 transition-all"
           >
             <svg viewBox="0 0 24 24" className="w-4 h-4"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-            <span className="font-body text-[13px] font-medium">continue with google</span>
+            <span>continue with google</span>
           </button>
         </div>
       ) : (
@@ -207,17 +232,17 @@ export function ImpactTab() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.05 + i * 0.04 }}
-                    className={`gallery-card p-4 rounded-[22px] border transition-all ${
+                    className={`gallery-card p-4 rounded-[24px] border transition-all ${
                       unlocked
-                        ? 'border-oasis-500/30 bg-surface-raised/80'
+                        ? 'border-oasis-500/35 bg-surface-raised/90 shadow-sm'
                         : 'border-border/70 bg-surface-raised/40 opacity-70'
                     }`}
                   >
                     <div className="flex items-start gap-3.5">
-                      <div className={`relative shrink-0 w-11 h-11 rounded-2xl flex items-center justify-center bg-gradient-to-br ${badge.gradient} ${
-                        unlocked ? 'shadow-sm' : 'opacity-50 saturate-50'
+                      <div className={`relative shrink-0 w-12 h-12 rounded-2xl flex items-center justify-center bg-gradient-to-br ${badge.gradient} ${
+                        unlocked ? 'shadow-md' : 'opacity-50 saturate-50'
                       }`}>
-                        <badge.Icon size={20} className="text-white" strokeWidth={1.8} />
+                        <badge.Icon size={22} className="text-white" strokeWidth={1.8} />
                         {unlocked && (
                           <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-oasis-400 flex items-center justify-center shadow-xs">
                             <Sparkles size={8} className="text-surface" />
@@ -227,8 +252,8 @@ export function ImpactTab() {
 
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between gap-1">
-                          <span className={`font-display text-[13px] ${
-                            unlocked ? 'text-text-primary' : 'text-text-muted'
+                          <span className={`font-display text-[14px] ${
+                            unlocked ? 'text-text-primary font-semibold' : 'text-text-muted'
                           }`}>
                             {badge.name}
                           </span>
@@ -243,12 +268,12 @@ export function ImpactTab() {
                               <span>progress</span>
                               <span>{progress}%</span>
                             </div>
-                            <div className="h-1 bg-surface-overlay rounded-full overflow-hidden">
+                            <div className="h-1.5 bg-surface-overlay rounded-full overflow-hidden">
                               <motion.div
                                 initial={{ width: 0 }}
                                 animate={{ width: `${progress}%` }}
                                 transition={{ duration: 0.8, delay: 0.3 }}
-                                className="h-full rounded-full bg-oasis-400/80"
+                                className="h-full rounded-full bg-oasis-400"
                               />
                             </div>
                           </div>
@@ -261,7 +286,7 @@ export function ImpactTab() {
             </div>
           </div>
 
-          <div className="gallery-card p-5 rounded-[26px] border border-border">
+          <div className="gallery-card p-6 rounded-[28px] border border-border">
             <span className="gallery-label text-text-primary block mb-3.5">weekly points activity</span>
             {dailyPoints.every(v => v === 0) ? (
               <SkeletonBarChart />
@@ -271,30 +296,6 @@ export function ImpactTab() {
           </div>
         </>
       )}
-    </motion.div>
-  )
-}
-
-function MetricCard({ icon, value, unit, label, delay }: {
-  icon: React.ReactNode
-  value: string
-  unit: string
-  label: string
-  delay: number
-}) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay, duration: 0.3 }}
-      className="gallery-card min-h-32 p-4 rounded-[22px] border border-border flex flex-col justify-between"
-    >
-      <div>{icon}</div>
-      <div>
-        <span className="block font-display text-[24px] text-text-primary leading-tight">{value}</span>
-        <span className="font-mono text-[10px] text-text-muted">{unit}</span>
-      </div>
-      <span className="gallery-label text-text-muted">{label}</span>
     </motion.div>
   )
 }

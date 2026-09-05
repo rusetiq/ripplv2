@@ -20,9 +20,9 @@ interface Category {
   id: string
   label: string
   icon: typeof Train
+  gradientClass: string
   color: string
   bg: string
-  ring: string
   actions: Action[]
 }
 
@@ -31,9 +31,9 @@ const categories: Category[] = [
     id: 'transport',
     label: 'Transport',
     icon: Train,
+    gradientClass: 'sapphire-card',
     color: 'text-gulf-400',
     bg: 'bg-gulf-400/10',
-    ring: 'ring-gulf-400/30',
     actions: [
       { id: 't1', label: 'Metro commute', points: 35, co2: 2.4, water: 0, Icon: Train },
       { id: 't2', label: 'Carpooled', points: 25, co2: 1.8, water: 0, Icon: Car },
@@ -45,9 +45,9 @@ const categories: Category[] = [
     id: 'food',
     label: 'Food',
     icon: Leaf,
+    gradientClass: 'forest-card',
     color: 'text-oasis-400',
     bg: 'bg-oasis-400/10',
-    ring: 'ring-oasis-400/30',
     actions: [
       { id: 'f1', label: 'Plant-based meal', points: 20, co2: 1.1, water: 0, Icon: Utensils },
       { id: 'f2', label: 'No food waste today', points: 15, co2: 0.5, water: 0, Icon: Recycle },
@@ -59,9 +59,9 @@ const categories: Category[] = [
     id: 'energy',
     label: 'Energy',
     icon: Zap,
+    gradientClass: 'solar-card',
     color: 'text-dune-400',
     bg: 'bg-dune-400/10',
-    ring: 'ring-dune-400/30',
     actions: [
       { id: 'e1', label: 'Solar energy used', points: 80, co2: 6.8, water: 0, Icon: Sun },
       { id: 'e2', label: 'AC at 24°C', points: 30, co2: 2.0, water: 0, Icon: Snowflake },
@@ -73,9 +73,9 @@ const categories: Category[] = [
     id: 'water',
     label: 'Water',
     icon: Droplets,
+    gradientClass: 'aurora-card',
     color: 'text-gulf-300',
     bg: 'bg-gulf-300/10',
-    ring: 'ring-gulf-300/30',
     actions: [
       { id: 'w1', label: 'Short shower (< 5min)', points: 25, co2: 0, water: 60, Icon: Bath },
       { id: 'w2', label: 'Fixed a leak', points: 50, co2: 0, water: 200, Icon: Wrench },
@@ -87,9 +87,9 @@ const categories: Category[] = [
     id: 'waste',
     label: 'Waste',
     icon: Trash2,
+    gradientClass: 'twilight-card',
     color: 'text-ember-400',
     bg: 'bg-ember-400/10',
-    ring: 'ring-ember-400/30',
     actions: [
       { id: 'r1', label: 'Recycled materials', points: 20, co2: 0.9, water: 0, Icon: Recycle },
       { id: 'r2', label: 'Composted organics', points: 30, co2: 1.5, water: 0, Icon: Leaf },
@@ -129,32 +129,32 @@ export function LogTab() {
   if (!user) {
     return (
       <motion.div
-        key="log"
+        key="log-guest"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.2 }}
-        className="px-4 pb-4 md:px-0"
+        className="px-4 pb-8 md:px-0"
       >
         <div className="mb-5 pt-1">
           <p className="gallery-label mb-1.5 text-text-muted">new entry</p>
           <h2 className="font-display text-[26px] leading-tight text-text-primary">log an action</h2>
           <p className="mt-1 text-[13px] text-text-muted">track everyday wins for personal impact</p>
         </div>
-        <div className="gallery-card flex flex-col items-center justify-center p-12 text-center rounded-[30px] border border-border">
-          <div className="w-14 h-14 rounded-2xl bg-surface-overlay flex items-center justify-center mb-4 text-text-muted">
-            <LogIn size={26} strokeWidth={1.8} />
+        <div className="expressive-card aurora-card flex flex-col items-center justify-center p-10 text-center rounded-[34px] shadow-xl text-white">
+          <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center mb-4 text-white">
+            <LogIn size={26} strokeWidth={2} />
           </div>
-          <p className="font-display text-[18px] text-text-primary mb-1">sign in to record actions</p>
-          <p className="font-body text-[13px] text-text-muted mb-6 max-w-[280px]">
+          <p className="font-display text-[22px] text-white mb-2">sign in to record actions</p>
+          <p className="font-body text-[13px] text-white/90 mb-6 max-w-[300px] leading-relaxed">
             track everyday habits, verify your progress, and earn community points toward net zero.
           </p>
           <button
             onClick={() => setShowSignIn(true)}
-            className="gallery-primary inline-flex items-center gap-2.5 px-6 py-3 transition-all"
+            className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-full bg-white text-[#055c4d] font-body text-[13px] font-semibold shadow-md hover:bg-white/95 active:scale-95 transition-all"
           >
             <svg viewBox="0 0 24 24" className="w-4 h-4"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-            <span className="font-body text-[13px] font-medium">continue with google</span>
+            <span>continue with google</span>
           </button>
         </div>
       </motion.div>
@@ -200,7 +200,7 @@ export function LogTab() {
     setPendingImage(null)
     setVerifying(false)
     setLogging(null)
-    setTimeout(() => setJustLogged(null), 1500)
+    setTimeout(() => setJustLogged(null), 1400)
   }
 
   const handleLog = async (action: Action) => {
@@ -211,14 +211,14 @@ export function LogTab() {
     const result = await verifyActionPhoto(pendingImage!)
 
     if (result.confidence < MIN_CONFIDENCE) {
-      setVerifyError(`Verification failed (${result.confidence}% confidence). Photo doesn't clearly show a valid sustainability action.`)
+      setVerifyError(`Verification confidence was ${result.confidence}%. Please submit a clearer photo demonstrating your action.`)
       setLogging(null)
       setVerifying(false)
       return
     }
 
     if (result.category !== selectedCategory) {
-      setVerifyError(`Photo shows "${result.action}" (${result.category}), not ${selectedCategory}. The photo must match the action type you selected.`)
+      setVerifyError(`Photo shows "${result.action}" (${result.category}), not ${selectedCategory}.`)
       setLogging(null)
       setVerifying(false)
       return
@@ -245,13 +245,13 @@ export function LogTab() {
     const result = await verifyActionPhoto(targetImage)
 
     if (result.confidence < MIN_CONFIDENCE) {
-      setVerifyError(`Low confidence (${result.confidence}%). Could not reliably identify this action.`)
+      setVerifyError(`Low confidence (${result.confidence}%). Could not reliably recognize action.`)
       setVerifying(false)
       setAutoLogFailed(true)
       setTimeout(() => {
         setIsAutoLogging(false)
         setAutoLogFailed(false)
-      }, 1600)
+      }, 1500)
       return
     }
 
@@ -281,7 +281,7 @@ export function LogTab() {
     setTimeout(() => {
       setIsAutoLogging(false)
       setAutoLogSuccess(false)
-    }, 1600)
+    }, 1500)
   }
 
   const handleImagePick = () => {
@@ -305,34 +305,34 @@ export function LogTab() {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.2 }}
-      className="px-4 pb-8 md:px-0"
+      className="px-4 pb-14 md:px-0"
     >
       <AnimatePresence>
         {isAutoLogging && (
           <motion.div
-            initial={{ opacity: 0, y: -20, scale: 0.95 }}
+            initial={{ opacity: 0, y: -24, scale: 0.94 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -20, scale: 0.95 }}
+            exit={{ opacity: 0, y: -24, scale: 0.94 }}
             transition={{ type: 'spring', stiffness: 450, damping: 30 }}
-            className="fixed top-5 left-1/2 -translate-x-1/2 z-[100] flex items-center gap-3 px-4 py-2.5 rounded-full shadow-lg border border-border/80 bg-surface/90 backdrop-blur-md"
+            className="fixed top-5 left-1/2 -translate-x-1/2 z-[100] flex items-center gap-3 px-5 py-3 rounded-full shadow-2xl border border-white/20 bg-[#162722]/90 backdrop-blur-md text-white"
           >
             {autoLogSuccess ? (
-              <span className="flex items-center justify-center w-5 h-5 rounded-full bg-oasis-500/20 text-oasis-400">
-                <Check size={12} strokeWidth={2.5} />
+              <span className="flex items-center justify-center w-6 h-6 rounded-full bg-oasis-400 text-surface shadow-xs">
+                <Check size={14} strokeWidth={3} />
               </span>
             ) : autoLogFailed ? (
-              <span className="flex items-center justify-center w-5 h-5 rounded-full bg-red-500/20 text-red-400">
-                <ShieldX size={12} strokeWidth={2.5} />
+              <span className="flex items-center justify-center w-6 h-6 rounded-full bg-red-400 text-surface shadow-xs">
+                <ShieldX size={14} strokeWidth={3} />
               </span>
             ) : (
-              <div className="w-3.5 h-3.5 border-2 border-oasis-400 border-t-transparent rounded-full animate-spin" />
+              <div className="w-4 h-4 border-2 border-oasis-400 border-t-transparent rounded-full animate-spin" />
             )}
-            <div className="flex items-center gap-2">
-              <span className="font-body text-[12px] font-medium text-text-primary">
-                {autoLogSuccess ? `${autoLogActionName || 'action verified'}` : autoLogFailed ? 'verification failed' : 'verifying sustainability action...'}
+            <div className="flex items-center gap-2.5">
+              <span className="font-body text-[13px] font-medium text-white">
+                {autoLogSuccess ? `${autoLogActionName.toLowerCase()}` : autoLogFailed ? 'verification failed' : 'verifying action proof...'}
               </span>
               {autoLogSuccess && autoLogPoints > 0 && (
-                <span className="font-mono text-[10px] text-oasis-400 font-semibold px-2 py-0.5 rounded-full bg-oasis-400/10 border border-oasis-400/20">
+                <span className="font-mono text-[11px] text-oasis-300 font-bold px-2.5 py-0.5 rounded-full bg-white/15 border border-white/20">
                   +{autoLogPoints} pts
                 </span>
               )}
@@ -344,10 +344,10 @@ export function LogTab() {
       <div className="mb-5 pt-1">
         <p className="gallery-label mb-1.5 text-text-muted">new entry</p>
         <h2 className="font-display text-[26px] leading-tight text-text-primary">log an action</h2>
-        <p className="mt-1 text-[13px] text-text-muted">add photo proof, then confirm your activity.</p>
+        <p className="mt-1 text-[13px] text-text-muted">attach a quick photo, then tap to record your impact.</p>
       </div>
 
-      <div className="flex gap-2 mb-5 overflow-x-auto pb-1 scrollbar-none">
+      <div className="flex gap-2 mb-6 overflow-x-auto pb-1.5 scrollbar-none">
         {categories.map(cat => {
           const Icon = cat.icon
           const isActive = selectedCategory === cat.id
@@ -355,87 +355,115 @@ export function LogTab() {
             <button
               key={cat.id}
               onClick={() => setSelectedCategory(cat.id)}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-full shrink-0 text-[12px] font-medium transition-all ${
+              className={`relative flex items-center gap-2 px-4 py-2.5 rounded-full shrink-0 text-[12px] font-medium transition-all ${
                 isActive
-                  ? 'bg-[#d5e0eb] text-[#253b54] shadow-sm'
-                  : 'bg-surface-raised/70 text-text-muted hover:text-text-primary border border-border/60 hover:bg-surface-raised'
+                  ? 'text-white font-semibold shadow-md'
+                  : 'bg-surface-raised/70 text-text-muted hover:text-text-primary border border-border/70 hover:bg-surface-raised'
               }`}
             >
-              <Icon size={14} className={isActive ? 'text-[#253b54]' : 'text-text-muted'} />
-              <span>{cat.label.toLowerCase()}</span>
+              {isActive && (
+                <motion.div
+                  layoutId="activeLogCategoryPill"
+                  className={`absolute inset-0 rounded-full ${
+                    cat.id === 'transport' ? 'bg-[#2563eb]' :
+                    cat.id === 'food' ? 'bg-[#059669]' :
+                    cat.id === 'energy' ? 'bg-[#d97706]' :
+                    cat.id === 'water' ? 'bg-[#0284c7]' : 'bg-[#475569]'
+                  }`}
+                  transition={{ type: 'spring', stiffness: 500, damping: 35 }}
+                />
+              )}
+              <span className="relative z-10 flex items-center gap-2">
+                <Icon size={14} className={isActive ? 'text-white' : 'text-text-muted'} />
+                <span>{cat.label.toLowerCase()}</span>
+              </span>
             </button>
           )
         })}
       </div>
 
-      <div className={`gallery-card p-5 mb-5 rounded-[28px] border transition-all ${
-        photoError && !pendingImage
-          ? 'border-red-400/40 bg-red-400/[0.03]'
-          : 'border-border/80 bg-surface-raised/60'
-      }`}>
+      <motion.div
+        layout
+        className={`expressive-card ${activeCategory.gradientClass} p-6 md:p-8 mb-6 rounded-[34px] shadow-xl text-white relative transition-all duration-300`}
+      >
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <span className="px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-white font-body text-[11px] font-medium border border-white/20">
+              verification proof
+            </span>
+          </div>
+          {pendingImage && (
+            <span className="font-body text-[11px] text-white/90 bg-white/15 backdrop-blur-md px-3 py-0.5 rounded-full">
+              photo ready
+            </span>
+          )}
+        </div>
+
         {pendingImage ? (
-          <div className="relative rounded-2xl overflow-hidden border border-border flex justify-center bg-surface-overlay/20 mb-3">
-            <img src={pendingImage} alt="Verification proof" className="max-h-72 object-contain" />
+          <div className="relative rounded-2xl overflow-hidden border border-white/25 flex justify-center bg-black/30 mb-4">
+            <img src={pendingImage} alt="Proof" className="max-h-72 object-contain" />
             <button
               onClick={() => { setPendingImage(null); setPhotoError(false); setVerifyError(null) }}
-              className="absolute top-3 right-3 w-7 h-7 rounded-full bg-surface/80 backdrop-blur-sm border border-border flex items-center justify-center text-text-primary hover:bg-surface transition-colors"
+              className="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/60 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-black/80 transition-colors"
             >
-              <X size={14} />
+              <X size={15} />
             </button>
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center py-7 px-4 text-center">
-            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-3 ${photoError ? 'bg-red-400/10 text-red-400' : 'bg-surface-overlay text-text-muted'}`}>
-              <Camera size={22} strokeWidth={1.8} />
+          <div className="flex flex-col items-center justify-center py-6 px-4 text-center">
+            <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center mb-3 text-white">
+              <Camera size={26} strokeWidth={1.8} />
             </div>
-            <p className={`font-body text-[13px] font-medium ${photoError ? 'text-red-400' : 'text-text-primary'}`}>
-              verification photo required
+            <p className="font-display text-[18px] text-white leading-tight">
+              photo evidence required
             </p>
-            <p className="font-body text-[11px] text-text-muted mt-1 max-w-[260px]">
-              snap or attach proof to confirm your impact with the community.
+            <p className="font-body text-[12px] text-white/85 mt-1.5 max-w-[280px] leading-relaxed">
+              snap your reusable cup, metro card, solar inverter, or plant meal to auto-verify points.
             </p>
             {photoError && (
-              <div className="flex items-center gap-1.5 mt-2.5 px-3 py-1 rounded-full bg-red-400/10 text-red-400">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="flex items-center gap-1.5 mt-3 px-3.5 py-1 rounded-full bg-red-500/30 border border-red-300/40 text-white font-body text-[11px]"
+              >
                 <AlertTriangle size={12} />
-                <span className="font-body text-[11px]">please attach a photo before logging</span>
-              </div>
+                <span>please attach or snap a photo first</span>
+              </motion.div>
             )}
           </div>
         )}
 
         <button
           onClick={pendingImage ? handleAutoLog : handleImagePick}
-          className="gallery-primary w-full flex items-center justify-center gap-2.5 py-3 transition-all"
+          className="w-full py-4 rounded-full bg-white text-[#152e28] font-body text-[13px] font-semibold shadow-lg hover:bg-white/95 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
         >
-          <Camera size={15} />
-          <span className="font-body text-[12px] font-medium">
-            {pendingImage ? 'auto-verify & log action' : 'take or upload photo'}
-          </span>
+          <Camera size={16} />
+          <span>{pendingImage ? 'auto-verify with gemini ai' : 'take or upload photo'}</span>
         </button>
-      </div>
+      </motion.div>
 
       {verifyError && (
         <motion.div
-          initial={{ opacity: 0, y: -6 }}
+          initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex items-start gap-2.5 mb-5 p-3.5 rounded-2xl border border-red-400/25 bg-red-400/[0.05]"
+          className="flex items-start gap-3 mb-6 p-4 rounded-2xl border border-red-400/30 bg-red-400/10 text-text-primary"
         >
-          <ShieldX size={16} className="text-red-400 shrink-0 mt-0.5" />
+          <ShieldX size={18} className="text-red-400 shrink-0 mt-0.5" />
           <div>
-            <p className="font-body text-[12px] font-medium text-red-400">verification notice</p>
-            <p className="font-body text-[11px] text-text-muted mt-0.5 leading-relaxed">{verifyError}</p>
+            <p className="font-body text-[13px] font-semibold text-red-400">verification note</p>
+            <p className="font-body text-[12px] text-text-secondary mt-0.5 leading-relaxed">{verifyError}</p>
           </div>
         </motion.div>
       )}
 
       {pendingImage && verifying && (
         <motion.div
-          initial={{ opacity: 0, y: -6 }}
+          initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex items-center gap-3 mb-5 p-3.5 rounded-2xl border border-dune-400/25 bg-dune-400/[0.05]"
+          className="flex items-center gap-3 mb-6 p-4 rounded-2xl border border-oasis-400/30 bg-oasis-400/10"
         >
-          <div className="w-4 h-4 border-2 border-dune-400 border-t-transparent rounded-full animate-spin shrink-0" />
-          <p className="font-body text-[12px] text-dune-400">verifying photo with AI...</p>
+          <div className="w-5 h-5 border-2 border-oasis-400 border-t-transparent rounded-full animate-spin shrink-0" />
+          <p className="font-body text-[13px] text-text-primary font-medium">analyzing sustainability proof with AI...</p>
         </motion.div>
       )}
 
@@ -448,52 +476,60 @@ export function LogTab() {
         className="hidden"
       />
 
+      <div className="mb-3 flex items-center justify-between">
+        <p className="gallery-label text-text-muted">actions · {activeCategory.label.toLowerCase()}</p>
+        <span className="font-body text-[11px] text-text-muted">tap action to log</span>
+      </div>
+
       <AnimatePresence mode="wait">
         <motion.div
           key={selectedCategory}
-          initial={{ opacity: 0, x: 8 }}
+          initial={{ opacity: 0, x: 10 }}
           animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -8 }}
-          transition={{ duration: 0.2 }}
+          exit={{ opacity: 0, x: -10 }}
+          transition={{ duration: 0.22, ease: "easeOut" }}
           className="space-y-3"
         >
-          {activeCategory.actions.map((action, i) => {
+          {activeCategory.actions.map((action) => {
             const isLogged = loggedActions.has(action.id)
             const isJust = justLogged === action.id
             const isLoading = logging === action.id
             const hasPhoto = !!pendingImage
+
             return (
               <motion.button
                 key={action.id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.05 }}
+                layout
+                whileHover={{ scale: 1.012, y: -1 }}
+                whileTap={{ scale: 0.988 }}
+                transition={{ type: 'spring', stiffness: 450, damping: 28 }}
                 onClick={() => handleLog(action)}
                 disabled={isLogged || isLoading || verifying || !hasPhoto}
-                className={`w-full flex items-center gap-3.5 p-4 rounded-[22px] border transition-all duration-200 text-left relative overflow-hidden ${
+                className={`w-full flex items-center gap-4 p-4 rounded-[26px] border transition-all duration-200 text-left relative overflow-hidden group ${
                   isLogged
-                    ? 'bg-oasis-500/10 border-oasis-500/25'
+                    ? 'bg-oasis-500/15 border-oasis-500/35 shadow-sm'
                     : !hasPhoto || verifying
                       ? 'bg-surface-raised/40 border-border/60 opacity-60 cursor-not-allowed'
-                      : 'bg-surface-raised/80 border-border hover:border-border-active hover:bg-surface-overlay active:scale-[0.99]'
+                      : 'bg-surface-raised/80 border-border hover:border-border-active hover:bg-surface-overlay hover:shadow-md cursor-pointer'
                 }`}
               >
-                <div className={`shrink-0 flex items-center justify-center w-10 h-10 rounded-2xl ${
+                <div className={`shrink-0 flex items-center justify-center w-11 h-11 rounded-2xl transition-transform group-hover:scale-105 ${
                   isLogged
-                    ? 'bg-oasis-400/20 text-oasis-400'
+                    ? 'bg-oasis-400 text-surface'
                     : hasPhoto && !verifying
-                      ? 'bg-surface-overlay text-text-primary'
+                      ? 'bg-surface-overlay text-text-primary border border-border'
                       : 'bg-surface-overlay/50 text-text-muted'
                 }`}>
-                  <action.Icon size={18} strokeWidth={1.8} />
+                  <action.Icon size={19} strokeWidth={1.9} />
                 </div>
+
                 <div className="flex-1 min-w-0">
-                  <p className={`font-body text-[13px] font-medium leading-snug ${
-                    isLogged ? 'text-oasis-400' : hasPhoto && !verifying ? 'text-text-primary' : 'text-text-muted'
+                  <p className={`font-display text-[14px] leading-snug ${
+                    isLogged ? 'text-oasis-400 font-semibold' : hasPhoto && !verifying ? 'text-text-primary' : 'text-text-muted'
                   }`}>
                     {action.label.toLowerCase()}
                   </p>
-                  <div className="flex items-center gap-2 mt-0.5">
+                  <div className="flex items-center gap-2 mt-1">
                     {action.co2 > 0 && (
                       <span className="font-body text-[11px] text-text-muted">{action.co2} kg CO₂</span>
                     )}
@@ -502,18 +538,22 @@ export function LogTab() {
                     )}
                   </div>
                 </div>
-                <div className="flex items-center gap-2.5 shrink-0">
-                  <span className={`font-mono text-[11px] font-medium px-2.5 py-1 rounded-full ${
-                    isLogged ? 'bg-oasis-400/15 text-oasis-400' : 'bg-surface-overlay text-text-muted'
+
+                <div className="flex items-center gap-3 shrink-0">
+                  <span className={`font-mono text-[12px] font-semibold px-3 py-1 rounded-full ${
+                    isLogged
+                      ? 'bg-oasis-400/20 text-oasis-400 border border-oasis-400/30'
+                      : 'bg-surface-overlay text-text-muted border border-border'
                   }`}>
                     +{action.points} pts
                   </span>
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${
+
+                  <div className={`w-9 h-9 rounded-full flex items-center justify-center transition-all ${
                     isLogged
-                      ? 'bg-oasis-400 text-surface'
+                      ? 'bg-oasis-400 text-surface shadow-sm'
                       : isLoading
                         ? 'bg-surface-overlay'
-                        : 'bg-surface-overlay border border-border text-text-muted'
+                        : 'bg-surface-overlay border border-border text-text-muted group-hover:border-text-muted'
                   }`}>
                     <AnimatePresence mode="wait">
                       {isLoading ? (
@@ -521,29 +561,30 @@ export function LogTab() {
                           key="loading"
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
-                          className="w-3.5 h-3.5 border-2 border-oasis-400 border-t-transparent rounded-full animate-spin"
+                          className="w-4 h-4 border-2 border-oasis-400 border-t-transparent rounded-full animate-spin"
                         />
                       ) : isLogged ? (
                         <motion.div
                           key="check"
-                          initial={{ scale: 0 }}
-                          animate={{ scale: 1 }}
+                          initial={{ scale: 0, rotate: -20 }}
+                          animate={{ scale: 1, rotate: 0 }}
                           transition={{ type: 'spring', stiffness: 500, damping: 25 }}
                         >
-                          <Check size={14} strokeWidth={2.8} />
+                          <Check size={16} strokeWidth={3} />
                         </motion.div>
                       ) : (
-                        <Plus size={14} />
+                        <Plus size={15} />
                       )}
                     </AnimatePresence>
                   </div>
                 </div>
+
                 {isJust && (
                   <motion.div
-                    initial={{ scale: 0.8, opacity: 1 }}
-                    animate={{ scale: 2.2, opacity: 0 }}
+                    initial={{ scale: 0.85, opacity: 0.8 }}
+                    animate={{ scale: 2, opacity: 0 }}
                     transition={{ duration: 0.6 }}
-                    className="absolute inset-0 rounded-[22px] border-2 border-oasis-400 pointer-events-none"
+                    className="absolute inset-0 rounded-[26px] border-2 border-oasis-400 pointer-events-none"
                   />
                 )}
               </motion.button>

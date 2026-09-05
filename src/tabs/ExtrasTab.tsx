@@ -80,23 +80,23 @@ export function ExtrasTab() {
         ))}
       </div>
 
-      <div className="gallery-card p-6 md:p-8 rounded-[28px] border border-border text-center">
-        <div className="w-12 h-12 rounded-2xl bg-surface-overlay flex items-center justify-center mx-auto mb-3 text-red-400">
-          <Heart size={22} className="fill-red-400/20" />
+      <div className="expressive-card forest-card p-6 md:p-8 rounded-[30px] text-white shadow-xl text-center">
+        <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center mx-auto mb-3 text-white border border-white/20">
+          <Heart size={22} className="fill-white/30" />
         </div>
-        <h3 className="font-display text-[18px] text-text-primary leading-tight">restoring native habitats</h3>
-        <p className="font-body text-[12px] text-text-secondary mt-2 mb-6 max-w-sm mx-auto">
+        <h3 className="font-display text-[20px] text-white font-semibold leading-tight">restoring native habitats</h3>
+        <p className="font-body text-[13px] text-white/90 mt-2 mb-6 max-w-sm mx-auto">
           every action logged directly contributes to our verified coastal mangrove and reforestation milestones.
         </p>
         <div className="flex items-center justify-center gap-8">
           <div className="text-center">
-            <p className="font-display text-[22px] text-oasis-400 leading-none">12.4k</p>
-            <p className="font-body text-[11px] text-text-muted mt-1">trees planted</p>
+            <p className="font-display text-[24px] font-bold text-white leading-none">12.4k</p>
+            <p className="font-body text-[11px] text-white/80 mt-1">trees planted</p>
           </div>
-          <div className="w-px h-8 bg-border" />
+          <div className="w-px h-8 bg-white/25" />
           <div className="text-center">
-            <p className="font-display text-[22px] text-gulf-400 leading-none">38.2 tons</p>
-            <p className="font-body text-[11px] text-text-muted mt-1">carbon locked</p>
+            <p className="font-display text-[24px] font-bold text-white leading-none">38.2 tons</p>
+            <p className="font-body text-[11px] text-white/80 mt-1">carbon locked</p>
           </div>
         </div>
       </div>

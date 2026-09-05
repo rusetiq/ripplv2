@@ -16,26 +16,26 @@ export function CorporateTab() {
         <p className="mt-1 text-[13px] text-text-muted">enterprise-grade sustainability tracking and scope 3 accounting.</p>
       </div>
 
-      <div className="gallery-card rounded-[28px] border border-border overflow-hidden mb-6">
+      <div className="expressive-card sapphire-card rounded-[30px] overflow-hidden mb-6 text-white shadow-xl">
         <div className="p-6 md:p-8">
-          <div className="w-12 h-12 rounded-2xl bg-surface-overlay flex items-center justify-center text-gulf-400 mb-4">
+          <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-white mb-4 border border-white/20">
             <Building2 size={24} strokeWidth={1.8} />
           </div>
-          <h3 className="font-display text-[22px] text-text-primary leading-tight">empower your workforce</h3>
-          <p className="font-body text-[13px] text-text-secondary mt-2.5 leading-relaxed">
+          <h3 className="font-display text-[24px] text-white font-semibold leading-tight">empower your workforce</h3>
+          <p className="font-body text-[13px] text-white/90 mt-2.5 leading-relaxed">
             rippl for enterprise transforms everyday employee habits into verified, audit-ready ESG data points aligned with GHG Protocol, GRI, and TCFD standards.
           </p>
         </div>
-        <div className="p-6 grid grid-cols-2 gap-4 border-t border-border bg-surface-raised/40">
+        <div className="p-6 grid grid-cols-2 gap-4 border-t border-white/15 bg-black/15 backdrop-blur-xs">
           <div>
-            <p className="gallery-label text-text-muted">collective reduction</p>
-            <p className="font-display text-[20px] text-text-primary mt-1">12.4 tons</p>
-            <p className="font-body text-[11px] text-oasis-400 mt-0.5">up 14% this quarter</p>
+            <p className="gallery-label text-white/70">collective reduction</p>
+            <p className="font-display text-[22px] font-bold text-white mt-1">12.4 tons</p>
+            <p className="font-body text-[11px] text-emerald-300 mt-0.5">up 14% this quarter</p>
           </div>
           <div>
-            <p className="gallery-label text-text-muted">team participation</p>
-            <p className="font-display text-[20px] text-text-primary mt-1">84%</p>
-            <p className="font-body text-[11px] text-oasis-400 mt-0.5">verified active staff</p>
+            <p className="gallery-label text-white/70">team participation</p>
+            <p className="font-display text-[22px] font-bold text-white mt-1">84%</p>
+            <p className="font-body text-[11px] text-emerald-300 mt-0.5">verified active staff</p>
           </div>
         </div>
       </div>

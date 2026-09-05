@@ -50,6 +50,7 @@ export function RankTab() {
   }, [user])
 
   const podium = [players[1], players[0], players[2]].filter(Boolean)
+  const myPlayer = players.find(p => p.isUser)
 
   return (
     <motion.div
@@ -58,7 +59,7 @@ export function RankTab() {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.2 }}
-      className="px-4 pb-8 md:px-0"
+      className="px-4 pb-14 md:px-0"
     >
       <div className="mb-5 pt-1">
         <p className="gallery-label mb-1.5 text-text-muted">collective progress</p>
@@ -88,30 +89,48 @@ export function RankTab() {
       </div>
 
       {!user ? (
-        <div className="gallery-card p-10 flex flex-col items-center justify-center text-center rounded-[30px] border border-border">
-          <div className="w-14 h-14 rounded-2xl bg-surface-overlay flex items-center justify-center mb-4 text-text-muted">
+        <div className="expressive-card aurora-card p-10 flex flex-col items-center justify-center text-center rounded-[34px] shadow-xl text-white">
+          <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center mb-4 text-white">
             <LogIn size={26} strokeWidth={1.8} />
           </div>
-          <p className="font-display text-[18px] text-text-primary mb-1">sign in to view your rank</p>
-          <p className="font-body text-[13px] text-text-muted mb-6 max-w-[280px]">
+          <p className="font-display text-[22px] text-white mb-2">sign in to view your rank</p>
+          <p className="font-body text-[13px] text-white/90 mb-6 max-w-[280px] leading-relaxed">
             join your friends and community members climbing the impact leaderboard.
           </p>
           <button
             onClick={() => setShowSignIn(true)}
-            className="gallery-primary inline-flex items-center gap-2.5 px-6 py-3 transition-all"
+            className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-full bg-white text-[#064e3b] font-body text-[13px] font-semibold shadow-md hover:bg-white/95 active:scale-95 transition-all"
           >
             <svg viewBox="0 0 24 24" className="w-4 h-4"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-            <span className="font-body text-[13px] font-medium">continue with google</span>
+            <span>continue with google</span>
           </button>
         </div>
       ) : !loaded ? (
-        <div className="space-y-2.5">
+        <div className="space-y-3">
           {Array.from({ length: 4 }).map((_, i) => <SkeletonRow key={i} />)}
         </div>
       ) : (
         <>
+          {myPlayer && (
+            <div className="expressive-card sapphire-card p-5 rounded-[28px] mb-7 shadow-lg flex items-center justify-between text-white">
+              <div className="flex items-center gap-3.5">
+                <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md border border-white/25 flex items-center justify-center font-display text-[16px] font-bold text-white">
+                  {myPlayer.avatar}
+                </div>
+                <div>
+                  <span className="font-body text-[11px] text-white/80 uppercase tracking-wider">your standing</span>
+                  <h3 className="font-display text-[18px] text-white leading-tight">rank #{myPlayer.rank} overall</h3>
+                </div>
+              </div>
+              <div className="text-right">
+                <span className="font-display text-[20px] font-bold text-white">{myPlayer.points.toLocaleString()}</span>
+                <span className="block font-body text-[11px] text-white/80">points</span>
+              </div>
+            </div>
+          )}
+
           {podium.length >= 3 && (
-            <div className="grid grid-cols-3 gap-3 items-end mb-8 pt-4 max-w-lg mx-auto">
+            <div className="grid grid-cols-3 gap-3 items-end mb-8 pt-2 max-w-lg mx-auto">
               <motion.div
                 initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -119,12 +138,12 @@ export function RankTab() {
                 className="flex flex-col items-center"
               >
                 <div className="relative mb-2">
-                  <div className={`w-14 h-14 rounded-2xl flex items-center justify-center border font-display text-[15px] ${
-                    podium[0].isUser ? 'border-oasis-400 bg-oasis-400/15 text-oasis-400' : 'border-border bg-surface-raised text-text-primary'
+                  <div className={`w-14 h-14 rounded-2xl flex items-center justify-center border font-display text-[15px] shadow-sm ${
+                    podium[0].isUser ? 'border-oasis-400 bg-oasis-400/20 text-oasis-400' : 'border-border bg-surface-raised text-text-primary'
                   }`}>
                     {podium[0].avatar}
                   </div>
-                  <span className="absolute -bottom-1.5 -right-1.5 w-5 h-5 rounded-full bg-surface border border-border flex items-center justify-center font-mono text-[10px] text-text-muted">
+                  <span className="absolute -bottom-1.5 -right-1.5 w-5 h-5 rounded-full bg-surface border border-border flex items-center justify-center font-mono text-[10px] text-text-muted shadow-xs">
                     2
                   </span>
                 </div>
@@ -134,8 +153,8 @@ export function RankTab() {
                 <p className="font-mono text-[10px] text-text-muted mb-2">
                   {podium[0].points.toLocaleString()} pts
                 </p>
-                <div className="h-20 w-full rounded-t-[20px] bg-surface-raised border-t border-x border-border flex items-center justify-center">
-                  <span className="font-mono text-[11px] text-text-muted">silver</span>
+                <div className="expressive-card twilight-card h-24 w-full rounded-t-[22px] flex items-center justify-center shadow-md">
+                  <span className="font-body text-[11px] text-white/90 font-medium">silver</span>
                 </div>
               </motion.div>
 
@@ -146,23 +165,24 @@ export function RankTab() {
                 className="flex flex-col items-center -mt-4 z-10"
               >
                 <div className="relative mb-2">
-                  <div className={`w-18 h-18 rounded-[22px] flex items-center justify-center border-2 font-display text-[18px] shadow-lg ${
-                    podium[1].isUser ? 'border-oasis-400 bg-oasis-400/20 text-oasis-400' : 'border-dune-400/50 bg-dune-400/10 text-text-primary'
+                  <div className={`w-18 h-18 rounded-[24px] flex items-center justify-center border-2 font-display text-[19px] shadow-xl ${
+                    podium[1].isUser ? 'border-white bg-white/25 text-white' : 'border-amber-300/80 bg-amber-400/15 text-text-primary'
                   }`}>
                     {podium[1].avatar}
                   </div>
-                  <span className="absolute -bottom-2 -right-1.5 px-2 py-0.5 rounded-full bg-dune-400 text-surface flex items-center justify-center font-mono text-[10px] font-bold shadow-sm">
+                  <span className="absolute -bottom-2 -right-1.5 px-2.5 py-0.5 rounded-full bg-amber-500 text-white flex items-center justify-center font-mono text-[10px] font-bold shadow-md border border-white/40">
                     1st
                   </span>
                 </div>
                 <p className="font-display text-[14px] font-semibold text-text-primary truncate max-w-[100px] text-center">
                   {podium[1].name.split(' ')[0]}
                 </p>
-                <p className="font-mono text-[11px] text-oasis-400 font-medium mb-2">
+                <p className="font-mono text-[11px] text-amber-500 font-bold mb-2">
                   {podium[1].points.toLocaleString()} pts
                 </p>
-                <div className="h-28 w-full rounded-t-[24px] bg-surface-overlay/80 border-t border-x border-border flex items-center justify-center shadow-sm">
-                  <Trophy size={18} className="text-dune-400" />
+                <div className="expressive-card gold-card h-32 w-full rounded-t-[26px] flex flex-col items-center justify-center gap-1 shadow-xl">
+                  <Trophy size={20} className="text-white drop-shadow-sm" />
+                  <span className="font-body text-[11px] text-white font-semibold">champion</span>
                 </div>
               </motion.div>
 
@@ -173,12 +193,12 @@ export function RankTab() {
                 className="flex flex-col items-center"
               >
                 <div className="relative mb-2">
-                  <div className={`w-14 h-14 rounded-2xl flex items-center justify-center border font-display text-[15px] ${
-                    podium[2].isUser ? 'border-oasis-400 bg-oasis-400/15 text-oasis-400' : 'border-border bg-surface-raised text-text-primary'
+                  <div className={`w-14 h-14 rounded-2xl flex items-center justify-center border font-display text-[15px] shadow-sm ${
+                    podium[2].isUser ? 'border-oasis-400 bg-oasis-400/20 text-oasis-400' : 'border-border bg-surface-raised text-text-primary'
                   }`}>
                     {podium[2].avatar}
                   </div>
-                  <span className="absolute -bottom-1.5 -right-1.5 w-5 h-5 rounded-full bg-surface border border-border flex items-center justify-center font-mono text-[10px] text-text-muted">
+                  <span className="absolute -bottom-1.5 -right-1.5 w-5 h-5 rounded-full bg-surface border border-border flex items-center justify-center font-mono text-[10px] text-text-muted shadow-xs">
                     3
                   </span>
                 </div>
@@ -188,8 +208,8 @@ export function RankTab() {
                 <p className="font-mono text-[10px] text-text-muted mb-2">
                   {podium[2].points.toLocaleString()} pts
                 </p>
-                <div className="h-16 w-full rounded-t-[20px] bg-surface-raised border-t border-x border-border flex items-center justify-center">
-                  <span className="font-mono text-[11px] text-text-muted">bronze</span>
+                <div className="expressive-card solar-card h-20 w-full rounded-t-[22px] flex items-center justify-center shadow-md">
+                  <span className="font-body text-[11px] text-white/90 font-medium">bronze</span>
                 </div>
               </motion.div>
             </div>
@@ -203,21 +223,21 @@ export function RankTab() {
                 animate={{ opacity: 1, y: 0 }}
                 className={`flex items-center gap-3.5 p-3.5 rounded-[22px] border transition-all ${
                   player.isUser
-                    ? 'bg-oasis-500/10 border-oasis-500/30 shadow-sm'
+                    ? 'bg-oasis-500/15 border-oasis-500/35 shadow-sm'
                     : 'bg-surface-raised/70 border-border/70 hover:bg-surface-raised'
                 }`}
               >
-                <span className="font-mono text-[12px] text-text-muted w-6 text-center">
+                <span className="font-mono text-[12px] text-text-muted w-6 text-center font-medium">
                   {player.rank}
                 </span>
                 <div className={`w-10 h-10 rounded-2xl flex items-center justify-center font-display text-[12px] ${
-                  player.isUser ? 'bg-oasis-400 text-surface' : 'bg-surface-overlay text-text-primary border border-border'
+                  player.isUser ? 'bg-oasis-400 text-surface font-bold' : 'bg-surface-overlay text-text-primary border border-border'
                 }`}>
                   {player.avatar}
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="font-display text-[13px] text-text-primary truncate">
-                    {player.name} {player.isUser && <span className="font-body text-[10px] text-oasis-400 ml-1">(you)</span>}
+                    {player.name} {player.isUser && <span className="font-body text-[11px] text-oasis-400 ml-1">(you)</span>}
                   </p>
                   <p className="font-body text-[11px] text-text-muted">
                     {player.points.toLocaleString()} community points

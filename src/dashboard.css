@@ -254,3 +254,67 @@ html:not(.light-mode) .dashboard-shell .mobile-glass-nav .text-text-muted { colo
 .dashboard-shell .water-card .impact-card-value .dot-number,
 .dashboard-shell .water-card .impact-card-value > span { color: #ffffff; }
 .water-card .impact-card-dots { background-image: radial-gradient(circle, #d5efff 1.25px, transparent 1.7px); }
+
+.app-gallery .expressive-card {
+  position: relative;
+  border-radius: 34px;
+  overflow: hidden;
+  border: none;
+  color: #ffffff;
+  isolation: isolate;
+  transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 220ms ease-out;
+}
+.app-gallery .expressive-card:hover {
+  transform: translateY(-2px);
+}
+.app-gallery .expressive-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  box-shadow: inset 0 1.5px 0 rgba(255, 255, 255, 0.4), inset 0 -1.5px 0 rgba(0, 0, 0, 0.2);
+  pointer-events: none;
+}
+.app-gallery .aurora-card {
+  background:
+    radial-gradient(ellipse 75% 30% at 50% 90%, #0369a1 0%, #0284c7 35%, transparent 100%),
+    linear-gradient(165deg, #a7f3d0 0%, #34d399 20%, #10b981 45%, #06b6d4 70%, #0284c7 100%);
+}
+.app-gallery .solar-card {
+  background:
+    radial-gradient(ellipse 75% 30% at 50% 90%, #047857 0%, #059669 35%, transparent 100%),
+    linear-gradient(165deg, #fef3c7 0%, #fde68a 15%, #f59e0b 38%, #d97706 60%, #10b981 85%, #047857 100%);
+}
+.app-gallery .twilight-card {
+  background:
+    radial-gradient(ellipse 75% 30% at 50% 90%, #09151e 0%, #112634 40%, transparent 100%),
+    linear-gradient(165deg, #476274 0%, #2b4554 30%, #1c313d 65%, #0f1d25 100%);
+}
+.app-gallery .sapphire-card {
+  background:
+    radial-gradient(ellipse 75% 30% at 50% 90%, #1e1b4b 0%, #312e81 40%, transparent 100%),
+    linear-gradient(165deg, #93c5fd 0%, #60a5fa 22%, #2563eb 50%, #1d4ed8 75%, #312e81 100%);
+}
+.app-gallery .gold-card {
+  background:
+    radial-gradient(ellipse 75% 30% at 50% 90%, #78350f 0%, #92400e 40%, transparent 100%),
+    linear-gradient(165deg, #fef08a 0%, #fde047 20%, #eab308 48%, #ca8a04 75%, #854d0e 100%);
+}
+.app-gallery .forest-card {
+  background:
+    radial-gradient(ellipse 75% 30% at 50% 90%, #064e3b 0%, #047857 40%, transparent 100%),
+    linear-gradient(165deg, #dcfce7 0%, #86efac 18%, #22c55e 45%, #15803d 72%, #064e3b 100%);
+}
+.app-gallery .expressive-card h1,
+.app-gallery .expressive-card h2,
+.app-gallery .expressive-card h3,
+.app-gallery .expressive-card h4,
+.app-gallery .expressive-card p,
+.app-gallery .expressive-card span,
+.app-gallery .expressive-card .dot-number {
+  color: #ffffff;
+}
+.app-gallery .expressive-card .dot-number {
+  fill: #ffffff;
+}
