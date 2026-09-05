@@ -62,7 +62,7 @@ export function PricingTab() {
           <div className="mb-6">
             <p className="font-body text-[12px] text-white/80 uppercase tracking-wider">rippl supporter</p>
             <div className="flex items-baseline gap-2 mt-1">
-              <span className="font-display text-[54px] font-bold text-white leading-none">55</span>
+              <span className="font-display text-[54px] font-bold text-white leading-none">20</span>
               <div className="flex flex-col leading-tight">
                 <span className="font-display text-[18px] font-semibold text-white">AED</span>
                 <span className="font-body text-[11px] text-white/80">/ month</span>
@@ -73,7 +73,7 @@ export function PricingTab() {
             </p>
             <div className="mt-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-[11px] text-white">
               <Sparkles size={12} />
-              <span>or 550 AED / year (save 2 months free)</span>
+              <span>or 200 AED / year (save 2 months free)</span>
             </div>
           </div>
 
@@ -89,7 +89,7 @@ export function PricingTab() {
           </div>
 
           <button className="w-full py-4 rounded-full bg-white text-[#055c4d] font-body text-[14px] font-semibold shadow-lg hover:bg-white/95 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
-            <span>subscribe for 55 aed</span>
+            <span>subscribe for 20 aed</span>
             <ArrowRight size={15} />
           </button>
           <p className="font-body text-[11px] text-white/80 text-center mt-3">
