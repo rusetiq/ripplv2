@@ -65,7 +65,7 @@ export default function LandingPage() {
                 <a href="#community-proof" onClick={e => e.currentTarget.closest('details')?.removeAttribute('open')}>Community proof</a>
                 <a href="#pricing" onClick={e => e.currentTarget.closest('details')?.removeAttribute('open')}>Pricing</a>
                 <a href="#questions" onClick={e => e.currentTarget.closest('details')?.removeAttribute('open')}>FAQs</a>
-                <a href="/app" className="font-semibold text-emerald-600">Open app</a>
+                <a href="/app" className="font-semibold text-blue-600">Open app</a>
               </nav>
             </details>
           </div>

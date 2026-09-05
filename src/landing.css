@@ -388,37 +388,37 @@
 .rippl-landing .aurora-card {
   background:
     radial-gradient(ellipse 75% 30% at 50% 90%, #0369a1 0%, #0284c7 35%, transparent 100%),
-    linear-gradient(165deg, #a7f3d0 0%, #34d399 20%, #10b981 45%, #06b6d4 70%, #0284c7 100%);
+    linear-gradient(165deg, #7dd3fc 0%, #38bdf8 22%, #0284c7 48%, #0369a1 72%, #075985 100%);
 }
 
 .rippl-landing .solar-card {
   background:
-    radial-gradient(ellipse 75% 30% at 50% 90%, #047857 0%, #059669 35%, transparent 100%),
-    linear-gradient(165deg, #fef3c7 0%, #fde68a 15%, #f59e0b 38%, #d97706 60%, #10b981 85%, #047857 100%);
+    radial-gradient(ellipse 75% 30% at 50% 90%, #1d4ed8 0%, #2563eb 35%, transparent 100%),
+    linear-gradient(165deg, #bfdbfe 0%, #93c5fd 20%, #3b82f6 45%, #2563eb 72%, #1d4ed8 100%);
 }
 
 .rippl-landing .sapphire-card {
   background:
-    radial-gradient(ellipse 75% 30% at 50% 90%, #1e1b4b 0%, #312e81 40%, transparent 100%),
-    linear-gradient(165deg, #93c5fd 0%, #60a5fa 22%, #2563eb 50%, #1d4ed8 75%, #312e81 100%);
+    radial-gradient(ellipse 75% 30% at 50% 90%, #172554 0%, #1e3a8a 40%, transparent 100%),
+    linear-gradient(165deg, #60a5fa 0%, #3b82f6 25%, #1d4ed8 50%, #1e40af 75%, #172554 100%);
 }
 
 .rippl-landing .twilight-card {
   background:
-    radial-gradient(ellipse 75% 35% at 50% 90%, #0f172a 0%, #1e293b 40%, transparent 100%),
-    linear-gradient(165deg, #475569 0%, #334155 30%, #1e293b 65%, #0f172a 100%);
+    radial-gradient(ellipse 75% 35% at 50% 90%, #020617 0%, #0f172a 45%, transparent 100%),
+    linear-gradient(165deg, #1e3a8a 0%, #172554 30%, #1e293b 65%, #0f172a 100%);
 }
 
 .rippl-landing .silver-card {
   background:
-    radial-gradient(ellipse 75% 35% at 50% 90%, #1e293b 0%, #0f172a 40%, transparent 100%),
-    linear-gradient(165deg, #64748b 0%, #475569 30%, #334155 65%, #1e293b 100%);
+    radial-gradient(ellipse 75% 35% at 50% 90%, #082f49 0%, #0c4a6e 40%, transparent 100%),
+    linear-gradient(165deg, #93c5fd 0%, #38bdf8 30%, #0284c7 65%, #075985 100%);
 }
 
 .rippl-landing .forest-card {
   background:
-    radial-gradient(ellipse 75% 30% at 50% 90%, #064e3b 0%, #047857 40%, transparent 100%),
-    linear-gradient(165deg, #dcfce7 0%, #86efac 18%, #22c55e 45%, #15803d 72%, #064e3b 100%);
+    radial-gradient(ellipse 75% 30% at 50% 90%, #0c4a6e 0%, #075985 40%, transparent 100%),
+    linear-gradient(165deg, #38bdf8 0%, #0284c7 25%, #0369a1 52%, #1e40af 78%, #0f172a 100%);
 }
 
 .landing-section {
