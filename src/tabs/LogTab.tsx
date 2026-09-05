@@ -134,24 +134,27 @@ export function LogTab() {
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.2 }}
-        className="px-4 pb-4"
+        className="px-4 pb-4 md:px-0"
       >
-        <div className="mb-4 pt-1">
-          <h2 className="font-display text-[13px] tracking-[0.2em] text-text-primary">LOG ACTION</h2>
-          <p className="font-mono text-[10px] text-text-muted mt-0.5">track your daily impact</p>
+        <div className="mb-5 pt-1">
+          <p className="gallery-label mb-1.5 text-text-muted">new entry</p>
+          <h2 className="font-display text-[26px] leading-tight text-text-primary">log an action</h2>
+          <p className="mt-1 text-[13px] text-text-muted">track everyday wins for personal impact</p>
         </div>
-        <div className="flex flex-col items-center justify-center py-20 text-center">
-          <LogIn size={32} className="text-text-muted mb-4" />
-          <p className="font-body text-[14px] text-text-primary mb-2">Sign in to log actions</p>
-          <p className="font-mono text-[10px] text-text-muted mb-6 max-w-[240px]">
-            Track your eco-friendly habits and earn points toward Net Zero 2050.
+        <div className="gallery-card flex flex-col items-center justify-center p-12 text-center rounded-[30px] border border-border">
+          <div className="w-14 h-14 rounded-2xl bg-surface-overlay flex items-center justify-center mb-4 text-text-muted">
+            <LogIn size={26} strokeWidth={1.8} />
+          </div>
+          <p className="font-display text-[18px] text-text-primary mb-1">sign in to record actions</p>
+          <p className="font-body text-[13px] text-text-muted mb-6 max-w-[280px]">
+            track everyday habits, verify your progress, and earn community points toward net zero.
           </p>
           <button
             onClick={() => setShowSignIn(true)}
-            className="flex items-center gap-2 bg-surface-raised hover:bg-surface-overlay border border-border rounded-xl px-5 py-2.5 transition-colors"
+            className="gallery-primary inline-flex items-center gap-2.5 px-6 py-3 transition-all"
           >
-            <svg viewBox="0 0 24 24" className="w-5 h-5"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-            <span className="font-body text-[13px] text-text-primary">Sign in with Google</span>
+            <svg viewBox="0 0 24 24" className="w-4 h-4"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+            <span className="font-body text-[13px] font-medium">continue with google</span>
           </button>
         </div>
       </motion.div>
@@ -225,7 +228,7 @@ export function LogTab() {
   }
 
   const handleAutoLog = async (imgArg?: string | React.MouseEvent) => {
-    const targetImage = typeof imgArg === 'string' ? imgArg : pendingImage;
+    const targetImage = typeof imgArg === 'string' ? imgArg : pendingImage
     if (!targetImage) {
       setPhotoError(true)
       return
@@ -248,7 +251,7 @@ export function LogTab() {
       setTimeout(() => {
         setIsAutoLogging(false)
         setAutoLogFailed(false)
-      }, 1500)
+      }, 1600)
       return
     }
 
@@ -271,14 +274,14 @@ export function LogTab() {
     setSelectedCategory(catId!)
     setLogging(action.id)
     await executeLog(action, result.points, catId!)
-    
+
     setAutoLogActionName(action.label)
     setAutoLogPoints(result.points)
     setAutoLogSuccess(true)
     setTimeout(() => {
       setIsAutoLogging(false)
       setAutoLogSuccess(false)
-    }, 1500)
+    }, 1600)
   }
 
   const handleImagePick = () => {
@@ -302,47 +305,49 @@ export function LogTab() {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.2 }}
-      className="px-4 pb-4 md:px-0"
+      className="px-4 pb-8 md:px-0"
     >
       <AnimatePresence>
         {isAutoLogging && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className={`fixed inset-0 z-[100] flex flex-col items-center justify-center transition-colors duration-700 ${autoLogSuccess ? 'bg-oasis-500' : autoLogFailed ? 'bg-red-500' : 'bg-surface'}`}
+            initial={{ opacity: 0, y: -20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.95 }}
+            transition={{ type: 'spring', stiffness: 450, damping: 30 }}
+            className="fixed top-5 left-1/2 -translate-x-1/2 z-[100] flex items-center gap-3 px-4 py-2.5 rounded-full shadow-lg border border-border/80 bg-surface/90 backdrop-blur-md"
           >
-            <motion.h1 
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              className={`font-display text-[42px] mb-8 transition-colors duration-700 text-center px-4 ${autoLogSuccess || autoLogFailed ? 'text-black' : 'text-text-primary'}`}
-            >
-              {autoLogSuccess ? `+${autoLogPoints} PTS` : 'RIPPL'}
-            </motion.h1>
-            
-            <div className="w-48 h-1 bg-surface-raised rounded-full overflow-hidden relative">
-              <motion.div 
-                initial={{ x: '-100%' }}
-                animate={{ x: autoLogSuccess || autoLogFailed ? '0%' : '100%' }}
-                transition={{ repeat: autoLogSuccess || autoLogFailed ? 0 : Infinity, duration: 1.5, ease: "linear" }}
-                className={`absolute inset-0 transition-colors duration-700 ${autoLogSuccess || autoLogFailed ? 'bg-black' : 'bg-white'}`}
-              />
+            {autoLogSuccess ? (
+              <span className="flex items-center justify-center w-5 h-5 rounded-full bg-oasis-500/20 text-oasis-400">
+                <Check size={12} strokeWidth={2.5} />
+              </span>
+            ) : autoLogFailed ? (
+              <span className="flex items-center justify-center w-5 h-5 rounded-full bg-red-500/20 text-red-400">
+                <ShieldX size={12} strokeWidth={2.5} />
+              </span>
+            ) : (
+              <div className="w-3.5 h-3.5 border-2 border-oasis-400 border-t-transparent rounded-full animate-spin" />
+            )}
+            <div className="flex items-center gap-2">
+              <span className="font-body text-[12px] font-medium text-text-primary">
+                {autoLogSuccess ? `${autoLogActionName || 'action verified'}` : autoLogFailed ? 'verification failed' : 'verifying sustainability action...'}
+              </span>
+              {autoLogSuccess && autoLogPoints > 0 && (
+                <span className="font-mono text-[10px] text-oasis-400 font-semibold px-2 py-0.5 rounded-full bg-oasis-400/10 border border-oasis-400/20">
+                  +{autoLogPoints} pts
+                </span>
+              )}
             </div>
-            
-            <p className={`font-mono text-[10px] uppercase tracking-[0.2em] mt-4 transition-colors duration-700 text-center px-4 ${autoLogSuccess || autoLogFailed ? 'text-[#07110d]' : 'text-text-muted'}`}>
-              {autoLogSuccess ? autoLogActionName : autoLogFailed ? 'Verification Failed' : 'verifying action...'}
-            </p>
           </motion.div>
         )}
       </AnimatePresence>
 
       <div className="mb-5 pt-1">
-        <p className="gallery-label mb-1.5 text-text-muted">New entry</p>
-        <h2 className="font-display text-[26px] leading-tight text-text-primary">Log an action</h2>
-        <p className="mt-1 text-[13px] text-text-muted">Add a photo, then choose what you did.</p>
+        <p className="gallery-label mb-1.5 text-text-muted">new entry</p>
+        <h2 className="font-display text-[26px] leading-tight text-text-primary">log an action</h2>
+        <p className="mt-1 text-[13px] text-text-muted">add photo proof, then confirm your activity.</p>
       </div>
 
-      <div className="flex gap-2 mb-5 overflow-x-auto pb-1">
+      <div className="flex gap-2 mb-5 overflow-x-auto pb-1 scrollbar-none">
         {categories.map(cat => {
           const Icon = cat.icon
           const isActive = selectedCategory === cat.id
@@ -350,88 +355,87 @@ export function LogTab() {
             <button
               key={cat.id}
               onClick={() => setSelectedCategory(cat.id)}
-              className={`flex items-center gap-1.5 px-3 py-2 rounded-lg border shrink-0 transition-all duration-200 ${
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-full shrink-0 text-[12px] font-medium transition-all ${
                 isActive
-                  ? 'bg-white border-white text-black'
-                  : 'bg-transparent border-border hover:bg-surface-overlay'
+                  ? 'bg-[#d5e0eb] text-[#253b54] shadow-sm'
+                  : 'bg-surface-raised/70 text-text-muted hover:text-text-primary border border-border/60 hover:bg-surface-raised'
               }`}
             >
-              <Icon size={13} className={isActive ? 'text-black' : 'text-text-muted'} />
-              <span className={`font-body text-[11px] font-medium ${isActive ? 'text-black' : 'text-text-muted'}`}>
-                {cat.label}
-              </span>
+              <Icon size={14} className={isActive ? 'text-[#253b54]' : 'text-text-muted'} />
+              <span>{cat.label.toLowerCase()}</span>
             </button>
           )
         })}
       </div>
 
-      <div className={`gallery-card mb-5 overflow-hidden transition-colors ${
+      <div className={`gallery-card p-5 mb-5 rounded-[28px] border transition-all ${
         photoError && !pendingImage
-          ? 'border-red-400/50 bg-red-400/5'
-          : pendingImage
-            ? 'border-border'
-            : 'border-border'
+          ? 'border-red-400/40 bg-red-400/[0.03]'
+          : 'border-border/80 bg-surface-raised/60'
       }`}>
         {pendingImage ? (
-          <div className="relative flex justify-center bg-surface-overlay/20">
-            <img src={pendingImage} alt="Verification" className="max-h-80 object-contain" />
+          <div className="relative rounded-2xl overflow-hidden border border-border flex justify-center bg-surface-overlay/20 mb-3">
+            <img src={pendingImage} alt="Verification proof" className="max-h-72 object-contain" />
             <button
               onClick={() => { setPendingImage(null); setPhotoError(false); setVerifyError(null) }}
-              className="absolute top-2 right-2 w-6 h-6 rounded-full bg-surface/80 flex items-center justify-center"
+              className="absolute top-3 right-3 w-7 h-7 rounded-full bg-surface/80 backdrop-blur-sm border border-border flex items-center justify-center text-text-primary hover:bg-surface transition-colors"
             >
-              <X size={12} className="text-text-primary" />
+              <X size={14} />
             </button>
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center py-8 px-4 text-center">
-            <Camera size={28} className={`mb-2 ${photoError ? 'text-red-400' : 'text-text-muted'}`} />
-            <p className={`font-body text-[12px] font-medium ${photoError ? 'text-red-400' : 'text-text-primary'}`}>
-              Verification photo required
+          <div className="flex flex-col items-center justify-center py-7 px-4 text-center">
+            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-3 ${photoError ? 'bg-red-400/10 text-red-400' : 'bg-surface-overlay text-text-muted'}`}>
+              <Camera size={22} strokeWidth={1.8} />
+            </div>
+            <p className={`font-body text-[13px] font-medium ${photoError ? 'text-red-400' : 'text-text-primary'}`}>
+              verification photo required
             </p>
-            <p className="font-mono text-[9px] text-text-muted mt-1">Take a photo to prove your action</p>
+            <p className="font-body text-[11px] text-text-muted mt-1 max-w-[260px]">
+              snap or attach proof to confirm your impact with the community.
+            </p>
             {photoError && (
-              <div className="flex items-center gap-1 mt-2">
-                <AlertTriangle size={10} className="text-red-400" />
-                <span className="font-mono text-[8px] text-red-400">Please attach a photo before logging</span>
+              <div className="flex items-center gap-1.5 mt-2.5 px-3 py-1 rounded-full bg-red-400/10 text-red-400">
+                <AlertTriangle size={12} />
+                <span className="font-body text-[11px]">please attach a photo before logging</span>
               </div>
             )}
           </div>
         )}
+
         <button
           onClick={pendingImage ? handleAutoLog : handleImagePick}
-          className={`w-full flex items-center justify-center gap-2 py-3 border-t transition-colors ${
-            photoError && !pendingImage
-              ? 'border-red-400/20 text-red-400 hover:bg-red-400/5'
-              : 'border-border bg-white text-black hover:bg-white/85'
-          }`}
+          className="gallery-primary w-full flex items-center justify-center gap-2.5 py-3 transition-all"
         >
-          <Camera size={13} />
-          <span className="font-body text-[11px]">{pendingImage ? 'Auto-log action' : 'Take or upload photo'}</span>
+          <Camera size={15} />
+          <span className="font-body text-[12px] font-medium">
+            {pendingImage ? 'auto-verify & log action' : 'take or upload photo'}
+          </span>
         </button>
       </div>
 
       {verifyError && (
         <motion.div
-          initial={{ opacity: 0, y: -8 }}
+          initial={{ opacity: 0, y: -6 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex items-start gap-2 mb-4 p-3 rounded-xl border border-red-400/30 bg-red-400/5"
+          className="flex items-start gap-2.5 mb-5 p-3.5 rounded-2xl border border-red-400/25 bg-red-400/[0.05]"
         >
           <ShieldX size={16} className="text-red-400 shrink-0 mt-0.5" />
           <div>
-            <p className="font-body text-[11px] font-medium text-red-400">Verification failed</p>
-            <p className="font-mono text-[9px] text-text-muted mt-0.5">{verifyError}</p>
+            <p className="font-body text-[12px] font-medium text-red-400">verification notice</p>
+            <p className="font-body text-[11px] text-text-muted mt-0.5 leading-relaxed">{verifyError}</p>
           </div>
         </motion.div>
       )}
 
       {pendingImage && verifying && (
         <motion.div
-          initial={{ opacity: 0, y: -8 }}
+          initial={{ opacity: 0, y: -6 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex items-center gap-2 mb-4 p-3 rounded-xl border border-dune-400/30 bg-dune-400/5"
+          className="flex items-center gap-3 mb-5 p-3.5 rounded-2xl border border-dune-400/25 bg-dune-400/[0.05]"
         >
-          <div className="w-4 h-4 border-2 border-dune-400 border-t-transparent rounded-full animate-spin" />
-          <p className="font-body text-[11px] text-dune-400">Verifying photo with AI...</p>
+          <div className="w-4 h-4 border-2 border-dune-400 border-t-transparent rounded-full animate-spin shrink-0" />
+          <p className="font-body text-[12px] text-dune-400">verifying photo with AI...</p>
         </motion.div>
       )}
 
@@ -447,11 +451,11 @@ export function LogTab() {
       <AnimatePresence mode="wait">
         <motion.div
           key={selectedCategory}
-          initial={{ opacity: 0, x: 10 }}
+          initial={{ opacity: 0, x: 8 }}
           animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -10 }}
+          exit={{ opacity: 0, x: -8 }}
           transition={{ duration: 0.2 }}
-          className="space-y-2.5"
+          className="space-y-3"
         >
           {activeCategory.actions.map((action, i) => {
             const isLogged = loggedActions.has(action.id)
@@ -461,45 +465,55 @@ export function LogTab() {
             return (
               <motion.button
                 key={action.id}
-                initial={{ opacity: 0, y: 12 }}
+                initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.06 }}
+                transition={{ delay: i * 0.05 }}
                 onClick={() => handleLog(action)}
                 disabled={isLogged || isLoading || verifying || !hasPhoto}
-                className={`w-full flex items-center gap-3 p-4 rounded-2xl border transition-all duration-300 text-left ${
+                className={`w-full flex items-center gap-3.5 p-4 rounded-[22px] border transition-all duration-200 text-left relative overflow-hidden ${
                   isLogged
-                    ? 'bg-oasis-500/8 border-oasis-500/20'
+                    ? 'bg-oasis-500/10 border-oasis-500/25'
                     : !hasPhoto || verifying
-                      ? 'bg-surface-raised/30 border-border opacity-50 cursor-not-allowed'
-                      : 'bg-surface-raised border-border hover:bg-surface-overlay active:scale-[0.98]'
+                      ? 'bg-surface-raised/40 border-border/60 opacity-60 cursor-not-allowed'
+                      : 'bg-surface-raised/80 border-border hover:border-border-active hover:bg-surface-overlay active:scale-[0.99]'
                 }`}
               >
-                <div className={`shrink-0 flex items-center justify-center w-8 h-8 rounded-lg ${isLogged ? 'bg-oasis-400/20 text-oasis-400' : hasPhoto && !verifying ? 'bg-surface-overlay text-text-muted' : 'bg-surface-overlay text-text-muted/50'}`}>
-                  <action.Icon size={16} />
+                <div className={`shrink-0 flex items-center justify-center w-10 h-10 rounded-2xl ${
+                  isLogged
+                    ? 'bg-oasis-400/20 text-oasis-400'
+                    : hasPhoto && !verifying
+                      ? 'bg-surface-overlay text-text-primary'
+                      : 'bg-surface-overlay/50 text-text-muted'
+                }`}>
+                  <action.Icon size={18} strokeWidth={1.8} />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className={`font-body text-[13px] font-medium ${isLogged ? 'text-oasis-400' : hasPhoto && !verifying ? 'text-text-primary' : 'text-text-muted'}`}>
-                    {action.label}
+                  <p className={`font-body text-[13px] font-medium leading-snug ${
+                    isLogged ? 'text-oasis-400' : hasPhoto && !verifying ? 'text-text-primary' : 'text-text-muted'
+                  }`}>
+                    {action.label.toLowerCase()}
                   </p>
                   <div className="flex items-center gap-2 mt-0.5">
                     {action.co2 > 0 && (
-                      <span className="font-mono text-[9px] text-text-muted">{action.co2} kg CO₂</span>
+                      <span className="font-body text-[11px] text-text-muted">{action.co2} kg CO₂</span>
                     )}
                     {action.water > 0 && (
-                      <span className="font-mono text-[9px] text-text-muted">{action.water}L saved</span>
+                      <span className="font-body text-[11px] text-text-muted">{action.water}L saved</span>
                     )}
                   </div>
                 </div>
-                <div className="flex items-center gap-2 shrink-0">
-                  <span className={`font-mono text-[11px] font-medium ${isLogged ? 'text-oasis-400' : hasPhoto && !verifying ? 'text-dune-400' : 'text-text-muted'}`}>
-                    +{action.points}
+                <div className="flex items-center gap-2.5 shrink-0">
+                  <span className={`font-mono text-[11px] font-medium px-2.5 py-1 rounded-full ${
+                    isLogged ? 'bg-oasis-400/15 text-oasis-400' : 'bg-surface-overlay text-text-muted'
+                  }`}>
+                    +{action.points} pts
                   </span>
-                  <div className={`w-7 h-7 rounded-full flex items-center justify-center transition-all duration-300 ${
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${
                     isLogged
-                      ? 'bg-oasis-400 scale-100'
+                      ? 'bg-oasis-400 text-surface'
                       : isLoading
                         ? 'bg-surface-overlay'
-                        : 'bg-surface-overlay border border-border'
+                        : 'bg-surface-overlay border border-border text-text-muted'
                   }`}>
                     <AnimatePresence mode="wait">
                       {isLoading ? (
@@ -512,14 +526,14 @@ export function LogTab() {
                       ) : isLogged ? (
                         <motion.div
                           key="check"
-                          initial={{ scale: 0, rotate: -90 }}
-                          animate={{ scale: 1, rotate: 0 }}
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
                           transition={{ type: 'spring', stiffness: 500, damping: 25 }}
                         >
-                          <Check size={13} className="text-surface" strokeWidth={3} />
+                          <Check size={14} strokeWidth={2.8} />
                         </motion.div>
                       ) : (
-                        <Plus size={13} className={hasPhoto && !verifying ? 'text-text-muted' : 'text-text-muted/50'} />
+                        <Plus size={14} />
                       )}
                     </AnimatePresence>
                   </div>
@@ -527,9 +541,9 @@ export function LogTab() {
                 {isJust && (
                   <motion.div
                     initial={{ scale: 0.8, opacity: 1 }}
-                    animate={{ scale: 2.5, opacity: 0 }}
+                    animate={{ scale: 2.2, opacity: 0 }}
                     transition={{ duration: 0.6 }}
-                    className="absolute inset-0 rounded-xl border-2 border-oasis-400 pointer-events-none"
+                    className="absolute inset-0 rounded-[22px] border-2 border-oasis-400 pointer-events-none"
                   />
                 )}
               </motion.button>

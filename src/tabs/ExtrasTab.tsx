@@ -8,45 +8,39 @@ export function ExtrasTab() {
   const links = [
     {
       id: 'impact',
-      label: 'Your Impact',
-      desc: 'Badges & metrics dashboard',
+      label: 'your impact',
+      desc: 'badges, carbon savings & metrics',
       icon: <Globe size={20} className="text-oasis-400" />,
-      color: 'bg-oasis-400/10'
     },
     {
       id: 'pricing',
-      label: 'Rippl Premium',
-      desc: 'Exclusive rewards & impact tracking',
+      label: 'rippl supporter',
+      desc: 'exclusive rewards & direct offsetting',
       icon: <CreditCard size={20} className="text-oasis-400" />,
-      color: 'bg-oasis-400/10'
     },
     {
       id: 'corporate',
-      label: 'Corporate ESG',
-      desc: 'enterprise-grade sustainability',
+      label: 'corporate esg',
+      desc: 'enterprise-grade sustainability tracking',
       icon: <Building2 size={20} className="text-gulf-400" />,
-      color: 'bg-gulf-400/10'
     },
     {
       id: 'partnerships',
-      label: 'Brand Partnerships',
-      desc: 'Join the green ecosystem',
+      label: 'brand partnerships',
+      desc: 'join the verified green ecosystem',
       icon: <Handshake size={20} className="text-dune-400" />,
-      color: 'bg-dune-400/10'
     },
     {
       id: 'privacy',
-      label: 'Privacy Policy',
-      desc: 'How we handle your data',
+      label: 'privacy policy',
+      desc: 'transparent data handling & user control',
       icon: <Shield size={20} className="text-oasis-500" />,
-      color: 'bg-oasis-500/10'
     },
     {
       id: 'terms',
-      label: 'Terms of Service',
-      desc: 'Rules that govern your use of Rippl',
+      label: 'terms of service',
+      desc: 'community rules and guidelines',
       icon: <ScrollText size={20} className="text-text-muted" />,
-      color: 'bg-surface-overlay'
     }
   ]
 
@@ -55,52 +49,54 @@ export function ExtrasTab() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="px-4 pb-24"
+      transition={{ duration: 0.2 }}
+      className="px-4 pb-12 md:px-0"
     >
-      <div className="mb-6 pt-1">
-        <h2 className="font-display text-[13px] tracking-[0.2em] text-text-primary uppercase">EXTRAS</h2>
-        <p className="font-mono text-[10px] text-text-muted mt-0.5">Explore the Rippl ecosystem</p>
+      <div className="mb-5 pt-1">
+        <p className="gallery-label mb-1.5 text-text-muted">explore</p>
+        <h2 className="font-display text-[26px] leading-tight text-text-primary">extras</h2>
+        <p className="mt-1 text-[13px] text-text-muted">discover all facets of the rippl environmental ecosystem.</p>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-3 mb-6">
         {links.map((link, i) => (
           <motion.button
             key={link.id}
-            initial={{ opacity: 0, y: 12 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.08 }}
+            transition={{ delay: i * 0.04 }}
             onClick={() => setActiveTab(link.id as any)}
-            className="w-full flex items-center gap-4 p-4 rounded-2xl border border-border bg-surface-raised/40 hover:bg-surface-overlay/60 transition-all text-left group active:scale-[0.98]"
+            className="w-full flex items-center gap-4 p-4 rounded-[22px] gallery-card border border-border hover:border-border-active transition-all text-left group"
           >
-            <div className={`w-12 h-12 rounded-xl ${link.color} flex items-center justify-center shrink-0 transition-transform group-hover:scale-110`}>
+            <div className="w-11 h-11 rounded-2xl bg-surface-overlay flex items-center justify-center shrink-0">
               {link.icon}
             </div>
             <div className="flex-1 min-w-0">
-              <h3 className="font-body text-[14px] font-bold text-text-primary uppercase tracking-tight">{link.label}</h3>
-              <p className="font-mono text-[10px] text-text-muted mt-0.5 truncate uppercase tracking-widest">{link.desc}</p>
+              <h3 className="font-display text-[15px] text-text-primary leading-snug">{link.label}</h3>
+              <p className="font-body text-[12px] text-text-muted mt-0.5 truncate">{link.desc}</p>
             </div>
-            <ChevronRight size={16} className="text-text-muted group-hover:translate-x-1 transition-transform" />
+            <ChevronRight size={16} className="text-text-muted group-hover:translate-x-1 transition-transform shrink-0" />
           </motion.button>
         ))}
       </div>
 
-      <div className="mt-10 p-6 rounded-3xl bg-gradient-to-br from-oasis-400/10 via-transparent to-gulf-400/10 border border-border text-center">
-        <div className="inline-flex p-3 rounded-full bg-surface-raised mb-4 border border-border">
-          <Heart size={20} className="text-red-400 fill-red-400/20" />
+      <div className="gallery-card p-6 md:p-8 rounded-[28px] border border-border text-center">
+        <div className="w-12 h-12 rounded-2xl bg-surface-overlay flex items-center justify-center mx-auto mb-3 text-red-400">
+          <Heart size={22} className="fill-red-400/20" />
         </div>
-        <h3 className="font-display text-[18px] text-text-primary leading-tight">Support Local Habitats</h3>
-        <p className="font-body text-[12px] text-text-secondary mt-2 mb-6 px-4">
-          Every sustainable action logged contributes to our global restoration goal.
+        <h3 className="font-display text-[18px] text-text-primary leading-tight">restoring native habitats</h3>
+        <p className="font-body text-[12px] text-text-secondary mt-2 mb-6 max-w-sm mx-auto">
+          every action logged directly contributes to our verified coastal mangrove and reforestation milestones.
         </p>
-        <div className="flex items-center justify-center gap-6">
+        <div className="flex items-center justify-center gap-8">
           <div className="text-center">
-            <p className="font-display text-[20px] text-oasis-400">12.4K</p>
-            <p className="font-mono text-[8px] text-text-muted uppercase">Planted</p>
+            <p className="font-display text-[22px] text-oasis-400 leading-none">12.4k</p>
+            <p className="font-body text-[11px] text-text-muted mt-1">trees planted</p>
           </div>
           <div className="w-px h-8 bg-border" />
           <div className="text-center">
-            <p className="font-display text-[20px] text-gulf-400">88.2K</p>
-            <p className="font-mono text-[8px] text-text-muted uppercase">Community Logs</p>
+            <p className="font-display text-[22px] text-gulf-400 leading-none">38.2 tons</p>
+            <p className="font-body text-[11px] text-text-muted mt-1">carbon locked</p>
           </div>
         </div>
       </div>

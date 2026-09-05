@@ -14,8 +14,8 @@ const glyphs: Record<string, string[]> = {
   ',':['00000','00000','00000','00000','00100','00100','01000'],
 }
 
-export function DotNumber({ value }: { value: string }) {
-  return <svg className="dot-number" viewBox={`0 0 ${value.length * 36 - 6} 42`} role="img" aria-label={value}>
+export function DotNumber({ value, className = '' }: { value: string; className?: string }) {
+  return <svg className={`dot-number ${className}`.trim()} viewBox={`0 0 ${value.length * 36 - 6} 42`} role="img" aria-label={value}>
     {value.split('').flatMap((character, i) => (glyphs[character] || glyphs['—']).flatMap((row, y) => row.split('').map((dot, x) => dot === '1' ? <circle key={`${i}-${x}-${y}`} cx={i * 36 + x * 6 + 3} cy={y * 6 + 3} r="1.65" fill="currentColor"/> : null)))}
   </svg>
 }

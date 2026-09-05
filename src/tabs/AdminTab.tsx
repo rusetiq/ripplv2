@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { Shield, Mail, Check, X, Gift, Plus, Trash2, ImageIcon, Link, Tag, Coins, ArrowUpDown } from 'lucide-react'
+import { Shield, Mail, X, Gift, Plus, Trash2, ImageIcon, Link, Tag, Coins, ArrowUpDown } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { useApp } from '../App'
 import { db } from '../firebase'
@@ -127,15 +127,20 @@ export function AdminTab() {
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.2 }}
-        className="px-4 pb-4"
+        className="px-4 pb-4 md:px-0"
       >
         <div className="mb-5 pt-1">
-          <h2 className="font-display text-[13px] tracking-[0.2em] text-text-primary">ADMIN PANEL</h2>
+          <p className="gallery-label mb-1.5 text-text-muted">system</p>
+          <h2 className="font-display text-[26px] leading-tight text-text-primary">admin panel</h2>
         </div>
-        <div className="flex flex-col items-center justify-center py-20 text-center">
-          <Shield size={32} className="text-text-muted mb-4" />
-          <p className="font-body text-[14px] text-text-primary mb-2">Admin access denied</p>
-          <p className="font-mono text-[10px] text-text-muted">You don't have admin privileges</p>
+        <div className="gallery-card p-10 flex flex-col items-center justify-center text-center rounded-[30px] border border-border">
+          <div className="w-14 h-14 rounded-2xl bg-surface-overlay flex items-center justify-center mb-4 text-text-muted">
+            <Shield size={26} strokeWidth={1.8} />
+          </div>
+          <p className="font-display text-[18px] text-text-primary mb-1">access restricted</p>
+          <p className="font-body text-[13px] text-text-muted max-w-[280px]">
+            you need verified administrator privileges to access this console.
+          </p>
         </div>
       </motion.div>
     )
@@ -148,83 +153,96 @@ export function AdminTab() {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.2 }}
-      className="px-4 pb-4"
+      className="px-4 pb-8 md:px-0"
     >
       <div className="mb-5 pt-1">
-        <h2 className="font-display text-[13px] tracking-[0.2em] text-text-primary">ADMIN PANEL</h2>
-        <p className="font-mono text-[10px] text-text-muted mt-0.5">manage admins & rewards</p>
+        <p className="gallery-label mb-1.5 text-text-muted">system</p>
+        <h2 className="font-display text-[26px] leading-tight text-text-primary">admin panel</h2>
+        <p className="mt-1 text-[13px] text-text-muted">manage platform administrators and sponsored brand rewards.</p>
       </div>
 
-      <div className="flex gap-2 mb-5">
+      <div className="flex gap-2 mb-6">
         <button
           onClick={() => setActiveSection('admins')}
-          className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-[11px] font-mono transition-all ${activeSection === 'admins' ? 'bg-oasis-500/15 text-oasis-400 border border-oasis-500/25' : 'bg-surface-raised/50 text-text-muted border border-border'}`}
+          className={`flex items-center gap-2 px-4 py-2 rounded-full text-[12px] font-medium transition-all ${
+            activeSection === 'admins'
+              ? 'bg-[#d5e0eb] text-[#253b54] shadow-sm'
+              : 'bg-surface-raised text-text-muted hover:text-text-primary border border-border/70'
+          }`}
         >
-          <Shield size={12} />
-          Admins
+          <Shield size={14} />
+          <span>admins</span>
         </button>
         <button
           onClick={() => setActiveSection('rewards')}
-          className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-[11px] font-mono transition-all ${activeSection === 'rewards' ? 'bg-oasis-500/15 text-oasis-400 border border-oasis-500/25' : 'bg-surface-raised/50 text-text-muted border border-border'}`}
+          className={`flex items-center gap-2 px-4 py-2 rounded-full text-[12px] font-medium transition-all ${
+            activeSection === 'rewards'
+              ? 'bg-[#d5e0eb] text-[#253b54] shadow-sm'
+              : 'bg-surface-raised text-text-muted hover:text-text-primary border border-border/70'
+          }`}
         >
-          <Gift size={12} />
-          Rewards
+          <Gift size={14} />
+          <span>sponsored rewards</span>
         </button>
       </div>
 
       {activeSection === 'admins' && (
         <>
-          <div className="bg-surface-raised/60 backdrop-blur-sm rounded-2xl border border-border p-4 mb-4">
+          <div className="gallery-card p-5 rounded-[26px] border border-border mb-5">
             <div className="flex items-center gap-2 mb-3">
-              <Shield size={14} className="text-oasis-400" />
-              <h3 className="font-body text-[13px] font-semibold text-text-primary">Add Admin</h3>
+              <Shield size={15} className="text-oasis-400" />
+              <h3 className="font-display text-[15px] text-text-primary">add administrator</h3>
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-2.5">
               <input
                 type="email"
                 value={searchEmail}
                 onChange={e => setSearchEmail(e.target.value)}
-                placeholder="Enter email (e.g., user@example.com)"
-                className="flex-1 bg-surface-overlay rounded-xl px-3 py-2 font-body text-[12px] text-text-primary placeholder:text-text-muted outline-none border border-border"
+                placeholder="enter email (e.g. user@rippl.eco)"
+                className="flex-1 bg-surface-overlay rounded-xl px-3.5 py-2.5 font-body text-[13px] text-text-primary placeholder:text-text-muted outline-none border border-border"
                 onKeyDown={e => e.key === 'Enter' && handleAddAdmin()}
               />
               <button
                 onClick={handleAddAdmin}
                 disabled={!searchEmail.trim() || addingAdmin}
-                className="bg-oasis-500 hover:bg-oasis-600 disabled:opacity-40 disabled:cursor-not-allowed rounded-xl px-4 py-2 transition-colors"
+                className="gallery-primary px-5 py-2.5 transition-all flex items-center justify-center shrink-0"
               >
                 {addingAdmin ? (
-                  <div className="w-3.5 h-3.5 border-2 border-surface border-t-transparent rounded-full animate-spin" />
+                  <div className="w-4 h-4 border-2 border-surface border-t-transparent rounded-full animate-spin" />
                 ) : (
-                  <Check size={14} className="text-surface" />
+                  <span className="font-body text-[12px] font-medium">grant</span>
                 )}
               </button>
             </div>
           </div>
 
-          <div className="bg-surface-raised/60 backdrop-blur-sm rounded-2xl border border-border p-4">
-            <div className="flex items-center gap-2 mb-3">
-              <Mail size={14} className="text-gulf-400" />
-              <h3 className="font-body text-[13px] font-semibold text-text-primary">Current Admins ({users.length})</h3>
+          <div className="gallery-card p-5 rounded-[26px] border border-border">
+            <div className="flex items-center justify-between mb-3.5">
+              <div className="flex items-center gap-2">
+                <Mail size={15} className="text-gulf-400" />
+                <h3 className="font-display text-[15px] text-text-primary">current administrators</h3>
+              </div>
+              <span className="font-mono text-[11px] text-text-muted">{users.length} active</span>
             </div>
+
             {loading ? (
-              <div className="text-center py-6">
-                <div className="w-4 h-4 border-2 border-oasis-400 border-t-transparent rounded-full animate-spin mx-auto" />
+              <div className="text-center py-8">
+                <div className="w-5 h-5 border-2 border-oasis-400 border-t-transparent rounded-full animate-spin mx-auto" />
               </div>
             ) : users.length === 0 ? (
-              <p className="font-mono text-[10px] text-text-muted py-4">No admins yet</p>
+              <p className="font-body text-[12px] text-text-muted py-4 text-center">no administrators found</p>
             ) : (
               <div className="space-y-2">
                 {users.map(u => (
-                  <div key={u.uid} className="flex items-center justify-between gap-3 bg-surface-overlay/40 rounded-lg p-2.5 border border-border">
+                  <div key={u.uid} className="flex items-center justify-between gap-3 bg-surface-overlay/50 rounded-xl p-3 border border-border">
                     <div className="flex-1 min-w-0">
-                      <p className="font-body text-[12px] font-medium text-text-primary">{u.displayName}</p>
-                      <p className="font-mono text-[9px] text-text-muted truncate">{u.email || u.uid}</p>
+                      <p className="font-body text-[13px] font-medium text-text-primary">{u.displayName}</p>
+                      <p className="font-mono text-[10px] text-text-muted truncate">{u.email || u.uid}</p>
                     </div>
                     <button
                       onClick={() => handleRemoveAdmin(u.uid)}
                       disabled={u.uid === user?.uid}
-                      className="text-red-400 hover:text-red-300 disabled:opacity-30 disabled:cursor-not-allowed p-1 transition-colors"
+                      className="w-7 h-7 rounded-full flex items-center justify-center text-red-400 hover:bg-red-400/10 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                     >
                       <X size={14} />
                     </button>
@@ -239,119 +257,121 @@ export function AdminTab() {
       {activeSection === 'rewards' && (
         <>
           <div className="flex items-center justify-between mb-4">
-            <p className="font-mono text-[10px] text-text-muted uppercase tracking-widest">Sponsored Rewards ({sponsored.length})</p>
+            <span className="gallery-label text-text-muted">sponsored campaigns ({sponsored.length})</span>
             <button
               onClick={() => setShowRewardForm(v => !v)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-oasis-500/15 border border-oasis-500/25 text-oasis-400 font-mono text-[10px] transition-all hover:bg-oasis-500/20"
+              className="gallery-primary inline-flex items-center gap-1.5 px-3.5 py-1.5 transition-all text-[11px]"
             >
-              <Plus size={11} />
-              Add
+              <Plus size={13} />
+              <span>new campaign</span>
             </button>
           </div>
 
           {showRewardForm && (
-            <div className="bg-surface-raised/60 border border-border rounded-2xl p-4 mb-4">
-              <p className="font-mono text-[10px] text-text-muted uppercase tracking-widest mb-3">New Sponsored Reward</p>
-              <div className="space-y-2.5">
-                <div className="flex items-center gap-2 bg-surface-overlay rounded-xl px-3 py-2 border border-border">
-                  <Tag size={12} className="text-text-muted shrink-0" />
+            <div className="gallery-card p-5 rounded-[26px] border border-border mb-5">
+              <h3 className="font-display text-[16px] text-text-primary mb-3">create sponsored reward</h3>
+              <div className="space-y-3">
+                <div className="bg-surface-overlay rounded-xl px-3.5 py-2.5 border border-border flex items-center gap-2">
+                  <Tag size={14} className="text-text-muted shrink-0" />
                   <input
                     type="text"
-                    placeholder="Name (e.g., ENOVA SOLAR)"
+                    placeholder="partner name (e.g. Enova Solar)"
                     value={rewardForm.name}
                     onChange={e => setRewardForm(f => ({ ...f, name: e.target.value }))}
-                    className="flex-1 bg-transparent font-body text-[12px] text-text-primary placeholder:text-text-muted outline-none"
+                    className="flex-1 bg-transparent font-body text-[13px] text-text-primary placeholder:text-text-muted outline-none"
                   />
                 </div>
-                <div className="flex items-center gap-2 bg-surface-overlay rounded-xl px-3 py-2 border border-border">
-                  <Tag size={12} className="text-text-muted shrink-0" />
+                <div className="bg-surface-overlay rounded-xl px-3.5 py-2.5 border border-border flex items-center gap-2">
+                  <Tag size={14} className="text-text-muted shrink-0" />
                   <input
                     type="text"
-                    placeholder="Subtitle (e.g., 200 PTS on first install)"
+                    placeholder="tagline (e.g. Earn 200 pts bonus)"
                     value={rewardForm.subtitle}
                     onChange={e => setRewardForm(f => ({ ...f, subtitle: e.target.value }))}
-                    className="flex-1 bg-transparent font-body text-[12px] text-text-primary placeholder:text-text-muted outline-none"
+                    className="flex-1 bg-transparent font-body text-[13px] text-text-primary placeholder:text-text-muted outline-none"
                   />
                 </div>
-                <div className="flex items-center gap-2 bg-surface-overlay rounded-xl px-3 py-2 border border-border">
-                  <Link size={12} className="text-text-muted shrink-0" />
+                <div className="bg-surface-overlay rounded-xl px-3.5 py-2.5 border border-border flex items-center gap-2">
+                  <Link size={14} className="text-text-muted shrink-0" />
                   <input
                     type="url"
-                    placeholder="URL (https://...)"
+                    placeholder="target url (https://...)"
                     value={rewardForm.href}
                     onChange={e => setRewardForm(f => ({ ...f, href: e.target.value }))}
-                    className="flex-1 bg-transparent font-body text-[12px] text-text-primary placeholder:text-text-muted outline-none"
+                    className="flex-1 bg-transparent font-body text-[13px] text-text-primary placeholder:text-text-muted outline-none"
                   />
                 </div>
-                <div className="flex items-center gap-2 bg-surface-overlay rounded-xl px-3 py-2 border border-border">
-                  <ImageIcon size={12} className="text-text-muted shrink-0" />
+                <div className="bg-surface-overlay rounded-xl px-3.5 py-2.5 border border-border flex items-center gap-2">
+                  <ImageIcon size={14} className="text-text-muted shrink-0" />
                   <input
                     type="url"
-                    placeholder="Image URL (https://...)"
+                    placeholder="banner image url (https://...)"
                     value={rewardForm.imageUrl}
                     onChange={e => setRewardForm(f => ({ ...f, imageUrl: e.target.value }))}
-                    className="flex-1 bg-transparent font-body text-[12px] text-text-primary placeholder:text-text-muted outline-none"
+                    className="flex-1 bg-transparent font-body text-[13px] text-text-primary placeholder:text-text-muted outline-none"
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-2">
-                  <div className="flex items-center gap-2 bg-surface-overlay rounded-xl px-3 py-2 border border-border">
-                    <Coins size={12} className="text-text-muted shrink-0" />
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="bg-surface-overlay rounded-xl px-3.5 py-2.5 border border-border flex items-center gap-2">
+                    <Coins size={14} className="text-text-muted shrink-0" />
                     <input
                       type="number"
-                      placeholder="Points"
+                      placeholder="points value"
                       value={rewardForm.points || ''}
                       onChange={e => setRewardForm(f => ({ ...f, points: parseInt(e.target.value) || 0 }))}
-                      className="flex-1 bg-transparent font-body text-[12px] text-text-primary placeholder:text-text-muted outline-none"
+                      className="flex-1 bg-transparent font-body text-[13px] text-text-primary placeholder:text-text-muted outline-none"
                     />
                   </div>
-                  <div className="flex items-center gap-2 bg-surface-overlay rounded-xl px-3 py-2 border border-border">
-                    <ArrowUpDown size={12} className="text-text-muted shrink-0" />
+                  <div className="bg-surface-overlay rounded-xl px-3.5 py-2.5 border border-border flex items-center gap-2">
+                    <ArrowUpDown size={14} className="text-text-muted shrink-0" />
                     <input
                       type="text"
-                      placeholder="Badge (e.g., Energy)"
+                      placeholder="badge label"
                       value={rewardForm.badge}
                       onChange={e => setRewardForm(f => ({ ...f, badge: e.target.value }))}
-                      className="flex-1 bg-transparent font-body text-[12px] text-text-primary placeholder:text-text-muted outline-none"
+                      className="flex-1 bg-transparent font-body text-[13px] text-text-primary placeholder:text-text-muted outline-none"
                     />
                   </div>
                 </div>
                 <button
                   onClick={handleSaveReward}
                   disabled={savingReward || !rewardForm.name || !rewardForm.href || !rewardForm.imageUrl}
-                  className="w-full py-2.5 rounded-xl bg-oasis-500 disabled:opacity-40 disabled:cursor-not-allowed font-mono text-[11px] text-surface tracking-widest uppercase transition-all hover:bg-oasis-600 active:scale-[0.98]"
+                  className="gallery-primary w-full py-3 transition-all"
                 >
-                  {savingReward ? 'Saving…' : 'Save Reward'}
+                  <span className="font-body text-[12px] font-medium">
+                    {savingReward ? 'saving...' : 'publish reward'}
+                  </span>
                 </button>
               </div>
             </div>
           )}
 
           {sponsored.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-12 text-center bg-surface-raised/30 rounded-2xl border border-border">
-              <Gift size={28} className="text-text-muted mb-3" />
-              <p className="font-mono text-[10px] text-text-muted">No sponsored rewards yet</p>
-              <p className="font-mono text-[9px] text-text-muted/60 mt-1">Click Add to create one</p>
+            <div className="gallery-card p-8 flex flex-col items-center justify-center text-center rounded-[26px] border border-border">
+              <Gift size={26} className="text-text-muted mb-2" />
+              <p className="font-body text-[13px] text-text-muted">no active sponsored campaigns</p>
             </div>
           ) : (
-            <div className="space-y-2">
+            <div className="space-y-2.5">
               {sponsored.map((sp) => (
-                <div key={sp.id} className="flex items-center gap-3 bg-surface-raised/50 border border-border rounded-xl p-3">
+                <div key={sp.id} className="gallery-card flex items-center gap-3.5 p-3 rounded-[20px] border border-border">
                   <div
-                    className="w-12 h-12 rounded-xl bg-cover bg-center shrink-0 border border-border"
-                    style={{ backgroundImage: sp.imageUrl ? `url('${sp.imageUrl}')` : undefined, background: sp.imageUrl ? undefined : 'rgba(255,255,255,0.04)' }}
+                    className="w-14 h-14 rounded-2xl bg-cover bg-center shrink-0 border border-border"
+                    style={{ backgroundImage: sp.imageUrl ? `url('${sp.imageUrl}')` : undefined }}
                   />
                   <div className="flex-1 min-w-0">
-                    <p className="font-body text-[12px] font-semibold text-text-primary truncate">{sp.name}</p>
-                    <div className="flex items-center gap-1.5 mt-0.5">
-                      <span className="font-mono text-[9px] text-oasis-400">{sp.points} pts</span>
-                      {sp.badge && <span className="font-mono text-[8px] text-text-muted">· {sp.badge}</span>}
+                    <p className="font-display text-[14px] text-text-primary truncate">{sp.name}</p>
+                    <p className="font-body text-[11px] text-text-muted line-clamp-1">{sp.subtitle}</p>
+                    <div className="flex items-center gap-2 mt-1">
+                      <span className="font-mono text-[10px] text-oasis-400 font-medium">+{sp.points} pts</span>
+                      {sp.badge && <span className="font-body text-[10px] text-text-muted">· {sp.badge}</span>}
                     </div>
                   </div>
                   <button
                     onClick={() => handleDeleteReward(sp.id)}
-                    className="text-red-400/60 hover:text-red-400 p-1.5 transition-colors shrink-0"
+                    className="w-8 h-8 rounded-full flex items-center justify-center text-red-400 hover:bg-red-400/10 transition-colors shrink-0"
                   >
-                    <Trash2 size={13} />
+                    <Trash2 size={14} />
                   </button>
                 </div>
               ))}

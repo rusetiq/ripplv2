@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion'
-import { Gift, TreePine, Droplets, Zap, Shield, Leaf, ShoppingBag, Recycle, Award, Check, Sparkles, ArrowLeft, Lock, ExternalLink } from 'lucide-react'
+import { Gift, TreePine, Droplets, Zap, Shield, Leaf, ShoppingBag, Recycle, Award, Check, Sparkles, ArrowLeft, Lock, ExternalLink, ArrowRight } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { useApp } from '../App'
 import { db } from '../firebase'
@@ -42,35 +42,35 @@ const REWARD_IMAGES: Record<string, string> = {
 }
 
 const rewards: Reward[] = [
-  { id: 'r1', name: 'Transit Day Pass', description: 'A day of low-carbon local travel with a participating partner', cost: 220, level: 1, image: REWARD_IMAGES.r1, Icon: Recycle, gradient: 'from-oasis-400 to-oasis-500', glowColor: 'rgba(52,211,153,0.18)', accent: 'text-oasis-400', tag: 'Transit' },
-  { id: 'r2', name: 'Organic Coffee', description: 'Single cup of specialty organic coffee at partner cafes', cost: 700, level: 1, image: REWARD_IMAGES.r2, Icon: Leaf, gradient: 'from-oasis-300 to-gulf-400', glowColor: 'rgba(103,232,249,0.15)', accent: 'text-gulf-400', tag: 'Food' },
-  { id: 'r3', name: 'Plant a Native Tree', description: 'Fund a locally appropriate tree through a restoration partner', cost: 750, level: 2, image: REWARD_IMAGES.r3, Icon: TreePine, gradient: 'from-gulf-400 to-gulf-500', glowColor: 'rgba(34,211,238,0.18)', accent: 'text-gulf-400', tag: 'Planet' },
-  { id: 'r4', name: 'Thermal Travel Cup', description: 'Double-walled stainless steel insulated travel mug', cost: 1500, level: 3, image: REWARD_IMAGES.r4, Icon: Droplets, gradient: 'from-gulf-300 to-oasis-400', glowColor: 'rgba(103,232,249,0.18)', accent: 'text-gulf-300', tag: 'Gear' },
-  { id: 'r5', name: 'Dining Voucher', description: 'A $15 voucher for a sustainable local food partner', cost: 2000, level: 4, image: REWARD_IMAGES.r5, Icon: ShoppingBag, gradient: 'from-oasis-500 to-oasis-600', glowColor: 'rgba(16,185,129,0.18)', accent: 'text-oasis-500', tag: 'Food' },
-  { id: 'r6', name: 'Solar Power Bank', description: 'Compact 10,000 mAh solar charger for mobile devices', cost: 3600, level: 5, image: REWARD_IMAGES.r6, Icon: Zap, gradient: 'from-dune-400 to-ember-400', glowColor: 'rgba(251,191,36,0.18)', accent: 'text-dune-400', tag: 'Tech' },
-  { id: 'r7', name: 'Eco Cleaning Kit', description: 'Three zero-plastic concentrated cleaning refill pods', cost: 5000, level: 6, image: REWARD_IMAGES.r7, Icon: Shield, gradient: 'from-oasis-400 to-dune-400', glowColor: 'rgba(52,211,153,0.15)', accent: 'text-oasis-400', tag: 'Home' },
-  { id: 'r8', name: 'Premium Plant Pod', description: 'Self-watering seed kit for a home herb garden', cost: 8000, level: 8, image: REWARD_IMAGES.r8, Icon: Sparkles, gradient: 'from-ember-400 to-dune-300', glowColor: 'rgba(251,146,60,0.18)', accent: 'text-ember-400', tag: 'Rare' },
+  { id: 'r1', name: 'Transit Day Pass', description: 'A day of low-carbon local travel with a participating transit partner', cost: 220, level: 1, image: REWARD_IMAGES.r1, Icon: Recycle, gradient: 'from-oasis-400 to-oasis-500', glowColor: 'rgba(52,211,153,0.18)', accent: 'text-oasis-400', tag: 'Transit' },
+  { id: 'r2', name: 'Organic Coffee', description: 'Single cup of specialty fair-trade organic coffee at partner cafes', cost: 700, level: 1, image: REWARD_IMAGES.r2, Icon: Leaf, gradient: 'from-oasis-300 to-gulf-400', glowColor: 'rgba(103,232,249,0.15)', accent: 'text-gulf-400', tag: 'Food' },
+  { id: 'r3', name: 'Plant a Native Tree', description: 'Fund a locally appropriate tree through an active restoration partner', cost: 750, level: 2, image: REWARD_IMAGES.r3, Icon: TreePine, gradient: 'from-gulf-400 to-gulf-500', glowColor: 'rgba(34,211,238,0.18)', accent: 'text-gulf-400', tag: 'Planet' },
+  { id: 'r4', name: 'Thermal Travel Cup', description: 'Double-walled stainless steel insulated reusable travel mug', cost: 1500, level: 3, image: REWARD_IMAGES.r4, Icon: Droplets, gradient: 'from-gulf-300 to-oasis-400', glowColor: 'rgba(103,232,249,0.18)', accent: 'text-gulf-300', tag: 'Gear' },
+  { id: 'r5', name: 'Dining Voucher', description: 'A $15 voucher for an accredited sustainable local food kitchen', cost: 2000, level: 4, image: REWARD_IMAGES.r5, Icon: ShoppingBag, gradient: 'from-oasis-500 to-oasis-600', glowColor: 'rgba(16,185,129,0.18)', accent: 'text-oasis-500', tag: 'Food' },
+  { id: 'r6', name: 'Solar Power Bank', description: 'Compact 10,000 mAh solar charger for clean mobile charging', cost: 3600, level: 5, image: REWARD_IMAGES.r6, Icon: Zap, gradient: 'from-dune-400 to-ember-400', glowColor: 'rgba(251,191,36,0.18)', accent: 'text-dune-400', tag: 'Tech' },
+  { id: 'r7', name: 'Eco Cleaning Kit', description: 'Three zero-plastic concentrated cleaning refill pods and dispenser', cost: 5000, level: 6, image: REWARD_IMAGES.r7, Icon: Shield, gradient: 'from-oasis-400 to-dune-400', glowColor: 'rgba(52,211,153,0.15)', accent: 'text-oasis-400', tag: 'Home' },
+  { id: 'r8', name: 'Premium Plant Pod', description: 'Self-watering seed kit for a thriving home culinary herb garden', cost: 8000, level: 8, image: REWARD_IMAGES.r8, Icon: Sparkles, gradient: 'from-ember-400 to-dune-300', glowColor: 'rgba(251,146,60,0.18)', accent: 'text-ember-400', tag: 'Rare' },
 ]
 
 const DEFAULT_SPONSORED: SponsoredReward[] = [
   {
     id: 'sp-enova',
-    name: 'ENOVA SOLAR',
-    subtitle: '200 PTS reward on first install',
+    name: 'Enova Solar Energy',
+    subtitle: 'Earn 200 pts bonus on home solar installation',
     href: 'https://www.enova.com',
     imageUrl: 'https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=900&q=80',
     points: 200,
-    badge: 'Energy',
+    badge: 'Clean Energy',
     order: 0,
   },
   {
     id: 'sp-lulu',
-    name: 'LULU ECO MARKET',
-    subtitle: 'Earn on every sustainable purchase',
+    name: 'Lulu Eco Market',
+    subtitle: 'Get points on every package-free sustainable purchase',
     href: 'https://www.luluhypermarket.com',
     imageUrl: 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=900&q=80',
     points: 150,
-    badge: 'Grocery',
+    badge: 'Zero Waste',
     order: 1,
   },
 ]
@@ -120,47 +120,35 @@ export function RewardsTab() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        transition={{ duration: 0.3 }}
-        className="px-4 pb-4"
+        transition={{ duration: 0.2 }}
+        className="px-4 pb-4 md:px-0"
       >
         <div className="mb-5 pt-1">
-          <p className="font-mono text-[9px] tracking-[0.25em] text-text-muted uppercase mb-1">Rippl</p>
-          <h2 className="font-display text-[22px] tracking-[0.15em] text-text-primary uppercase">Rewards</h2>
+          <p className="gallery-label mb-1.5 text-text-muted">marketplace</p>
+          <h2 className="font-display text-[26px] leading-tight text-text-primary">rewards</h2>
+          <p className="mt-1 text-[13px] text-text-muted">trade sustainability points for real-world eco perks</p>
         </div>
 
-        <div
-          className="rounded-3xl border border-border overflow-hidden relative"
-          style={{ background: 'linear-gradient(135deg, #141311 0%, #0d0c0c 100%)' }}
-        >
-          <div
-            className="absolute inset-0 pointer-events-none"
-            style={{ background: 'radial-gradient(ellipse at 60% 0%, rgba(52,211,153,0.08), transparent 60%)' }}
-          />
-          <div className="p-8 flex flex-col items-center text-center relative z-10">
-            <div
-              className="w-16 h-16 rounded-2xl flex items-center justify-center mb-5"
-              style={{ background: 'rgba(52,211,153,0.1)', border: '1px solid rgba(52,211,153,0.2)' }}
-            >
-              <Gift size={28} className="text-oasis-400" />
-            </div>
-            <h3 className="font-display text-[16px] tracking-widest text-text-primary mb-2 uppercase">Sign in to Redeem</h3>
-            <p className="font-mono text-[10px] text-text-muted mb-6 max-w-[220px] leading-relaxed">
-              Trade sustainability points for real‑world eco rewards.
-            </p>
-            <button
-              onClick={() => setShowSignIn(true)}
-              className="flex items-center gap-2.5 rounded-xl px-5 py-2.5 transition-all active:scale-95"
-              style={{ background: 'rgba(52,211,153,0.1)', border: '1px solid rgba(52,211,153,0.25)' }}
-            >
-              <svg viewBox="0 0 24 24" className="w-4 h-4">
-                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" />
-                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
-                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
-              </svg>
-              <span className="font-body text-[13px] text-text-primary">Sign in with Google</span>
-            </button>
+        <div className="gallery-card p-10 flex flex-col items-center text-center rounded-[32px] border border-border">
+          <div className="w-14 h-14 rounded-2xl bg-surface-overlay flex items-center justify-center mb-4 text-text-muted">
+            <Gift size={26} strokeWidth={1.8} />
           </div>
+          <h3 className="font-display text-[20px] text-text-primary mb-2">sign in to redeem perks</h3>
+          <p className="font-body text-[13px] text-text-muted mb-6 max-w-[280px]">
+            every sustainable habit earns you points you can convert into tangible vouchers, transit passes, and gear.
+          </p>
+          <button
+            onClick={() => setShowSignIn(true)}
+            className="gallery-primary inline-flex items-center gap-2.5 px-6 py-3 transition-all"
+          >
+            <svg viewBox="0 0 24 24" className="w-4 h-4">
+              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" />
+              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+            </svg>
+            <span className="font-body text-[13px] font-medium">continue with google</span>
+          </button>
         </div>
       </motion.div>
     )
@@ -173,111 +161,92 @@ export function RewardsTab() {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.2 }}
-      className="px-4 pb-6"
+      className="px-4 pb-8 md:px-0"
     >
       <AnimatePresence mode="wait">
         {selectedReward ? (
           <motion.div
             key="detail"
-            initial={{ opacity: 0, y: 14 }}
+            initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.25 }}
+            transition={{ duration: 0.22 }}
           >
             <button
               onClick={() => { setSelectedReward(null); setJustRedeemed(false) }}
-              className="flex items-center gap-1.5 text-text-muted hover:text-text-secondary mb-5 transition-colors pt-1"
+              className="inline-flex items-center gap-2 text-text-muted hover:text-text-primary mb-4 transition-colors pt-1"
             >
-              <ArrowLeft size={13} />
-              <span className="font-mono text-[9px] tracking-widest uppercase">Back</span>
+              <ArrowLeft size={15} />
+              <span className="font-body text-[12px]">back to rewards</span>
             </button>
 
-            <div
-              className="rounded-3xl overflow-hidden relative"
-              style={{
-                background: 'linear-gradient(145deg, #141210 0%, #0b0a0a 100%)',
-                border: '1px solid rgba(167,154,124,0.1)',
-                boxShadow: `0 0 60px ${selectedReward.glowColor}`,
-              }}
-            >
-              <div
-                className="absolute inset-0 pointer-events-none"
-                style={{ background: `radial-gradient(ellipse at 50% 0%, ${selectedReward.glowColor}, transparent 55%)` }}
-              />
-
-              <div
-                className="w-full h-48 bg-cover bg-center relative"
-                style={{ backgroundImage: `url('${selectedReward.image}')` }}
-              >
-                <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, transparent 40%, #141210 100%)' }} />
+            <div className="gallery-card rounded-[30px] border border-border overflow-hidden p-6 md:p-8">
+              <div className="relative h-60 w-full rounded-2xl overflow-hidden mb-6 bg-surface-overlay/30">
+                <img src={selectedReward.image} alt={selectedReward.name} className="w-full h-full object-cover" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                <span className="absolute top-4 left-4 px-3 py-1 rounded-full bg-surface/90 backdrop-blur-md text-text-primary text-[11px] font-medium border border-border">
+                  {selectedReward.tag.toLowerCase()}
+                </span>
+                <span className="absolute bottom-4 left-4 px-3 py-1 rounded-full bg-surface/90 backdrop-blur-md font-mono text-[11px] text-text-primary border border-border">
+                  level {selectedReward.level} required
+                </span>
               </div>
 
-              <div className="p-6 relative z-10 text-center -mt-8">
-                <div
-                  className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${selectedReward.gradient} flex items-center justify-center mx-auto mb-4`}
-                  style={{ boxShadow: `0 8px 32px ${selectedReward.glowColor}` }}
-                >
-                  <selectedReward.Icon size={28} className="text-surface" />
+              <div className="max-w-xl mx-auto text-center">
+                <h3 className="font-display text-[24px] text-text-primary mb-2">
+                  {selectedReward.name.toLowerCase()}
+                </h3>
+                <p className="font-body text-[14px] text-text-muted mb-6 leading-relaxed">
+                  {selectedReward.description}
+                </p>
+
+                <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-surface-overlay border border-border mb-6">
+                  <Award size={15} className="text-oasis-400" />
+                  <span className="font-mono text-[16px] font-semibold text-text-primary">{selectedReward.cost.toLocaleString()}</span>
+                  <span className="font-body text-[12px] text-text-muted">points</span>
                 </div>
 
-                <span className="font-mono text-[8px] tracking-[0.3em] text-text-muted uppercase mb-2 block">{selectedReward.tag}</span>
-                <h3 className="font-display text-[20px] tracking-wider text-text-primary mb-1 uppercase">{selectedReward.name}</h3>
-                <p className="font-mono text-[10px] text-text-muted mb-5 max-w-[240px] mx-auto leading-relaxed">{selectedReward.description}</p>
-
-                <div
-                  className="inline-flex flex-col items-center px-8 py-3 rounded-2xl mb-5"
-                  style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(167,154,124,0.1)' }}
-                >
-                  <span className="font-display text-[38px] text-oasis-400 leading-none">{selectedReward.cost.toLocaleString()}</span>
-                  <span className="font-mono text-[9px] text-text-muted tracking-widest uppercase mt-0.5">points required</span>
-                </div>
-                <div className="mb-6">
-                  <span className="font-mono text-[9px] text-text-muted">Level {selectedReward.level} required</span>
-                </div>
-
-                {justRedeemed ? (
-                  <motion.div
-                    initial={{ scale: 0.85, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    className="flex flex-col items-center gap-2 py-3"
-                  >
-                    <div
-                      className="w-12 h-12 rounded-full flex items-center justify-center"
-                      style={{ background: 'rgba(52,211,153,0.15)', border: '1px solid rgba(52,211,153,0.3)' }}
+                <div>
+                  {justRedeemed ? (
+                    <motion.div
+                      initial={{ scale: 0.9, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-oasis-500/20 text-oasis-400 border border-oasis-500/30"
                     >
-                      <Check size={22} className="text-oasis-400" />
+                      <Check size={16} strokeWidth={2.5} />
+                      <span className="font-body text-[13px] font-medium">reward redeemed! check email</span>
+                    </motion.div>
+                  ) : redeemed.includes(selectedReward.id) ? (
+                    <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-surface-overlay text-text-muted border border-border">
+                      <Check size={16} />
+                      <span className="font-body text-[13px] font-medium">already redeemed</span>
                     </div>
-                    <span className="font-display text-[13px] tracking-widest text-oasis-400 uppercase">Redeemed!</span>
-                  </motion.div>
-                ) : redeemed.includes(selectedReward.id) ? (
-                  <div className="flex items-center justify-center gap-2 text-oasis-400 py-2.5">
-                    <Check size={15} />
-                    <span className="font-body text-[13px] font-medium">Already redeemed</span>
-                  </div>
-                ) : level < selectedReward.level ? (
-                  <div className="flex flex-col items-center gap-1 py-2">
-                    <Lock size={16} className="text-dune-400 mb-1" />
-                    <p className="font-mono text-[10px] text-dune-400">Level {selectedReward.level} required</p>
-                    <p className="font-mono text-[9px] text-text-muted">You are level {level} — keep going!</p>
-                  </div>
-                ) : points < selectedReward.cost ? (
-                  <div className="flex flex-col items-center gap-1 py-2">
-                    <p className="font-mono text-[10px] text-ember-400">Not enough points</p>
-                    <p className="font-mono text-[9px] text-text-muted">{(selectedReward.cost - points).toLocaleString()} more needed</p>
-                  </div>
-                ) : (
-                  <button
-                    onClick={() => handleRedeem(selectedReward)}
-                    disabled={confirming}
-                    className="w-full py-3.5 rounded-2xl font-display text-[13px] tracking-[0.15em] uppercase transition-all active:scale-[0.97] disabled:opacity-50"
-                    style={{
-                      background: 'linear-gradient(135deg, #10b981, #059669)',
-                      boxShadow: '0 8px 24px rgba(16,185,129,0.3)',
-                    }}
-                  >
-                    {confirming ? 'Redeeming…' : 'Redeem Now'}
-                  </button>
-                )}
+                  ) : level < selectedReward.level ? (
+                    <div className="flex flex-col items-center gap-1.5 py-2">
+                      <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-dune-400/10 text-dune-400 border border-dune-400/20">
+                        <Lock size={14} />
+                        <span className="font-body text-[12px]">level {selectedReward.level} required (you are level {level})</span>
+                      </div>
+                    </div>
+                  ) : points < selectedReward.cost ? (
+                    <div className="flex flex-col items-center gap-1.5 py-2">
+                      <span className="font-body text-[12px] text-ember-400">
+                        need {(selectedReward.cost - points).toLocaleString()} more points
+                      </span>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => handleRedeem(selectedReward)}
+                      disabled={confirming}
+                      className="gallery-primary w-full max-w-sm mx-auto py-3.5 flex items-center justify-center gap-2 transition-all"
+                    >
+                      <span className="font-body text-[13px] font-medium">
+                        {confirming ? 'redeeming...' : 'confirm redemption'}
+                      </span>
+                      <ArrowRight size={14} />
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           </motion.div>
@@ -285,22 +254,22 @@ export function RewardsTab() {
           <motion.div key="list" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
             <div className="mb-6 pt-1 flex items-start justify-between">
               <div>
-                <p className="gallery-label mb-1.5 text-text-muted">Marketplace</p>
-                <h2 className="font-display text-[26px] text-text-primary leading-tight">Rewards</h2>
-                <p className="font-body text-[11px] text-text-muted tracking-wide mt-1.5 lowercase">redeem points for a better world</p>
+                <p className="gallery-label mb-1.5 text-text-muted">marketplace</p>
+                <h2 className="font-display text-[26px] text-text-primary leading-tight">rewards</h2>
+                <p className="mt-1 text-[13px] text-text-muted">convert verified sustainability points into real perks.</p>
               </div>
-              <div
-                className="flex items-center gap-1.5 rounded-full px-3 py-1.5 mt-1 border border-oasis-500/20"
-                style={{ background: 'rgba(52,211,153,0.08)' }}
-              >
-                <Award size={11} className="text-oasis-400" />
-                <span className="font-mono text-[10px] text-oasis-400 font-medium">{points.toLocaleString()} pts</span>
+              <div className="flex items-center gap-2 rounded-full px-4 py-2 bg-surface-raised border border-border">
+                <Award size={14} className="text-oasis-400" />
+                <span className="font-mono text-[12px] text-text-primary font-medium">{points.toLocaleString()} pts</span>
               </div>
             </div>
 
-            <div className="mb-3">
-              <p className="font-mono text-[9px] tracking-[0.25em] text-text-muted uppercase mb-3">Sponsored</p>
-              <div className="grid grid-cols-2 gap-3 mb-6">
+            <div className="mb-8">
+              <div className="flex items-center justify-between mb-3.5">
+                <p className="gallery-label text-text-muted">partner initiatives</p>
+                <span className="font-body text-[10px] text-text-muted">sponsored opportunities</span>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {sponsored.slice(0, 2).map((sp, i) => (
                   <motion.a
                     key={sp.id}
@@ -310,94 +279,121 @@ export function RewardsTab() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: i * 0.06 }}
-                    className="h-52 rounded-[1.6rem] overflow-hidden relative border border-white/[0.07] hover:border-oasis-400/30 transition-all duration-300 block group"
+                    className="gallery-card rounded-[26px] border border-border overflow-hidden group hover:border-border-active transition-all p-5 flex flex-col justify-between min-h-[190px] relative"
                   >
                     <div
-                      className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
+                      className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
                       style={{ backgroundImage: `url('${sp.imageUrl}')` }}
                     />
-                    <div
-                      className="absolute inset-0"
-                      style={{ background: 'linear-gradient(to top, rgba(5,10,8,0.97) 0%, rgba(5,10,8,0.45) 50%, transparent 100%)' }}
-                    />
-                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" style={{ background: 'rgba(52,211,153,0.04)' }} />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-black/20" />
 
-                    <div className="absolute top-3 left-3 flex items-center gap-1.5">
-                      <span className="px-2 py-0.5 rounded-full bg-black/50 border border-white/10 font-mono text-[7px] text-text-secondary uppercase tracking-widest">
-                        Sponsored
-                      </span>
-                      {sp.badge && (
-                        <span className="px-2 py-0.5 rounded-full font-mono text-[7px] uppercase tracking-widest" style={{ background: 'rgba(52,211,153,0.15)', color: '#34d399', border: '1px solid rgba(52,211,153,0.25)' }}>
-                          {sp.badge}
+                    <div className="relative z-10 flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="px-2.5 py-1 rounded-full bg-white/20 backdrop-blur-md text-white font-body text-[10px] font-medium border border-white/10">
+                          sponsored
                         </span>
-                      )}
-                    </div>
-                    <span className="absolute top-3 right-3 px-2 py-0.5 rounded-full bg-black/60 border border-white/15 font-display text-[7px] text-white/70 tracking-widest uppercase">AD</span>
-
-                    <div className="absolute bottom-4 left-4 right-4">
-                      <h3 className="font-display text-[15px] text-white uppercase tracking-[0.04em] leading-tight mb-1 truncate">
-                        {sp.name}
-                      </h3>
-                      <div className="flex items-center justify-between">
-                        <p className="font-mono text-[9px] text-white/55 leading-snug line-clamp-1">{sp.subtitle}</p>
-                        <div className="flex items-center gap-1 shrink-0 ml-2">
-                          <span className="font-display text-[11px] text-oasis-400">{sp.points}</span>
-                          <span className="font-mono text-[7px] text-oasis-400/70 uppercase">pts</span>
-                          <ExternalLink size={8} className="text-white/30 ml-0.5" />
-                        </div>
+                        {sp.badge && (
+                          <span className="px-2.5 py-1 rounded-full bg-oasis-400/25 backdrop-blur-md text-oasis-300 font-body text-[10px] font-medium border border-oasis-400/30">
+                            {sp.badge.toLowerCase()}
+                          </span>
+                        )}
                       </div>
+                      <span className="font-mono text-[11px] font-semibold text-white px-2.5 py-0.5 rounded-full bg-black/40 backdrop-blur-md border border-white/10">
+                        +{sp.points} pts
+                      </span>
+                    </div>
+
+                    <div className="relative z-10 pt-12">
+                      <div className="flex items-center justify-between gap-2">
+                        <h3 className="font-display text-[16px] text-white leading-tight">
+                          {sp.name}
+                        </h3>
+                        <ExternalLink size={13} className="text-white/60 shrink-0 group-hover:text-white transition-colors" />
+                      </div>
+                      <p className="font-body text-[12px] text-white/80 mt-1 line-clamp-1">
+                        {sp.subtitle}
+                      </p>
                     </div>
                   </motion.a>
                 ))}
               </div>
             </div>
 
-            <p className="font-mono text-[9px] tracking-[0.25em] text-text-muted uppercase mb-3">Rewards</p>
-            <div className="grid grid-cols-3 gap-2.5">
+            <div className="flex items-center justify-between mb-3.5">
+              <p className="gallery-label text-text-muted">available catalog</p>
+              <span className="font-body text-[11px] text-text-muted">level {level} unlocked</span>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3.5">
               {rewards.map((reward, i) => {
                 const own = redeemed.includes(reward.id)
                 const unlocked = level >= reward.level
+                const affordable = points >= reward.cost
 
                 return (
                   <motion.button
                     key={reward.id}
-                    initial={{ opacity: 0, y: 8 }}
+                    initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: i * 0.04 + 0.12, duration: 0.22 }}
+                    transition={{ delay: i * 0.04 }}
                     onClick={() => unlocked && setSelectedReward(reward)}
                     disabled={!unlocked}
-                    className="h-36 rounded-[1.2rem] overflow-hidden relative border border-white/[0.07] hover:border-oasis-400/25 transition-all duration-300 block group text-left cursor-pointer disabled:opacity-40"
+                    className={`gallery-card rounded-[24px] border border-border/70 overflow-hidden text-left flex flex-col p-3 transition-all duration-200 group relative ${
+                      !unlocked
+                        ? 'opacity-50 cursor-not-allowed bg-surface-raised/40'
+                        : 'hover:border-border-active hover:-translate-y-0.5 hover:shadow-md bg-surface-raised/70'
+                    }`}
                   >
-                    <div
-                      className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
-                      style={{ backgroundImage: `url('${reward.image}')` }}
-                    />
-                    <div
-                      className="absolute inset-0"
-                      style={{ background: 'linear-gradient(to top, rgba(5,10,8,0.98) 0%, rgba(5,10,8,0.4) 55%, transparent 100%)' }}
-                    />
+                    <div className="relative h-28 w-full rounded-[18px] overflow-hidden bg-surface-overlay/30 mb-3">
+                      <img
+                        src={reward.image}
+                        alt={reward.name}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+                      <div className="absolute top-2 left-2 flex items-center gap-1.5">
+                        {own ? (
+                          <span className="w-5 h-5 rounded-full bg-oasis-500/90 text-white flex items-center justify-center shadow-sm">
+                            <Check size={11} strokeWidth={2.8} />
+                          </span>
+                        ) : !unlocked ? (
+                          <span className="w-5 h-5 rounded-full bg-black/60 backdrop-blur-sm text-white/80 flex items-center justify-center">
+                            <Lock size={10} />
+                          </span>
+                        ) : (
+                          <span className="px-2 py-0.5 rounded-full bg-black/40 backdrop-blur-sm text-white text-[9px] font-medium border border-white/10">
+                            {reward.tag.toLowerCase()}
+                          </span>
+                        )}
+                      </div>
+                      <span className="absolute bottom-2 right-2 font-mono text-[10px] text-white bg-black/50 backdrop-blur-sm px-2 py-0.5 rounded-full">
+                        lv {reward.level}
+                      </span>
+                    </div>
 
-                    {own ? (
-                      <span className="absolute top-2 left-2 w-5 h-5 rounded-full bg-oasis-500/25 border border-oasis-400/40 flex items-center justify-center">
-                        <Check size={9} className="text-oasis-400" />
-                      </span>
-                    ) : !unlocked ? (
-                      <span className="absolute top-2 left-2 w-5 h-5 rounded-full bg-black/50 border border-white/10 flex items-center justify-center">
-                        <Lock size={8} className="text-text-muted" />
-                      </span>
-                    ) : (
-                      <span className="absolute top-2 left-2 px-1.5 py-0.5 rounded-full bg-black/40 border border-white/5 font-mono text-[6px] text-text-secondary uppercase tracking-widest">
-                        {reward.tag}
-                      </span>
-                    )}
-
-                    <div className="absolute bottom-2.5 left-2.5 right-2.5">
-                      <h3 className="font-display text-[10px] text-white uppercase tracking-[0.03em] leading-tight mb-0.5 truncate">
-                        {reward.name}
-                      </h3>
-                      <p className="font-mono text-[8px] text-white/60 uppercase">
-                        {reward.cost.toLocaleString()}pts
-                      </p>
+                    <div className="flex-1 flex flex-col justify-between px-1 pb-1">
+                      <div>
+                        <h4 className="font-display text-[13px] text-text-primary leading-tight truncate">
+                          {reward.name.toLowerCase()}
+                        </h4>
+                        <p className="font-body text-[11px] text-text-muted line-clamp-1 mt-0.5">
+                          {reward.description}
+                        </p>
+                      </div>
+                      <div className="flex items-center justify-between mt-3 pt-2 border-t border-border/50">
+                        <span className="font-mono text-[11px] font-semibold text-text-primary">
+                          {reward.cost.toLocaleString()} pts
+                        </span>
+                        {own ? (
+                          <span className="font-body text-[10px] text-oasis-400 font-medium">claimed</span>
+                        ) : !unlocked ? (
+                          <span className="font-body text-[10px] text-text-muted">locked</span>
+                        ) : (
+                          <span className={`font-body text-[10px] font-medium ${affordable ? 'text-oasis-400' : 'text-text-muted'}`}>
+                            {affordable ? 'ready' : 'save up'}
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </motion.button>
                 )

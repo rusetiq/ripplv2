@@ -1,5 +1,6 @@
 import { useState, createContext, useContext, useEffect } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
+import { Check, AlertCircle, Loader2 } from 'lucide-react'
 import { AppShell } from './components/AppShell'
 import { FeedTab } from './tabs/FeedTab'
 import { LogTab } from './tabs/LogTab'
@@ -290,31 +291,26 @@ function App() {
       <AnimatePresence>
         {isAuthenticating && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className={`fixed inset-0 z-[100] flex flex-col items-center justify-center transition-colors duration-700 ${authFinished ? 'bg-oasis-500' : authFailed ? 'bg-red-500' : 'bg-surface'}`}
+            initial={{ opacity: 0, y: -20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.95 }}
+            transition={{ type: 'spring', stiffness: 450, damping: 30 }}
+            className="fixed top-5 left-1/2 -translate-x-1/2 z-[100] flex items-center gap-2.5 px-4 py-2.5 rounded-full shadow-lg border border-border/80 bg-surface/90 backdrop-blur-md"
           >
-            <motion.h1
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              className={`font-display text-[42px] mb-8 transition-colors duration-700 ${authFinished || authFailed ? 'text-black' : 'text-text-primary'}`}
-            >
-              RIPPL
-            </motion.h1>
-
-            <div className="w-48 h-1 bg-surface-raised rounded-full overflow-hidden relative">
-              <motion.div
-                initial={{ x: '-100%' }}
-                animate={{ x: authFinished || authFailed ? '0%' : '100%' }}
-                transition={{ repeat: authFinished || authFailed ? 0 : Infinity, duration: 1.5, ease: "linear" }}
-                className={`absolute inset-0 transition-colors duration-700 ${authFinished || authFailed ? 'bg-black' : 'bg-white'}`}
-              />
-            </div>
-
-            <p className={`font-mono text-[10px] uppercase tracking-[0.2em] mt-4 transition-colors duration-700 ${authFinished || authFailed ? 'text-[#07110d]' : 'text-text-muted'}`}>
-              {authFinished ? 'Authenticated' : authFailed ? 'Authentication Failed' : 'authenticating...'}
-            </p>
+            {authFinished ? (
+              <span className="flex items-center justify-center w-5 h-5 rounded-full bg-oasis-500/20 text-oasis-400">
+                <Check size={12} strokeWidth={2.5} />
+              </span>
+            ) : authFailed ? (
+              <span className="flex items-center justify-center w-5 h-5 rounded-full bg-red-500/20 text-red-400">
+                <AlertCircle size={12} strokeWidth={2.5} />
+              </span>
+            ) : (
+              <Loader2 size={14} className="animate-spin text-text-muted" />
+            )}
+            <span className="font-body text-[12px] font-medium text-text-primary">
+              {authFinished ? 'Signed in successfully' : authFailed ? 'Authentication failed' : 'Signing in with Google...'}
+            </span>
           </motion.div>
         )}
       </AnimatePresence>

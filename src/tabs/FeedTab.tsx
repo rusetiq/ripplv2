@@ -157,12 +157,12 @@ function ImpactCards() {
   return <section className="impact-card-grid" aria-label="Your environmental impact">
     <button className="impact-card carbon-card" onClick={() => user ? setActiveTab('impact') : setShowSignIn(true)}>
       <span className="impact-card-heading">Carbon saved</span>
-      <div className="impact-card-value"><DotNumber value={user ? co2Saved.toFixed(1) : '—'}/><span>kg of CO₂ saved</span></div>
+      <div className="impact-card-value text-white"><DotNumber value={user ? co2Saved.toFixed(1) : '—'} className="text-white fill-white"/><span className="text-white">kg of CO₂ saved</span></div>
       <span className="impact-card-dots" aria-hidden="true"/>
     </button>
     <button className="impact-card water-card" onClick={() => user ? setActiveTab('impact') : setShowSignIn(true)}>
       <span className="impact-card-heading">Water saved</span>
-      <div className="impact-card-value"><DotNumber value={user ? waterSaved.toLocaleString() : '—'}/><span>litres of water saved</span></div>
+      <div className="impact-card-value text-white"><DotNumber value={user ? waterSaved.toLocaleString() : '—'} className="text-white fill-white"/><span className="text-white">litres of water saved</span></div>
       <span className="impact-card-dots" aria-hidden="true"/>
     </button>
   </section>

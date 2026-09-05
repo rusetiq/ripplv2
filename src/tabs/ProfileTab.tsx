@@ -49,23 +49,27 @@ export function ProfileTab() {
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.2 }}
-        className="px-4 pb-4"
+        className="px-4 pb-4 md:px-0"
       >
         <div className="mb-5 pt-1">
-          <h2 className="font-display text-[13px] tracking-[0.2em] text-text-primary">PROFILE</h2>
+          <p className="gallery-label mb-1.5 text-text-muted">account</p>
+          <h2 className="font-display text-[26px] leading-tight text-text-primary">profile</h2>
+          <p className="mt-1 text-[13px] text-text-muted">manage your account and environmental record</p>
         </div>
-        <div className="flex flex-col items-center justify-center py-20 text-center">
-          <LogIn size={32} className="text-text-muted mb-4" />
-          <p className="font-body text-[14px] text-text-primary mb-2">Sign in to your profile</p>
-          <p className="font-mono text-[10px] text-text-muted mb-6 max-w-[240px]">
-            Track your streaks, stats, and settings across all your devices.
+        <div className="gallery-card p-10 flex flex-col items-center justify-center text-center rounded-[30px] border border-border">
+          <div className="w-14 h-14 rounded-2xl bg-surface-overlay flex items-center justify-center mb-4 text-text-muted">
+            <LogIn size={26} strokeWidth={1.8} />
+          </div>
+          <p className="font-display text-[18px] text-text-primary mb-1">sign in to view profile</p>
+          <p className="font-body text-[13px] text-text-muted mb-6 max-w-[280px]">
+            track your daily streaks, level progression, and stats across all your devices.
           </p>
           <button
             onClick={() => setShowSignIn(true)}
-            className="flex items-center gap-2 bg-surface-raised hover:bg-surface-overlay border border-border rounded-xl px-5 py-2.5 transition-colors"
+            className="gallery-primary inline-flex items-center gap-2.5 px-6 py-3 transition-all"
           >
-            <svg viewBox="0 0 24 24" className="w-5 h-5"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-            <span className="font-body text-[13px] text-text-primary">Sign in with Google</span>
+            <svg viewBox="0 0 24 24" className="w-4 h-4"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+            <span className="font-body text-[13px] font-medium">continue with google</span>
           </button>
         </div>
       </motion.div>
@@ -73,9 +77,8 @@ export function ProfileTab() {
   }
 
   const levelProgress = ((points % 500) / 500) * 100
-
-  const displayName = user.displayName || ''
-  const initials = displayName.split(' ').map(s => s[0]).join('').slice(0, 3).toUpperCase()
+  const displayName = user.displayName || 'fellow citizen'
+  const initials = displayName.split(' ').map(s => s[0]).join('').slice(0, 2).toUpperCase()
 
   const photoURL = userData?.photoURL || user.photoURL || ''
   const userPhotoBase64 = photoURL.startsWith('data:') ? photoURL : ''
@@ -99,54 +102,54 @@ export function ProfileTab() {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.2 }}
-      className="px-4 pb-24 md:px-0"
+      className="px-4 pb-20 md:px-0"
     >
       <div className="mb-5 pt-1">
-        <p className="gallery-label mb-1.5 text-text-muted">Account</p>
-        <h2 className="font-display text-[26px] leading-tight text-text-primary">Profile</h2>
+        <p className="gallery-label mb-1.5 text-text-muted">account</p>
+        <h2 className="font-display text-[26px] leading-tight text-text-primary">profile</h2>
       </div>
 
       <motion.div
-        initial={{ opacity: 0, y: 12 }}
+        initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
-        className="gallery-card p-6 mb-4 relative overflow-hidden"
+        className="gallery-card p-6 mb-4 rounded-[28px] border border-border"
       >
-        <div className="absolute top-0 right-0 w-28 h-28 bg-oasis-400/[0.05] rounded-full blur-[50px] -translate-y-1/2 translate-x-1/2" />
         <div className="flex items-center gap-4">
           <div className="relative group cursor-pointer" onClick={() => avatarRef.current?.click()}>
             {userPhotoBase64 || googlePhotoURL ? (
-              <img src={userPhotoBase64 || googlePhotoURL} alt="" className="w-16 h-16 rounded-2xl object-cover" />
+              <img src={userPhotoBase64 || googlePhotoURL} alt="" className="w-16 h-16 rounded-2xl object-cover border border-border" />
             ) : (
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-oasis-400 via-gulf-400 to-dune-400 flex items-center justify-center">
-                <span className="font-display text-[14px] text-surface">{initials}</span>
+              <div className="w-16 h-16 rounded-2xl bg-surface-overlay border border-border flex items-center justify-center font-display text-[16px] text-text-primary">
+                {initials}
               </div>
             )}
-            <div className="absolute inset-0 rounded-2xl bg-surface/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-              <Camera size={16} className="text-text-primary" />
+            <div className="absolute inset-0 rounded-2xl bg-black/40 backdrop-blur-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+              <Camera size={16} className="text-white" />
             </div>
-            <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-surface-raised border-2 border-surface flex items-center justify-center">
-              <span className="font-mono text-[8px] text-oasis-400 font-bold">{level}</span>
+            <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-surface border-2 border-surface flex items-center justify-center shadow-xs">
+              <span className="font-mono text-[9px] text-oasis-400 font-semibold">{level}</span>
             </div>
           </div>
-          <div className="flex-1">
-            <h3 className="font-body text-[16px] font-bold text-text-primary">{displayName}</h3>
-            {userData?.location && (
-              <p className="font-mono text-[10px] text-text-muted mt-0.5 flex items-center gap-1">
-                <MapPin size={10} className="text-text-muted" />
+          <div className="flex-1 min-w-0">
+            <h3 className="font-display text-[17px] text-text-primary truncate">{displayName.toLowerCase()}</h3>
+            {userData?.location ? (
+              <p className="font-body text-[11px] text-text-muted mt-0.5 flex items-center gap-1">
+                <MapPin size={11} className="text-text-muted" />
                 {userData.location}
               </p>
+            ) : (
+              <p className="font-body text-[11px] text-text-muted mt-0.5">verified member</p>
             )}
-            <div className="mt-2">
+            <div className="mt-3">
               <div className="flex justify-between mb-1">
-                <span className="font-mono text-[9px] text-text-muted">Level {level}</span>
-                <span className="font-mono text-[9px] text-oasis-400">{points % 500}/{500} XP</span>
+                <span className="font-body text-[10px] text-text-muted">level {level}</span>
+                <span className="font-mono text-[10px] text-text-primary">{points % 500} / 500 xp</span>
               </div>
               <div className="h-1.5 bg-surface-overlay rounded-full overflow-hidden">
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: `${levelProgress}%` }}
-                  transition={{ duration: 0.8, delay: 0.3 }}
+                  transition={{ duration: 0.8, delay: 0.2 }}
                   className="h-full rounded-full bg-gradient-to-r from-oasis-500 to-gulf-400"
                 />
               </div>
@@ -157,84 +160,72 @@ export function ProfileTab() {
 
       <input ref={avatarRef} type="file" accept="image/*" onChange={handleAvatarChange} className="hidden" />
 
-      <motion.button
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.12 }}
+      <button
         onClick={() => setShowShare(true)}
-        className="gallery-primary w-full flex items-center justify-center gap-2 p-3 mb-4 transition-opacity"
+        className="gallery-primary w-full flex items-center justify-center gap-2 py-3 mb-5 transition-all"
       >
         <Share2 size={14} />
-        <span className="font-body text-[12px] font-medium">Share your impact</span>
-      </motion.button>
+        <span className="font-body text-[12px] font-medium">share your impact</span>
+      </button>
 
-      <div className="grid grid-cols-2 gap-2.5 mb-4">
-        <StatCard icon={<Flame size={14} className="text-ember-400" />} label="Day Streak" value={`${streak}`} delay={0.15} />
-        <StatCard icon={<Trophy size={14} className="text-dune-400" />} label="Total Points" value={points.toLocaleString()} delay={0.2} />
-        <StatCard icon={<Zap size={14} className="text-oasis-400" />} label="CO₂ Avoided" value={`${co2Saved.toFixed(1)} kg`} delay={0.25} />
-        <StatCard icon={<Target size={14} className="text-gulf-400" />} label="Water Saved" value={`${(waterSaved / 1000).toFixed(1)}k L`} delay={0.3} />
+      <div className="grid grid-cols-2 gap-3 mb-5">
+        <StatCard icon={<Flame size={15} className="text-ember-400" />} label="day streak" value={`${streak}`} delay={0.08} />
+        <StatCard icon={<Trophy size={15} className="text-dune-400" />} label="total points" value={points.toLocaleString()} delay={0.12} />
+        <StatCard icon={<Zap size={15} className="text-oasis-400" />} label="co₂ avoided" value={`${co2Saved.toFixed(1)} kg`} delay={0.16} />
+        <StatCard icon={<Target size={15} className="text-gulf-400" />} label="water saved" value={`${(waterSaved / 1000).toFixed(1)}k L`} delay={0.2} />
       </div>
 
       {myPosts.length > 0 && (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.35 }}
-          className="mb-4"
-        >
+        <div className="mb-5">
           <div className="flex items-center gap-2 mb-3">
-            <Newspaper size={14} className="text-dune-400" />
-            <span className="font-body text-[12px] font-semibold text-text-primary">My Posts</span>
+            <Newspaper size={14} className="text-text-muted" />
+            <span className="gallery-label text-text-muted">recent log activity</span>
           </div>
           <div className="space-y-2">
             {myPosts.slice(0, 5).map(p => (
-              <div key={p.id} className="flex items-center gap-2.5 bg-surface-raised/40 rounded-xl border border-border p-2.5">
-                <div className="w-1.5 h-1.5 rounded-full bg-oasis-400 shrink-0" />
-                <p className="flex-1 font-body text-[11px] text-text-secondary truncate">{p.action}</p>
+              <div key={p.id} className="flex items-center gap-3 bg-surface-raised/70 rounded-2xl border border-border p-3">
+                <div className="w-2 h-2 rounded-full bg-oasis-400 shrink-0" />
+                <p className="flex-1 font-body text-[12px] text-text-secondary truncate">{p.action.toLowerCase()}</p>
                 {p.points > 0 && (
-                  <span className="font-mono text-[8px] text-oasis-400 shrink-0">+{p.points}</span>
+                  <span className="font-mono text-[10px] text-oasis-400 shrink-0 font-medium">+{p.points} pts</span>
                 )}
-                <span className="font-mono text-[7px] text-text-muted shrink-0">{timeAgo(p.timestamp)}</span>
+                <span className="font-body text-[10px] text-text-muted shrink-0">{timeAgo(p.timestamp)}</span>
               </div>
             ))}
           </div>
-        </motion.div>
+        </div>
       )}
 
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4 }}
-        className="bg-surface-raised/40 rounded-2xl border border-border divide-y divide-border"
-      >
-        <SettingsRow
-          icon={darkMode ? <Moon size={16} className="text-gulf-400" /> : <Sun size={16} className="text-dune-400" />}
-          label="Dark Mode"
-          action={
-            <button
-              onClick={() => setDarkMode(!darkMode)}
-              className={`w-10 h-5.5 rounded-full relative transition-colors duration-200 ${darkMode ? 'bg-oasis-500' : 'bg-surface-overlay'}`}
-            >
-              <motion.div
-                animate={{ x: darkMode ? 18 : 2 }}
-                transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-                className="absolute top-0.5 w-4.5 h-4.5 rounded-full bg-white"
-              />
-            </button>
-          }
-        />
+      <div className="gallery-card rounded-[26px] border border-border divide-y divide-border overflow-hidden">
+        <div className="flex items-center justify-between p-4">
+          <div className="flex items-center gap-3">
+            {darkMode ? <Moon size={16} className="text-gulf-400" /> : <Sun size={16} className="text-dune-400" />}
+            <span className="font-body text-[13px] text-text-primary">dark theme</span>
+          </div>
+          <button
+            onClick={() => setDarkMode(!darkMode)}
+            className={`w-11 h-6 rounded-full relative transition-colors duration-200 p-0.5 ${darkMode ? 'bg-[#253b54]' : 'bg-surface-overlay'}`}
+          >
+            <motion.div
+              animate={{ x: darkMode ? 20 : 0 }}
+              transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+              className="w-5 h-5 rounded-full bg-white shadow-xs"
+            />
+          </button>
+        </div>
 
-        <SettingsRow
-          icon={<LogOut size={16} className="text-red-400" />}
-          label="Sign Out"
-          labelColor="text-red-400"
-          action={
-            <button onClick={signOut}>
-              <ChevronRight size={14} className="text-text-muted" />
-            </button>
-          }
-        />
-      </motion.div>
+        <button
+          onClick={signOut}
+          className="w-full flex items-center justify-between p-4 text-left hover:bg-surface-overlay/50 transition-colors"
+        >
+          <div className="flex items-center gap-3">
+            <LogOut size={16} className="text-red-400" />
+            <span className="font-body text-[13px] text-red-400">sign out</span>
+          </div>
+          <ChevronRight size={15} className="text-text-muted" />
+        </button>
+      </div>
+
       <ShareCard open={showShare} onClose={() => setShowShare(false)} />
     </motion.div>
   )
@@ -251,30 +242,13 @@ function StatCard({ icon, label, value, delay }: {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay }}
-      className="gallery-card min-h-28 p-4 flex flex-col justify-between"
+      className="gallery-card p-4 rounded-[22px] border border-border flex flex-col justify-between min-h-[96px]"
     >
-      <div className="flex items-center gap-1.5 mb-1.5">
+      <div className="flex items-center gap-2 mb-2">
         {icon}
-        <span className="font-mono text-[9px] text-text-muted uppercase tracking-wider">{label}</span>
+        <span className="font-body text-[11px] text-text-muted">{label}</span>
       </div>
-      <span className="font-display text-[26px] text-text-primary leading-none">{value}</span>
+      <span className="font-display text-[22px] text-text-primary leading-tight">{value}</span>
     </motion.div>
-  )
-}
-
-function SettingsRow({ icon, label, action, labelColor }: {
-  icon: React.ReactNode
-  label: string
-  action: React.ReactNode
-  labelColor?: string
-}) {
-  return (
-    <div className="flex items-center justify-between px-4 py-3.5">
-      <div className="flex items-center gap-3">
-        {icon}
-        <span className={`font-body text-[13px] ${labelColor || 'text-text-primary'}`}>{label}</span>
-      </div>
-      {action}
-    </div>
   )
 }

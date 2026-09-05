@@ -7,83 +7,84 @@ export function PartnershipsTab() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="px-4 pb-20"
+      transition={{ duration: 0.2 }}
+      className="px-4 pb-12 md:px-0"
     >
-      <div className="mb-6 pt-1 text-right">
-        <h2 className="font-display text-[13px] tracking-[0.2em] text-text-primary uppercase">Partnerships</h2>
-        <p className="font-mono text-[10px] text-text-muted mt-0.5">grow with the green economy</p>
+      <div className="mb-5 pt-1">
+        <p className="gallery-label mb-1.5 text-text-muted">ecosystem</p>
+        <h2 className="font-display text-[26px] leading-tight text-text-primary">brand partnerships</h2>
+        <p className="mt-1 text-[13px] text-text-muted">connect your sustainable offerings with people actively taking climate action.</p>
       </div>
 
-      <div className="relative mb-8 rounded-3xl overflow-hidden bg-surface-raised border border-border">
-        <div className="absolute inset-0 bg-gradient-to-l from-oasis-400/10 to-transparent pointer-events-none" />
-        <div className="p-6">
-          <Handshake size={32} className="text-oasis-400 mb-4" />
-          <h3 className="font-display text-[20px] text-text-primary leading-tight">Brand Ecosystem</h3>
-          <p className="font-body text-[13px] text-text-secondary mt-2">
-            Connect your sustainable brand with a highly engaged audience actively making eco-conscious decisions. Rippl partners reach users at the exact moment they are logging sustainable actions, making it a relevant channel in the green economy.
-          </p>
+      <div className="gallery-card rounded-[28px] border border-border overflow-hidden p-6 md:p-8 mb-6">
+        <div className="w-12 h-12 rounded-2xl bg-surface-overlay flex items-center justify-center text-oasis-400 mb-4">
+          <Handshake size={24} strokeWidth={1.8} />
         </div>
+        <h3 className="font-display text-[22px] text-text-primary leading-tight">build with the green economy</h3>
+        <p className="font-body text-[13px] text-text-secondary mt-2 leading-relaxed">
+          reach conscientious consumers at the exact moment they complete verified environmental actions. rippl partners enjoy authentic high-intent engagement without greenwashing.
+        </p>
       </div>
 
-      <h3 className="font-body text-[12px] font-bold text-text-muted uppercase tracking-widest mb-3">Partnership Types</h3>
-      <div className="grid grid-cols-1 gap-4 mb-8">
+      <p className="gallery-label text-text-muted mb-3">partnership models</p>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 mb-7">
         <PartnerType
           icon={<Store size={20} />}
-          title="Reward Partner"
-          desc="List your sustainable products or services directly in the Rippl rewards marketplace. Users redeem points earned from verified eco-actions against your offerings, driving high-intent traffic and purchases from an audience that has already demonstrated environmental values."
+          title="reward partner"
+          desc="list sustainable products or discount vouchers directly in our rewards catalog. users redeem earned points for your perks."
         />
         <PartnerType
           icon={<Tag size={20} />}
-          title="Verified Vendor"
-          desc="Get featured in the Local Produce and Eco-Shopping categories within the Rippl app. Verified Vendor status signals to users that your brand has passed Rippl's sustainability criteria, boosting trust and conversion for participating businesses."
+          title="verified vendor"
+          desc="receive featured placement in local produce and zero-waste shopping recommendations after meeting our criteria."
         />
         <PartnerType
           icon={<Megaphone size={20} />}
-          title="Impact Campaigns"
-          desc="Sponsor community challenges and environmental initiatives co-branded with your organization. Impact Campaigns place your brand at the center of collective action events such as cleanups, tree planting drives, and zero-waste weeks."
+          title="sponsored campaigns"
+          desc="sponsor collective community challenges (e.g. car-free weeks, tree planting) with prominent co-branding."
         />
         <PartnerType
           icon={<Sparkles size={20} />}
-          title="White Label"
-          desc="Integrate Rippl's AI verification engine, points infrastructure, and leaderboard system into your own loyalty or rewards app under your own brand. Ideal for supermarkets, airlines, and government bodies building green citizen programs."
+          title="white label api"
+          desc="embed rippl's photo verification engine and points gamification directly into your consumer app or municipal portal."
         />
       </div>
 
-      <h3 className="font-body text-[12px] font-bold text-text-muted uppercase tracking-widest mb-3">How to Become a Partner</h3>
-      <div className="space-y-3 mb-8">
+      <p className="gallery-label text-text-muted mb-3">how onboarding works</p>
+      <div className="space-y-3 mb-7">
         <ProcessStep
           step="01"
           icon={<ClipboardList size={16} />}
-          title="Submit Your Application"
-          desc="Fill out the partner intake form with your brand details, sustainability credentials, and the type of partnership you are seeking. Our partnerships team reviews all applications within 3 business days and responds with a tailored proposal."
+          title="submit brand credentials"
+          desc="share details regarding your sustainability certifications, supply chain ethics, and proposed user incentives."
         />
         <ProcessStep
           step="02"
           icon={<CheckCircle2 size={16} />}
-          title="Sustainability Verification"
-          desc="Rippl conducts a lightweight sustainability review of your products, supply chain claims, and certifications. This protects the integrity of our marketplace and ensures users can trust every brand they encounter inside the app."
+          title="rapid verification"
+          desc="our standards committee reviews submissions in 3 business days to protect marketplace integrity."
         />
         <ProcessStep
           step="03"
           icon={<Zap size={16} />}
-          title="Integration and Launch"
-          desc="Our team configures your reward listing, campaign creative, or API access. Standard Reward Partner integrations go live within 7 business days. White Label API deployments follow a structured onboarding timeline scoped to your technical requirements."
+          title="launch in marketplace"
+          desc="listings and sponsored campaigns go live with instant tracking on partner dashboard analytics."
         />
         <ProcessStep
           step="04"
           icon={<BarChart2 size={16} />}
-          title="Track Performance"
-          desc="Access your partner dashboard to monitor redemption rates, campaign reach, user engagement, and sustainability impact attributed to your brand. Monthly performance reports are delivered automatically with actionable recommendations from your account manager."
+          title="measure converted impact"
+          desc="track verified redemptions, brand sentiment, and tangible carbon offset metrics."
         />
       </div>
 
-      <div className="mt-8 p-6 bg-oasis-400/5 border border-oasis-400/20 rounded-3xl text-center">
-        <h4 className="font-body text-[14px] font-bold text-text-primary mb-2">Ready to Rippl?</h4>
-        <p className="font-body text-[12px] text-text-secondary mb-6">
-          Join sustainable brands already growing their impact with the Rippl community.
+      <div className="gallery-card p-8 rounded-[28px] border border-border text-center">
+        <h4 className="font-display text-[20px] text-text-primary mb-2">ready to partner with rippl?</h4>
+        <p className="font-body text-[13px] text-text-muted mb-6 max-w-sm mx-auto">
+          join leading green brands driving genuine, verifiable consumer climate habits.
         </p>
-        <button className="inline-flex items-center gap-2 bg-text-primary text-surface px-6 py-3 rounded-2xl font-body text-[13px] font-medium transition-transform active:scale-95">
-          Become a Partner
+        <button className="gallery-primary inline-flex items-center gap-2 px-6 py-3.5 transition-all">
+          <span className="font-body text-[13px] font-medium">apply for brand partnership</span>
           <ArrowRight size={14} />
         </button>
       </div>
@@ -93,16 +94,16 @@ export function PartnershipsTab() {
 
 function ProcessStep({ step, icon, title, desc }: { step: string, icon: React.ReactNode, title: string, desc: string }) {
   return (
-    <div className="flex gap-4 p-4 bg-surface-raised/40 border border-border rounded-2xl">
-      <div className="shrink-0">
-        <div className="w-10 h-10 rounded-xl bg-oasis-400/10 flex items-center justify-center text-oasis-400">
+    <div className="flex gap-4 p-4 gallery-card border border-border rounded-[22px]">
+      <div className="shrink-0 flex flex-col items-center">
+        <div className="w-10 h-10 rounded-2xl bg-surface-overlay flex items-center justify-center text-oasis-400">
           {icon}
         </div>
-        <p className="font-mono text-[9px] text-oasis-400/60 text-center mt-1">{step}</p>
+        <span className="font-mono text-[10px] text-text-muted mt-1">{step}</span>
       </div>
       <div>
-        <h4 className="font-body text-[13px] font-bold text-text-primary">{title}</h4>
-        <p className="font-body text-[11px] text-text-secondary mt-1 leading-relaxed">{desc}</p>
+        <h4 className="font-display text-[14px] text-text-primary">{title}</h4>
+        <p className="font-body text-[12px] text-text-secondary mt-0.5 leading-relaxed">{desc}</p>
       </div>
     </div>
   )
@@ -110,13 +111,11 @@ function ProcessStep({ step, icon, title, desc }: { step: string, icon: React.Re
 
 function PartnerType({ icon, title, desc }: { icon: React.ReactNode, title: string, desc: string }) {
   return (
-    <div className="group p-5 bg-surface-raised/40 border border-border rounded-2xl hover:border-oasis-400/40 transition-all cursor-pointer">
-      <div className="flex items-center gap-4 mb-2">
-        <div className="text-oasis-400 group-hover:scale-110 transition-transform">
-          {icon}
-        </div>
-        <h4 className="font-body text-[14px] font-bold text-text-primary">{title}</h4>
+    <div className="p-5 gallery-card border border-border rounded-[24px] hover:border-border-active transition-all">
+      <div className="w-10 h-10 rounded-2xl bg-surface-overlay flex items-center justify-center text-oasis-400 mb-3">
+        {icon}
       </div>
+      <h4 className="font-display text-[15px] text-text-primary mb-1">{title}</h4>
       <p className="font-body text-[12px] text-text-secondary leading-relaxed">{desc}</p>
     </div>
   )
