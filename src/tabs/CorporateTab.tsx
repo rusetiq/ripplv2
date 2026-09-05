@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import { LayoutDashboard, BarChart, Users, Globe, Building2, ArrowUpRight, ClipboardList, Zap, FileCheck } from 'lucide-react'
+import { DotNumber } from '../components/DotNumber'
 
 export function CorporateTab() {
   return (
@@ -29,12 +30,18 @@ export function CorporateTab() {
         <div className="p-6 grid grid-cols-2 gap-4 border-t border-white/15 bg-black/15 backdrop-blur-xs">
           <div>
             <p className="gallery-label text-white/70">collective reduction</p>
-            <p className="font-display text-[22px] font-bold text-white mt-1">12.4 tons</p>
+            <div className="flex items-baseline gap-1.5 mt-1">
+              <DotNumber value="12.4" className="text-white fill-white h-6" />
+              <span className="font-display text-[15px] font-bold text-white">tons</span>
+            </div>
             <p className="font-body text-[11px] text-emerald-300 mt-0.5">up 14% this quarter</p>
           </div>
           <div>
             <p className="gallery-label text-white/70">team participation</p>
-            <p className="font-display text-[22px] font-bold text-white mt-1">84%</p>
+            <div className="flex items-baseline gap-1 mt-1">
+              <DotNumber value="84" className="text-white fill-white h-6" />
+              <span className="font-display text-[15px] font-bold text-white">%</span>
+            </div>
             <p className="font-body text-[11px] text-emerald-300 mt-0.5">verified active staff</p>
           </div>
         </div>

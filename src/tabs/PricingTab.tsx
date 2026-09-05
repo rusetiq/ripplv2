@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { Check, Crown, ArrowRight, Leaf, Star, Zap, Building2, Sparkles } from 'lucide-react'
 import { useApp } from '../App'
+import { DotNumber } from '../components/DotNumber'
 
 const freeFeatures = [
   'unlimited eco action logging',
@@ -62,7 +63,7 @@ export function PricingTab() {
           <div className="mb-6">
             <p className="font-body text-[12px] text-white/80 uppercase tracking-wider">rippl supporter</p>
             <div className="flex items-baseline gap-2 mt-1">
-              <span className="font-display text-[54px] font-bold text-white leading-none">20</span>
+              <DotNumber value="20" className="text-white fill-white h-11" />
               <div className="flex flex-col leading-tight">
                 <span className="font-display text-[18px] font-semibold text-white">AED</span>
                 <span className="font-body text-[11px] text-white/80">/ month</span>
@@ -88,7 +89,7 @@ export function PricingTab() {
             ))}
           </div>
 
-          <button className="w-full py-4 rounded-full bg-white text-[#055c4d] font-body text-[14px] font-semibold shadow-lg hover:bg-white/95 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+          <button className="w-full py-4 rounded-full bg-white text-black font-body text-[14px] font-semibold shadow-lg hover:bg-white/95 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
             <span>subscribe for 20 aed</span>
             <ArrowRight size={15} />
           </button>
@@ -97,7 +98,7 @@ export function PricingTab() {
           </p>
         </div>
 
-        <div className="expressive-card twilight-card p-6 md:p-8 rounded-[36px] shadow-lg text-white relative">
+        <div className="expressive-card silver-card p-6 md:p-8 rounded-[36px] shadow-lg text-white relative">
           <div className="flex items-start justify-between mb-4">
             <div>
               <span className="font-body text-[11px] text-white/70 uppercase tracking-wider">standard plan</span>
@@ -105,7 +106,7 @@ export function PricingTab() {
               <p className="font-body text-[13px] text-white/80 mt-1">for individual citizens building daily green routines</p>
             </div>
             <div className="flex items-baseline gap-1">
-              <span className="font-display text-[38px] font-bold text-white">0</span>
+              <DotNumber value="0" className="text-white fill-white h-8" />
               <span className="font-display text-[14px] text-white/80">AED</span>
             </div>
           </div>
@@ -143,7 +144,7 @@ export function PricingTab() {
 
           <div className="mb-6">
             <div className="flex items-baseline gap-2">
-              <span className="font-display text-[38px] font-bold text-white">45</span>
+              <DotNumber value="45" className="text-white fill-white h-8" />
               <div className="flex flex-col leading-tight">
                 <span className="font-display text-[15px] font-semibold text-white">AED</span>
                 <span className="font-body text-[11px] text-white/80">/ seat / month</span>
@@ -165,7 +166,7 @@ export function PricingTab() {
 
           <button
             onClick={() => setActiveTab('corporate')}
-            className="w-full py-3.5 rounded-full bg-white text-[#1d4ed8] font-body text-[13px] font-semibold shadow-md hover:bg-white/95 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+            className="w-full py-3.5 rounded-full bg-white text-black font-body text-[13px] font-semibold shadow-md hover:bg-white/95 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
           >
             <span>explore corporate esg & request demo</span>
             <ArrowRight size={14} />

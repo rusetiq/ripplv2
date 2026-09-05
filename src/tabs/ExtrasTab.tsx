@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { Shield, CreditCard, Building2, Handshake, ChevronRight, Globe, Heart, ScrollText } from 'lucide-react'
 import { useApp } from '../App'
+import { DotNumber } from '../components/DotNumber'
 
 export function ExtrasTab() {
   const { setActiveTab } = useApp()
@@ -90,12 +91,18 @@ export function ExtrasTab() {
         </p>
         <div className="flex items-center justify-center gap-8">
           <div className="text-center">
-            <p className="font-display text-[24px] font-bold text-white leading-none">12.4k</p>
+            <div className="flex items-baseline justify-center gap-1">
+              <DotNumber value="12.4" className="text-white fill-white h-7" />
+              <span className="font-display text-[15px] font-bold text-white">k</span>
+            </div>
             <p className="font-body text-[11px] text-white/80 mt-1">trees planted</p>
           </div>
           <div className="w-px h-8 bg-white/25" />
           <div className="text-center">
-            <p className="font-display text-[24px] font-bold text-white leading-none">38.2 tons</p>
+            <div className="flex items-baseline justify-center gap-1.5">
+              <DotNumber value="38.2" className="text-white fill-white h-7" />
+              <span className="font-display text-[15px] font-bold text-white">tons</span>
+            </div>
             <p className="font-body text-[11px] text-white/80 mt-1">carbon locked</p>
           </div>
         </div>
