@@ -68,7 +68,7 @@ export function PricingTab() {
         transition={{ duration: 0.4, delay: 0.1 }}
         className="relative rounded-3xl overflow-hidden mb-4"
         style={{
-          background: 'linear-gradient(145deg, #131f18 0%, #0c1a12 60%, #0a1510 100%)',
+          background: 'linear-gradient(145deg, #141210 0%, #0d0c0c 60%, #070607 100%)',
           border: '1px solid rgba(52,211,153,0.22)',
           boxShadow: '0 0 80px rgba(52,211,153,0.1), 0 24px 64px rgba(0,0,0,0.5)',
         }}
@@ -120,7 +120,7 @@ export function PricingTab() {
             <div className="flex items-end gap-1.5">
               <span className="font-display text-[52px] text-text-primary leading-none">15</span>
               <div className="flex flex-col mb-1.5">
-                <span className="font-display text-[18px] text-oasis-400">AED</span>
+                <span className="font-display text-[18px] text-oasis-400">USD</span>
                 <span className="font-mono text-[10px] text-text-muted">/ month</span>
               </div>
             </div>
@@ -190,7 +190,7 @@ export function PricingTab() {
           </div>
           <div className="text-right">
             <span className="font-display text-[28px] text-text-secondary leading-none">0</span>
-            <span className="font-mono text-[11px] text-text-muted ml-1">AED</span>
+            <span className="font-mono text-[11px] text-text-muted ml-1">USD</span>
           </div>
         </div>
 
@@ -214,7 +214,7 @@ export function PricingTab() {
         >
           <Leaf size={12} className="text-oasis-400 shrink-0" />
           <p className="font-mono text-[9px] text-text-muted leading-relaxed">
-            Ads help fund our UAE mangrove planting program.
+            Ads help fund community restoration projects.
           </p>
         </div>
       </motion.div>
@@ -241,7 +241,7 @@ export function PricingTab() {
             <Star size={13} className="text-gulf-400" />
           </div>
           <h4 className="font-body text-[11px] font-bold text-text-primary mb-1">Community Impact</h4>
-          <p className="font-mono text-[9px] text-text-muted leading-relaxed">10% of revenue goes directly to UAE reforestation projects.</p>
+          <p className="font-mono text-[9px] text-text-muted leading-relaxed">10% of revenue supports verified restoration projects.</p>
         </div>
 
         <div

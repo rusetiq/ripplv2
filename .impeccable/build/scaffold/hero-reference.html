@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Scaffold reference: community-field-station.png</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=New+Tegomin:wght@400&family=Knewave:wght@400&display=swap">
+  <link rel="stylesheet" href="layout.css">
+  <style>html,body{margin:0}body{background:#f6f6f6}.region{box-sizing:border-box}.region.text p{white-space:pre-wrap}</style>
+</head>
+<body>
+<!-- Reference only. Every region sits at its measured box inside a comp-aspect frame. Take the boxes (layout.css), keep your own semantic structure. -->
+<main class="comp-frame" style="max-width:1586px">
+  <div class="r-top-navigation region chrome" data-region="top-navigation"><!-- compact global navigation and account controls --></div>
+  <div class="r-impact-ribbon region text" data-region="impact-ribbon"><!-- unboxed daily impact measurements --><p style="font-size:var(--r-impact-ribbon-font);font-family:var(--r-impact-ribbon-family),sans-serif;font-weight:var(--r-impact-ribbon-weight);line-height:1.05;margin:0">impact-ribbon</p></div>
+  <div class="r-feed-composer region control" data-region="feed-composer"><!-- compact action composer: rebuild the control's chrome from the crop (comp-spec.mjs --crop feed-composer); its ink box, border, fill, radius, and label size are the comp's --></div>
+  <figure class="r-bike-evidence region plate" data-region="bike-evidence"><img src="../../../assets/plates/bike-evidence.png" alt="" style="width:100%;height:100%;object-fit:contain;object-position:center"></figure>
+  <div class="r-bike-entry region text" data-region="bike-entry"><!-- community action entry metadata and impact --><p style="font-size:var(--r-bike-entry-font);font-family:var(--r-bike-entry-family),sans-serif;font-weight:var(--r-bike-entry-weight);line-height:1.05;margin:0">bike-entry</p></div>
+  <div class="r-next-action-rail region control" data-region="next-action-rail"><!-- suggested next actions with points and impact: rebuild the control's chrome from the crop (comp-spec.mjs --crop next-action-rail); its ink box, border, fill, radius, and label size are the comp's --></div>
+  <figure class="r-meal-evidence region plate" data-region="meal-evidence"><img src="../../../assets/plates/meal-evidence.png" alt="" style="width:100%;height:100%;object-fit:contain;object-position:center"></figure>
+  <div class="r-meal-entry region text" data-region="meal-entry"><!-- community action entry metadata and impact --><p style="line-height:1.05;margin:0">meal-entry</p></div>
+  <div class="r-weekly-rhythm region control" data-region="weekly-rhythm"><!-- weekly progress bars and total: rebuild the control's chrome from the crop (comp-spec.mjs --crop weekly-rhythm); its ink box, border, fill, radius, and label size are the comp's --></div>
+  <div class="r-continuing-feed region text" data-region="continuing-feed"><!-- continuing chronological feed --><p style="line-height:1.05;margin:0">continuing-feed</p></div>
+</main>
+</body>
+</html>

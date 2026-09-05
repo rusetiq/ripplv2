@@ -37,7 +37,7 @@ export function ProfileTab() {
     const q = query(collection(db, 'posts'), where('userId', '==', user.uid), orderBy('timestamp', 'desc'), fbLimit(20))
     const unsub = onSnapshot(q, (snap) => {
       setMyPosts(snap.docs.map(d => ({ id: d.id, ...d.data() } as MyPost)))
-    })
+    }, (error) => console.warn('Unable to load profile activity.', error))
     return unsub
   }, [user])
 
@@ -99,17 +99,18 @@ export function ProfileTab() {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.2 }}
-      className="px-4 pb-24"
+      className="px-4 pb-24 md:px-0"
     >
       <div className="mb-5 pt-1">
-        <h2 className="font-display text-[13px] tracking-[0.2em] text-text-primary">PROFILE</h2>
+        <p className="gallery-label mb-1.5 text-text-muted">Account</p>
+        <h2 className="font-display text-[26px] leading-tight text-text-primary">Profile</h2>
       </div>
 
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="bg-surface-raised/60 backdrop-blur-sm rounded-2xl border border-border p-5 mb-4 relative overflow-hidden"
+        className="gallery-card p-6 mb-4 relative overflow-hidden"
       >
         <div className="absolute top-0 right-0 w-28 h-28 bg-oasis-400/[0.05] rounded-full blur-[50px] -translate-y-1/2 translate-x-1/2" />
         <div className="flex items-center gap-4">
@@ -161,10 +162,10 @@ export function ProfileTab() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.12 }}
         onClick={() => setShowShare(true)}
-        className="w-full flex items-center justify-center gap-2 p-3 mb-4 rounded-xl border border-border bg-surface-raised/40 hover:bg-surface-overlay/50 transition-colors"
+        className="gallery-primary w-full flex items-center justify-center gap-2 p-3 mb-4 transition-opacity"
       >
-        <Share2 size={14} className="text-oasis-400" />
-        <span className="font-body text-[12px] font-medium text-text-primary">Share stats to Instagram Story</span>
+        <Share2 size={14} />
+        <span className="font-body text-[12px] font-medium">Share your impact</span>
       </motion.button>
 
       <div className="grid grid-cols-2 gap-2.5 mb-4">
@@ -217,7 +218,7 @@ export function ProfileTab() {
               <motion.div
                 animate={{ x: darkMode ? 18 : 2 }}
                 transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-                className="absolute top-0.5 w-4.5 h-4.5 rounded-full bg-white shadow-sm"
+                className="absolute top-0.5 w-4.5 h-4.5 rounded-full bg-white"
               />
             </button>
           }
@@ -250,13 +251,13 @@ function StatCard({ icon, label, value, delay }: {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay }}
-      className="bg-surface-raised/50 rounded-xl border border-border p-3"
+      className="gallery-card min-h-28 p-4 flex flex-col justify-between"
     >
       <div className="flex items-center gap-1.5 mb-1.5">
         {icon}
         <span className="font-mono text-[9px] text-text-muted uppercase tracking-wider">{label}</span>
       </div>
-      <span className="font-display text-[18px] text-text-primary leading-none">{value}</span>
+      <span className="font-display text-[26px] text-text-primary leading-none">{value}</span>
     </motion.div>
   )
 }

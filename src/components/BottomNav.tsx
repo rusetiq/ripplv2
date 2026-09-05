@@ -1,66 +1,58 @@
 import { useApp } from '../App'
 import { motion } from 'framer-motion'
-import { Newspaper, ClipboardList, Trophy, User, Gift, Shield, MoreHorizontal } from 'lucide-react'
+import { Shield } from 'lucide-react'
+import { navTabs } from './navigation'
 
-const tabs = [
-  { id: 'feed' as const, label: 'Feed', icon: Newspaper },
-  { id: 'log' as const, label: 'Log', icon: ClipboardList },
-  { id: 'rewards' as const, label: 'Rewards', icon: Gift },
-  { id: 'rank' as const, label: 'Rank', icon: Trophy },
-  { id: 'profile' as const, label: 'Profile', icon: User },
-  { id: 'extras' as const, label: 'Extras', icon: MoreHorizontal },
-]
-
+/* Compact mobile counterpart to the desktop sidebar. */
 export function BottomNav() {
-  const { activeTab, setActiveTab, userData } = useApp()
-  const isAdmin = (userData as any)?.isAdmin
+  const { activeTab, setActiveTab, isAdmin } = useApp()
 
   return (
-    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-32px)] max-w-[400px]">
-      <nav
-        className="flex items-center justify-around px-2 py-2 rounded-[999px] border border-[rgba(255,255,255,0.15)] bg-[rgba(255,255,255,0.1)] backdrop-blur-[30px] backdrop-saturate-[150%] shadow-[inset_0_1px_0_rgba(255,255,255,0.15),0_8px_32px_rgba(0,0,0,0.3)]"
-      >
-        {tabs.map(tab => {
+    <div className="fixed bottom-3 left-1/2 z-50 w-[calc(100%-24px)] max-w-[370px] -translate-x-1/2 lg:hidden">
+      <nav aria-label="Mobile navigation" className="mobile-glass-nav flex items-center justify-around gap-1 rounded-lg border border-border bg-surface-glass p-1.5 backdrop-blur-2xl">
+        {navTabs.map(tab => {
           const isActive = activeTab === tab.id
           const Icon = tab.icon
           return (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className="relative flex flex-col items-center gap-0.5 py-2 px-3 rounded-full transition-all duration-300 active:scale-90"
+              aria-label={tab.label.toLowerCase()}
+              title={tab.label.toLowerCase()}
+              aria-current={isActive ? 'page' : undefined}
+              className="relative flex min-w-12 flex-col items-center gap-0.5 rounded-md px-2 py-2 transition-colors active:scale-95"
             >
               {isActive && (
                 <motion.div
                   layoutId="navIndicator"
-                  className="absolute inset-0 bg-oasis-400/20 rounded-full"
+                  className="gallery-nav-active absolute inset-0 rounded-md"
                   transition={{ type: 'spring', stiffness: 500, damping: 35 }}
                 />
               )}
               <Icon
-                size={18}
-                strokeWidth={isActive ? 2.5 : 2}
-                className={`transition-colors duration-300 mix-blend-difference ${isActive ? 'text-oasis-400' : 'text-white opacity-70'}`}
+                size={20}
+                strokeWidth={1.6}
+                className={`relative transition-colors duration-300 ${isActive ? 'gallery-nav-text-active' : 'text-text-muted'}`}
               />
-              <span className={`font-mono text-[8px] font-bold tracking-[0.1em] uppercase transition-colors duration-300 mix-blend-difference ${isActive ? 'text-oasis-400' : 'text-white opacity-70'}`}>
-                {tab.label}
-              </span>
             </button>
           )
         })}
         {isAdmin && (
           <button
             onClick={() => setActiveTab('admin')}
-            className={`relative flex flex-col items-center gap-0.5 py-2 px-3 rounded-full transition-all duration-300 active:scale-90 ${activeTab === 'admin' ? '' : 'opacity-50'}`}
+            aria-label="admin"
+            title="admin"
+            aria-current={activeTab === 'admin' ? 'page' : undefined}
+            className={`relative flex flex-col items-center gap-0.5 py-2 px-3 rounded-md transition-all duration-300 active:scale-95 ${activeTab === 'admin' ? '' : 'opacity-50'}`}
           >
             {activeTab === 'admin' && (
               <motion.div
                 layoutId="navIndicator"
-                className="absolute inset-0 bg-oasis-400/20 rounded-full"
+                className="gallery-nav-active absolute inset-0 rounded-md"
                 transition={{ type: 'spring', stiffness: 500, damping: 35 }}
               />
             )}
-            <Shield size={18} className={`transition-colors duration-300 mix-blend-difference ${activeTab === 'admin' ? 'text-oasis-400' : 'text-white'}`} />
-            <span className={`font-mono text-[8px] font-bold tracking-[0.1em] uppercase transition-colors duration-300 mix-blend-difference ${activeTab === 'admin' ? 'text-oasis-400' : 'text-white'}`}>Admin</span>
+            <Shield size={20} className={`relative transition-colors duration-300 ${activeTab === 'admin' ? 'gallery-nav-text-active' : 'text-text-muted'}`} />
           </button>
         )}
       </nav>

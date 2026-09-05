@@ -6,7 +6,7 @@ import { db } from '../firebase'
 import { collection, query, orderBy, limit, onSnapshot } from 'firebase/firestore'
 import { SkeletonRow } from '../components/Skeleton'
 
-type Scope = 'friends' | 'uae'
+type Scope = 'friends' | 'community'
 
 interface Player {
   rank: number
@@ -19,7 +19,7 @@ interface Player {
 
 const scopeLabels: Record<Scope, string> = {
   friends: 'Friends',
-  uae: 'UAE',
+  community: 'Community',
 }
 
 const rankMedals = ['🥇', '🥈', '🥉']
@@ -44,6 +44,9 @@ export function RankTab() {
       }))
       setPlayers(allUsers)
       setLoaded(true)
+    }, (error) => {
+      console.warn('Unable to load the leaderboard.', error)
+      setLoaded(true)
     })
     return unsub
   }, [user])
@@ -57,11 +60,12 @@ export function RankTab() {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.2 }}
-      className="px-4 pb-4"
+      className="px-4 pb-4 md:px-0"
     >
-      <div className="mb-4 pt-1">
-        <h2 className="font-display text-[13px] tracking-[0.2em] text-text-primary">LEADERBOARD</h2>
-        <p className="font-mono text-[10px] text-text-muted mt-0.5">weekly sustainability rankings</p>
+      <div className="mb-5 pt-1">
+        <p className="gallery-label mb-1.5 text-text-muted">This week</p>
+        <h2 className="font-display text-[26px] leading-tight text-text-primary">Leaderboard</h2>
+        <p className="mt-1 text-[13px] text-text-muted">Community progress ranked by points.</p>
       </div>
 
       <div className="flex gap-1 p-1 bg-surface-raised/60 rounded-xl mb-8 border border-border">
@@ -105,7 +109,7 @@ export function RankTab() {
             return (
               <div key={idx} className={`flex flex-col items-center gap-2 ${order}`}>
                 <div className="flex flex-col items-center">
-                  <div className={`w-14 h-14 rounded-full border-2 ${isMe ? 'border-oasis-400' : 'border-border'} bg-surface flex items-center justify-center mb-1 shadow-lg`}>
+                  <div className={`w-14 h-14 rounded-full border-2 ${isMe ? 'border-oasis-400' : 'border-border'} bg-surface flex items-center justify-center mb-1`}>
                     <span className="text-[14px] font-bold">{p.avatar}</span>
                   </div>
                   <p className="font-body text-[11px] font-medium">{p.name.split(' ')[0]}</p>

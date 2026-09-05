@@ -302,7 +302,7 @@ export function LogTab() {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.2 }}
-      className="px-4 pb-4"
+      className="px-4 pb-4 md:px-0"
     >
       <AnimatePresence>
         {isAutoLogging && (
@@ -310,12 +310,12 @@ export function LogTab() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className={`fixed inset-0 z-[100] flex flex-col items-center justify-center transition-colors duration-700 ${autoLogSuccess ? 'bg-[#b7ff3c]' : autoLogFailed ? 'bg-red-500' : 'bg-surface'}`}
+            className={`fixed inset-0 z-[100] flex flex-col items-center justify-center transition-colors duration-700 ${autoLogSuccess ? 'bg-oasis-500' : autoLogFailed ? 'bg-red-500' : 'bg-surface'}`}
           >
             <motion.h1 
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              className={`font-display text-[42px] tracking-widest mb-8 transition-colors duration-700 text-center px-4 ${autoLogSuccess || autoLogFailed ? 'text-[#07110d]' : 'text-[#b7ff3c]'}`}
+              className={`font-display text-[42px] mb-8 transition-colors duration-700 text-center px-4 ${autoLogSuccess || autoLogFailed ? 'text-black' : 'text-text-primary'}`}
             >
               {autoLogSuccess ? `+${autoLogPoints} PTS` : 'RIPPL'}
             </motion.h1>
@@ -325,7 +325,7 @@ export function LogTab() {
                 initial={{ x: '-100%' }}
                 animate={{ x: autoLogSuccess || autoLogFailed ? '0%' : '100%' }}
                 transition={{ repeat: autoLogSuccess || autoLogFailed ? 0 : Infinity, duration: 1.5, ease: "linear" }}
-                className={`absolute inset-0 transition-colors duration-700 ${autoLogSuccess || autoLogFailed ? 'bg-[#07110d]' : 'bg-[#b7ff3c]'}`}
+                className={`absolute inset-0 transition-colors duration-700 ${autoLogSuccess || autoLogFailed ? 'bg-black' : 'bg-white'}`}
               />
             </div>
             
@@ -336,9 +336,10 @@ export function LogTab() {
         )}
       </AnimatePresence>
 
-      <div className="mb-4 pt-1">
-        <h2 className="font-display text-[13px] tracking-[0.2em] text-text-primary">LOG ACTION</h2>
-        <p className="font-mono text-[10px] text-text-muted mt-0.5">track your daily impact</p>
+      <div className="mb-5 pt-1">
+        <p className="gallery-label mb-1.5 text-text-muted">New entry</p>
+        <h2 className="font-display text-[26px] leading-tight text-text-primary">Log an action</h2>
+        <p className="mt-1 text-[13px] text-text-muted">Add a photo, then choose what you did.</p>
       </div>
 
       <div className="flex gap-2 mb-5 overflow-x-auto pb-1">
@@ -349,14 +350,14 @@ export function LogTab() {
             <button
               key={cat.id}
               onClick={() => setSelectedCategory(cat.id)}
-              className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border shrink-0 transition-all duration-200 ${
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-lg border shrink-0 transition-all duration-200 ${
                 isActive
-                  ? `${cat.bg} border-transparent ring-1 ${cat.ring}`
-                  : 'bg-surface-raised/40 border-border hover:border-border-active'
+                  ? 'bg-white border-white text-black'
+                  : 'bg-transparent border-border hover:bg-surface-overlay'
               }`}
             >
-              <Icon size={13} className={isActive ? cat.color : 'text-text-muted'} />
-              <span className={`font-body text-[11px] font-medium ${isActive ? cat.color : 'text-text-muted'}`}>
+              <Icon size={13} className={isActive ? 'text-black' : 'text-text-muted'} />
+              <span className={`font-body text-[11px] font-medium ${isActive ? 'text-black' : 'text-text-muted'}`}>
                 {cat.label}
               </span>
             </button>
@@ -364,7 +365,7 @@ export function LogTab() {
         })}
       </div>
 
-      <div className={`mb-4 rounded-xl border overflow-hidden transition-colors ${
+      <div className={`gallery-card mb-5 overflow-hidden transition-colors ${
         photoError && !pendingImage
           ? 'border-red-400/50 bg-red-400/5'
           : pendingImage
@@ -398,10 +399,10 @@ export function LogTab() {
         )}
         <button
           onClick={pendingImage ? handleAutoLog : handleImagePick}
-          className={`w-full flex items-center justify-center gap-2 py-2.5 border-t transition-colors ${
+          className={`w-full flex items-center justify-center gap-2 py-3 border-t transition-colors ${
             photoError && !pendingImage
               ? 'border-red-400/20 text-red-400 hover:bg-red-400/5'
-              : 'border-border text-text-muted hover:bg-surface-raised/40'
+              : 'border-border bg-white text-black hover:bg-white/85'
           }`}
         >
           <Camera size={13} />
@@ -465,12 +466,12 @@ export function LogTab() {
                 transition={{ delay: i * 0.06 }}
                 onClick={() => handleLog(action)}
                 disabled={isLogged || isLoading || verifying || !hasPhoto}
-                className={`w-full flex items-center gap-3 p-3.5 rounded-xl border transition-all duration-300 text-left ${
+                className={`w-full flex items-center gap-3 p-4 rounded-2xl border transition-all duration-300 text-left ${
                   isLogged
                     ? 'bg-oasis-500/8 border-oasis-500/20'
                     : !hasPhoto || verifying
                       ? 'bg-surface-raised/30 border-border opacity-50 cursor-not-allowed'
-                      : 'bg-surface-raised/50 border-border hover:border-border-active hover:bg-surface-overlay/50 active:scale-[0.98]'
+                      : 'bg-surface-raised border-border hover:bg-surface-overlay active:scale-[0.98]'
                 }`}
               >
                 <div className={`shrink-0 flex items-center justify-center w-8 h-8 rounded-lg ${isLogged ? 'bg-oasis-400/20 text-oasis-400' : hasPhoto && !verifying ? 'bg-surface-overlay text-text-muted' : 'bg-surface-overlay text-text-muted/50'}`}>

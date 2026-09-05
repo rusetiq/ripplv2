@@ -34,7 +34,7 @@ const EMPTY_REWARD: Omit<SponsoredReward, 'id'> = {
 }
 
 export function AdminTab() {
-  const { userData, user } = useApp()
+  const { isAdmin, user } = useApp()
   const [users, setUsers] = useState<AdminUser[]>([])
   const [loading, setLoading] = useState(true)
   const [searchEmail, setSearchEmail] = useState('')
@@ -44,8 +44,6 @@ export function AdminTab() {
   const [rewardForm, setRewardForm] = useState(EMPTY_REWARD)
   const [savingReward, setSavingReward] = useState(false)
   const [showRewardForm, setShowRewardForm] = useState(false)
-
-  const isAdmin = (userData as any)?.isAdmin
 
   useEffect(() => {
     if (!isAdmin) return
@@ -57,11 +55,11 @@ export function AdminTab() {
     const q = query(collection(db, 'sponsoredRewards'), orderBy('order', 'asc'))
     const unsub = onSnapshot(q, (snap) => {
       setSponsored(snap.docs.map(d => ({ id: d.id, ...(d.data() as Omit<SponsoredReward, 'id'>) })))
-    })
+    }, (error) => console.warn('Unable to load sponsored rewards.', error))
     return unsub
   }, [isAdmin])
 
-  const loadAdmins = async () => {
+  async function loadAdmins() {
     setLoading(true)
     const q = query(collection(db, 'users'), where('isAdmin', '==', true))
     const snap = await getDocs(q)

@@ -64,7 +64,7 @@ export function TermsTab() {
             Points are a virtual currency with no monetary value outside of the Rippl rewards catalog. Points are non-transferable between accounts, cannot be exchanged for cash, and expire if your account remains inactive for 12 consecutive months.
           </p>
           <p>
-            Rewards are subject to availability and may be modified or discontinued at any time. Once a reward is redeemed, the transaction is final and points cannot be refunded. Physical rewards are shipped to UAE addresses only unless otherwise stated. Delivery timelines are estimates and Rippl is not liable for third-party shipping delays.
+            Rewards are subject to availability and may be modified or discontinued at any time. Once a reward is redeemed, the transaction is final and points cannot be refunded. Physical rewards are available only in supported regions unless otherwise stated. Delivery timelines are estimates and Rippl is not liable for third-party shipping delays.
           </p>
           <p>
             Rippl reserves the right to adjust point values, reward costs, and level thresholds at any time to maintain the integrity and sustainability of the rewards program.
@@ -73,7 +73,7 @@ export function TermsTab() {
 
         <TermsSection icon={<CreditCard size={16} />} title="Rippl Premium Subscription" color="text-gulf-400">
           <p>
-            Rippl Premium is a monthly subscription billed at 15 AED per month. Payment is processed securely through Stripe. Your subscription renews automatically unless cancelled at least 24 hours before the end of the current billing period.
+            Rippl Premium is a monthly subscription billed at $4 per month. Payment is processed securely through Stripe. Your subscription renews automatically unless cancelled at least 24 hours before the end of the current billing period.
           </p>
           <p>
             Premium benefits including ad-free experience, exclusive rewards access, and unlimited AI verifications are active only while your subscription is current. Cancellation takes effect at the end of your paid period and no partial refunds are issued. If payment fails, access to Premium features is suspended until the outstanding balance is resolved.
@@ -89,7 +89,7 @@ export function TermsTab() {
             <li>Create multiple accounts to circumvent bans or limits</li>
             <li>Post offensive, discriminatory, or harmful content in community features</li>
             <li>Attempt to access other users' accounts or data</li>
-            <li>Use Rippl for any purpose that violates UAE law or applicable international regulations</li>
+            <li>Use Rippl for any purpose that violates applicable laws or regulations</li>
           </ul>
           <p>
             Violations may result in point deductions, account suspension, or permanent termination without prior notice and without refund of any subscription fees paid.
@@ -110,7 +110,7 @@ export function TermsTab() {
 
         <TermsSection icon={<Mail size={16} />} title="Governing Law and Contact" color="text-oasis-500">
           <p>
-            These Terms of Service are governed by the laws of the United Arab Emirates. Any disputes arising under these terms shall be subject to the exclusive jurisdiction of the courts of Dubai, UAE.
+            These Terms of Service are governed by the laws applicable to the service provider, except where local consumer protection law requires otherwise.
           </p>
           <p>
             For questions about these terms, contact us at legal@rippl.eco. For general support, reach us at support@rippl.eco. For enterprise or partnership inquiries, contact enterprise@rippl.eco.

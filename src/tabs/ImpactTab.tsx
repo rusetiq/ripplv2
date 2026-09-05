@@ -23,7 +23,7 @@ const badgeDefs: Badge[] = [
   { id: 'b5', name: 'Net Zero Hero', description: 'Offset 500 kg CO₂', Icon: Globe, gradient: 'from-oasis-500 to-gulf-400', glowColor: 'rgba(62, 157, 115, 0.3)' },
   { id: 'b6', name: 'Desert Bloom', description: '30-day streak', Icon: Flower, gradient: 'from-oasis-300 to-dune-400', glowColor: 'rgba(156, 221, 182, 0.3)' },
   { id: 'b7', name: 'Carbon Crusher', description: 'Offset 1,000 kg CO₂', Icon: Shield, gradient: 'from-ember-400 to-dune-500', glowColor: 'rgba(217, 119, 86, 0.3)' },
-  { id: 'b8', name: 'UAE Champion', description: 'Reach top 10 UAE rank', Icon: Trophy, gradient: 'from-dune-300 to-dune-500', glowColor: 'rgba(237, 214, 154, 0.3)' },
+  { id: 'b8', name: 'Community Champion', description: 'Reach the top 10 community rank', Icon: Trophy, gradient: 'from-dune-300 to-dune-500', glowColor: 'rgba(237, 214, 154, 0.3)' },
 ]
 
 function getWeekDates() {
@@ -96,31 +96,30 @@ export function ImpactTab() {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.2 }}
-      className="px-4 pb-4"
+      className="px-4 pb-4 md:px-0"
     >
       <div className="mb-5 pt-1">
-        <h2 className="font-display text-[13px] tracking-[0.2em] text-text-primary">YOUR IMPACT</h2>
-        <p className="font-mono text-[10px] text-text-muted mt-0.5">cumulative sustainability metrics</p>
+        <p className="gallery-label mb-1.5 text-text-muted">All time</p>
+        <h2 className="font-display text-[26px] leading-tight text-text-primary">Your impact</h2>
+        <p className="mt-1 text-[13px] text-text-muted">What your everyday choices have changed.</p>
       </div>
 
-      <div className="relative bg-surface-raised/60 backdrop-blur-sm rounded-2xl border border-border p-5 mb-4 overflow-hidden">
-        <div className="absolute top-0 right-0 w-32 h-32 bg-oasis-400/[0.04] rounded-full blur-[60px] -translate-y-1/2 translate-x-1/2" />
+      <div className="relative rounded-lg border border-border bg-[#080808] p-5 mb-4 overflow-hidden text-white">
         <div className="flex items-center gap-2 mb-4">
-          <Target size={14} className="text-oasis-400" />
-          <span className="font-body text-[11px] font-semibold text-text-primary tracking-wide">NET ZERO 2050 CONTRIBUTION</span>
+          <Target size={14} />
+          <span className="gallery-label">Net zero contribution</span>
         </div>
-        <div className="relative h-2.5 bg-surface-overlay rounded-full overflow-hidden mb-3">
+        <div className="relative h-2 bg-black/20 rounded-full overflow-hidden mb-3">
           <motion.div
             initial={{ width: 0 }}
             animate={{ width: `${netZeroProgress}%` }}
             transition={{ duration: 1.2, ease: [0.25, 0.46, 0.45, 0.94], delay: 0.3 }}
-            className="h-full rounded-full bg-gradient-to-r from-oasis-500 via-oasis-400 to-gulf-400"
+            className="h-full rounded-full bg-white"
           />
-          <div className="absolute inset-0 rounded-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer" />
         </div>
         <div className="flex justify-between">
-          <span className="font-mono text-[10px] text-oasis-400">{co2Saved.toFixed(1)} kg CO₂</span>
-          <span className="font-mono text-[10px] text-text-muted">{netZeroTarget} kg goal</span>
+          <span className="font-mono text-[10px] text-white">{co2Saved.toFixed(1)} kg CO₂</span>
+          <span className="font-mono text-[10px] text-white/70">{netZeroTarget} kg goal</span>
         </div>
       </div>
 
@@ -290,12 +289,14 @@ function MetricCard({ icon, value, unit, label, delay }: {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay, duration: 0.4 }}
-      className="bg-surface-raised/50 backdrop-blur-sm rounded-xl border border-border p-3 flex flex-col items-center text-center"
+      className="gallery-card min-h-36 p-4 flex flex-col items-start justify-between text-left"
     >
-      <div className="mb-2">{icon}</div>
-      <span className="font-display text-[16px] text-text-primary leading-none">{value}</span>
-      <span className="font-mono text-[8px] text-text-muted mt-0.5">{unit}</span>
-      <span className="font-mono text-[7px] text-text-muted mt-0.5 uppercase tracking-wider">{label}</span>
+      <div>{icon}</div>
+      <div>
+        <span className="block font-display text-[28px] text-text-primary leading-none">{value}</span>
+        <span className="mt-1 block font-mono text-[9px] text-text-muted">{unit}</span>
+      </div>
+      <span className="gallery-label text-text-muted">{label}</span>
     </motion.div>
   )
 }

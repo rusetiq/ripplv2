@@ -1,0 +1,14 @@
+{
+  "regions": [
+    { "id": "top-navigation", "kind": "chrome", "grid": "A0:J0", "note": "compact global navigation and account controls" },
+    { "id": "impact-ribbon", "kind": "text", "grid": "A1:J1", "note": "unboxed daily impact measurements" },
+    { "id": "feed-composer", "kind": "control", "grid": "A2:F2", "note": "compact action composer" },
+    { "id": "bike-evidence", "kind": "image", "grid": "A3:D5", "bleed": true, "note": "dynamic user-submitted bicycle evidence image cropped edge-to-edge" },
+    { "id": "bike-entry", "kind": "text", "grid": "D3:F5", "note": "community action entry metadata and impact" },
+    { "id": "next-action-rail", "kind": "control", "grid": "G2:J5", "note": "suggested next actions with points and impact" },
+    { "id": "meal-evidence", "kind": "image", "grid": "A6:D8", "bleed": true, "note": "dynamic user-submitted meal evidence image cropped edge-to-edge" },
+    { "id": "meal-entry", "kind": "text", "grid": "D6:F8", "note": "community action entry metadata and impact" },
+    { "id": "weekly-rhythm", "kind": "control", "grid": "G6:J9", "note": "weekly progress bars and total" },
+    { "id": "continuing-feed", "kind": "text", "grid": "A9:F9", "note": "continuing chronological feed" }
+  ]
+}

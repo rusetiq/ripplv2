@@ -1,27 +1,17 @@
 import { useApp } from '../App'
-import { Flame, Waves } from 'lucide-react'
+import { Moon, Shield, Sun, ArrowUpRight, Plus, User } from 'lucide-react'
+import { navTabs } from './navigation'
 
 export function StatusBar() {
-  const { points, streak, level } = useApp()
-
-  return (
-    <div className="relative z-10 flex items-center justify-between px-5 pt-3 pb-2">
-      <div className="flex items-center gap-3">
-        <Waves size={20} className="text-oasis-400" strokeWidth={1.5} />
-        <div>
-          <h1 className="font-display text-base tracking-[0.08em] text-text-primary leading-none">RIPPL</h1>
-          <div className="flex items-center gap-1.5 mt-1">
-            <span className="font-mono text-[9px] text-oasis-400 font-medium">Lvl {level}</span>
-            <span className="font-mono text-[9px] text-text-muted">• {points.toLocaleString()} pts</span>
-          </div>
-        </div>
-      </div>
-      <div className="flex items-center gap-3">
-        <div className="flex items-center gap-1 bg-surface-raised/80 backdrop-blur-sm rounded-full px-2.5 py-1 border border-border">
-          <Flame size={11} className="text-ember-400" />
-          <span className="font-mono text-[10px] text-ember-400 font-medium">{streak}</span>
-        </div>
-      </div>
-    </div>
-  )
+  const { points, level, darkMode, setDarkMode, activeTab, setActiveTab, isAdmin, user, setShowSignIn } = useApp()
+  return <aside className="dashboard-sidebar">
+    <a href="/" className="dashboard-brand" aria-label="rippl home"><span className="rippl-brand-mark" aria-hidden="true"/>rippl</a>
+    <div className="sidebar-heading">Your space</div>
+    <nav className="dashboard-navigation" aria-label="Main navigation">
+      {navTabs.map(({ id, label, icon: Icon }) => <button key={id} onClick={() => setActiveTab(id)} aria-current={activeTab === id ? 'page' : undefined} className={activeTab === id ? 'is-active' : ''}><Icon size={19} strokeWidth={1.5}/><span>{label}</span>{activeTab === id && <ArrowUpRight size={17}/>}</button>)}
+      {isAdmin && <button onClick={() => setActiveTab('admin')} aria-current={activeTab === 'admin' ? 'page' : undefined}><Shield size={19}/><span>Admin</span></button>}
+    </nav>
+    <div className="sidebar-invitation"><span className="small-pill">One step at a time</span><h2>A little good.<br/>Every day.</h2><p>Your next small choice could be the start of something.</p><button onClick={() => user ? setActiveTab('log') : setShowSignIn(true)}>Log an action <Plus size={18}/></button></div>
+    <div className="sidebar-bottom"><button className="sidebar-profile" onClick={() => user ? setActiveTab('profile') : setShowSignIn(true)}><span className="profile-circle"><User size={19}/></span><span>{user ? user.displayName || 'Your profile' : 'Make yourself at home'}<small>{user ? `Level ${level} · ${points.toLocaleString()} points` : 'Sign in to save your progress'}</small></span></button><button className="theme-button" onClick={() => setDarkMode(!darkMode)} aria-label={darkMode ? 'Use light mode' : 'Use dark mode'}>{darkMode ? <Sun size={18}/> : <Moon size={18}/>}</button></div>
+  </aside>
 }

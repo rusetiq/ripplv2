@@ -122,7 +122,7 @@ export function ShareCard({ open, onClose }: ShareCardProps) {
               style={{
                 background: loaded && bg
                   ? `linear-gradient(rgba(6,13,9,0.55) 0%, rgba(6,13,9,0.35) 40%, rgba(6,13,9,0.8) 100%), url(${bg}) center / cover no-repeat`
-                  : '#060d09',
+                  : '#070607',
               }}
             >
               <div
@@ -138,7 +138,7 @@ export function ShareCard({ open, onClose }: ShareCardProps) {
                     background: 'linear-gradient(135deg, #34d399, #22d3ee)',
                     WebkitBackgroundClip: 'text',
                     WebkitTextFillColor: 'transparent',
-                    fontFamily: '"Climate Crisis", cursive',
+                    fontFamily: '"DM Serif Display", Georgia, serif',
                   }}
                 >
                   RIPPL
@@ -148,7 +148,7 @@ export function ShareCard({ open, onClose }: ShareCardProps) {
               <div className="absolute top-28 left-0 right-0 flex flex-col items-center">
                 <p
                   className="text-xl font-bold text-center px-8 leading-tight mb-4"
-                  style={{ color: 'rgba(232, 228, 220, 0.95)', fontFamily: '"Anybody", sans-serif' }}
+                  style={{ color: 'rgba(245, 245, 247, 0.95)', fontFamily: '"Inter", sans-serif' }}
                 >
                   {displayName}
                 </p>
@@ -185,7 +185,7 @@ export function ShareCard({ open, onClose }: ShareCardProps) {
                       <span
                         className="text-lg font-bold block leading-tight mt-0.5"
                         style={{
-                          fontFamily: '"Climate Crisis", cursive',
+                          fontFamily: '"DM Serif Display", Georgia, serif',
                           color: 'rgba(232, 228, 220, 0.95)',
                         }}
                       >
@@ -210,7 +210,7 @@ export function ShareCard({ open, onClose }: ShareCardProps) {
               whileTap={{ scale: 0.96 }}
               onClick={handleShare}
               disabled={capturing}
-              className="flex items-center gap-2.5 px-8 py-3 rounded-2xl text-surface font-body text-[13px] font-bold shadow-lg disabled:opacity-60"
+              className="flex items-center gap-2.5 px-8 py-3 rounded-2xl text-surface font-body text-[13px] font-bold disabled:opacity-60"
               style={{
                 background: 'linear-gradient(135deg, #34d399, #22d3ee)',
                 boxShadow: '0 8px 24px rgba(52, 211, 153, 0.2)',

@@ -42,11 +42,11 @@ const REWARD_IMAGES: Record<string, string> = {
 }
 
 const rewards: Reward[] = [
-  { id: 'r1', name: 'Metro Day Pass', description: 'Unlimited travel on the Dubai Metro for one full day', cost: 220, level: 1, image: REWARD_IMAGES.r1, Icon: Recycle, gradient: 'from-oasis-400 to-oasis-500', glowColor: 'rgba(52,211,153,0.18)', accent: 'text-oasis-400', tag: 'Transit' },
+  { id: 'r1', name: 'Transit Day Pass', description: 'A day of low-carbon local travel with a participating partner', cost: 220, level: 1, image: REWARD_IMAGES.r1, Icon: Recycle, gradient: 'from-oasis-400 to-oasis-500', glowColor: 'rgba(52,211,153,0.18)', accent: 'text-oasis-400', tag: 'Transit' },
   { id: 'r2', name: 'Organic Coffee', description: 'Single cup of specialty organic coffee at partner cafes', cost: 700, level: 1, image: REWARD_IMAGES.r2, Icon: Leaf, gradient: 'from-oasis-300 to-gulf-400', glowColor: 'rgba(103,232,249,0.15)', accent: 'text-gulf-400', tag: 'Food' },
-  { id: 'r3', name: 'Plant a Mangrove', description: 'One native mangrove planted in the UAE coastal zone', cost: 750, level: 2, image: REWARD_IMAGES.r3, Icon: TreePine, gradient: 'from-gulf-400 to-gulf-500', glowColor: 'rgba(34,211,238,0.18)', accent: 'text-gulf-400', tag: 'Planet' },
+  { id: 'r3', name: 'Plant a Native Tree', description: 'Fund a locally appropriate tree through a restoration partner', cost: 750, level: 2, image: REWARD_IMAGES.r3, Icon: TreePine, gradient: 'from-gulf-400 to-gulf-500', glowColor: 'rgba(34,211,238,0.18)', accent: 'text-gulf-400', tag: 'Planet' },
   { id: 'r4', name: 'Thermal Travel Cup', description: 'Double-walled stainless steel insulated travel mug', cost: 1500, level: 3, image: REWARD_IMAGES.r4, Icon: Droplets, gradient: 'from-gulf-300 to-oasis-400', glowColor: 'rgba(103,232,249,0.18)', accent: 'text-gulf-300', tag: 'Gear' },
-  { id: 'r5', name: 'Dining Voucher', description: '50 AED voucher for certified organic local restaurants', cost: 2000, level: 4, image: REWARD_IMAGES.r5, Icon: ShoppingBag, gradient: 'from-oasis-500 to-oasis-600', glowColor: 'rgba(16,185,129,0.18)', accent: 'text-oasis-500', tag: 'Food' },
+  { id: 'r5', name: 'Dining Voucher', description: 'A $15 voucher for a sustainable local food partner', cost: 2000, level: 4, image: REWARD_IMAGES.r5, Icon: ShoppingBag, gradient: 'from-oasis-500 to-oasis-600', glowColor: 'rgba(16,185,129,0.18)', accent: 'text-oasis-500', tag: 'Food' },
   { id: 'r6', name: 'Solar Power Bank', description: 'Compact 10,000 mAh solar charger for mobile devices', cost: 3600, level: 5, image: REWARD_IMAGES.r6, Icon: Zap, gradient: 'from-dune-400 to-ember-400', glowColor: 'rgba(251,191,36,0.18)', accent: 'text-dune-400', tag: 'Tech' },
   { id: 'r7', name: 'Eco Cleaning Kit', description: 'Three zero-plastic concentrated cleaning refill pods', cost: 5000, level: 6, image: REWARD_IMAGES.r7, Icon: Shield, gradient: 'from-oasis-400 to-dune-400', glowColor: 'rgba(52,211,153,0.15)', accent: 'text-oasis-400', tag: 'Home' },
   { id: 'r8', name: 'Premium Plant Pod', description: 'Self-watering seed kit for a home herb garden', cost: 8000, level: 8, image: REWARD_IMAGES.r8, Icon: Sparkles, gradient: 'from-ember-400 to-dune-300', glowColor: 'rgba(251,146,60,0.18)', accent: 'text-ember-400', tag: 'Rare' },
@@ -88,7 +88,7 @@ export function RewardsTab() {
       if (!snap.empty) {
         setSponsored(snap.docs.map(d => ({ id: d.id, ...(d.data() as Omit<SponsoredReward, 'id'>) })))
       }
-    })
+    }, (error) => console.warn('Unable to load sponsored rewards.', error))
     return unsub
   }, [])
 
@@ -130,7 +130,7 @@ export function RewardsTab() {
 
         <div
           className="rounded-3xl border border-border overflow-hidden relative"
-          style={{ background: 'linear-gradient(135deg, #111916 0%, #0d1a14 100%)' }}
+          style={{ background: 'linear-gradient(135deg, #141311 0%, #0d0c0c 100%)' }}
         >
           <div
             className="absolute inset-0 pointer-events-none"
@@ -195,7 +195,7 @@ export function RewardsTab() {
             <div
               className="rounded-3xl overflow-hidden relative"
               style={{
-                background: 'linear-gradient(145deg, #131f18 0%, #0d1710 100%)',
+                background: 'linear-gradient(145deg, #141210 0%, #0b0a0a 100%)',
                 border: '1px solid rgba(167,154,124,0.1)',
                 boxShadow: `0 0 60px ${selectedReward.glowColor}`,
               }}
@@ -209,7 +209,7 @@ export function RewardsTab() {
                 className="w-full h-48 bg-cover bg-center relative"
                 style={{ backgroundImage: `url('${selectedReward.image}')` }}
               >
-                <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, transparent 40%, #131f18 100%)' }} />
+                <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, transparent 40%, #141210 100%)' }} />
               </div>
 
               <div className="p-6 relative z-10 text-center -mt-8">
@@ -285,7 +285,8 @@ export function RewardsTab() {
           <motion.div key="list" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
             <div className="mb-6 pt-1 flex items-start justify-between">
               <div>
-                <h2 className="font-display text-[28px] tracking-[0.1em] text-text-primary uppercase leading-none">REWARDS</h2>
+                <p className="gallery-label mb-1.5 text-text-muted">Marketplace</p>
+                <h2 className="font-display text-[26px] text-text-primary leading-tight">Rewards</h2>
                 <p className="font-body text-[11px] text-text-muted tracking-wide mt-1.5 lowercase">redeem points for a better world</p>
               </div>
               <div

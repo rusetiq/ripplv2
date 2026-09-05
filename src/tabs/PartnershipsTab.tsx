@@ -20,7 +20,7 @@ export function PartnershipsTab() {
           <Handshake size={32} className="text-oasis-400 mb-4" />
           <h3 className="font-display text-[20px] text-text-primary leading-tight">Brand Ecosystem</h3>
           <p className="font-body text-[13px] text-text-secondary mt-2">
-            Connect your sustainable brand with a highly engaged audience actively making eco-conscious decisions in the UAE. Rippl partners reach users at the exact moment they are logging sustainable actions, making it the most contextually relevant channel in the green economy.
+            Connect your sustainable brand with a highly engaged audience actively making eco-conscious decisions. Rippl partners reach users at the exact moment they are logging sustainable actions, making it a relevant channel in the green economy.
           </p>
         </div>
       </div>
@@ -40,7 +40,7 @@ export function PartnershipsTab() {
         <PartnerType
           icon={<Megaphone size={20} />}
           title="Impact Campaigns"
-          desc="Sponsor community challenges and environmental initiatives co-branded with your organization. Impact Campaigns place your brand at the center of collective action events such as beach cleanups, tree planting drives, and zero-waste weeks across the UAE."
+          desc="Sponsor community challenges and environmental initiatives co-branded with your organization. Impact Campaigns place your brand at the center of collective action events such as cleanups, tree planting drives, and zero-waste weeks."
         />
         <PartnerType
           icon={<Sparkles size={20} />}
@@ -80,7 +80,7 @@ export function PartnershipsTab() {
       <div className="mt-8 p-6 bg-oasis-400/5 border border-oasis-400/20 rounded-3xl text-center">
         <h4 className="font-body text-[14px] font-bold text-text-primary mb-2">Ready to Rippl?</h4>
         <p className="font-body text-[12px] text-text-secondary mb-6">
-          Join over 50 sustainable brands already active in the UAE ecosystem.
+          Join sustainable brands already growing their impact with the Rippl community.
         </p>
         <button className="inline-flex items-center gap-2 bg-text-primary text-surface px-6 py-3 rounded-2xl font-body text-[13px] font-medium transition-transform active:scale-95">
           Become a Partner

@@ -90,7 +90,7 @@ export function ExtrasTab() {
         </div>
         <h3 className="font-display text-[18px] text-text-primary leading-tight">Support Local Habitats</h3>
         <p className="font-body text-[12px] text-text-secondary mt-2 mb-6 px-4">
-          Every sustainable action logged contributes to our goal of planting 1M Mangroves across the UAE.
+          Every sustainable action logged contributes to our global restoration goal.
         </p>
         <div className="flex items-center justify-center gap-6">
           <div className="text-center">

@@ -1,11 +1,12 @@
 import { motion, AnimatePresence } from 'framer-motion'
-import { Heart, MessageCircle, Leaf, Train, Zap, Droplets, Trash2, X, Send, Image, MoreVertical, Edit2, Trash } from 'lucide-react'
+import { ArrowRight, Camera, Footprints, Heart, MessageCircle, Leaf, Train, Zap, Droplets, Trash2, X, Send, Image, MoreVertical, Edit2, Trash } from 'lucide-react'
 import { useState, useEffect, useRef } from 'react'
 import { useApp } from '../App'
 import { db } from '../firebase'
 import { collection, query, orderBy, limit, onSnapshot, doc, updateDoc, increment, addDoc, serverTimestamp, deleteDoc, getDocs, runTransaction, deleteField } from 'firebase/firestore'
 import { SkeletonCard } from '../components/Skeleton'
 import { compressImage } from '../utils'
+import { DotNumber } from '../components/DotNumber'
 
 interface FeedPost {
   id: string
@@ -38,16 +39,6 @@ const categoryIcons: Record<string, { icon: typeof Leaf; color: string; bg: stri
   water: { icon: Droplets, color: 'text-gulf-300', bg: 'bg-gulf-300/10' },
   waste: { icon: Trash2, color: 'text-ember-400', bg: 'bg-ember-400/10' },
 }
-
-const avatarGradients = [
-  'from-oasis-400 to-gulf-400',
-  'from-dune-400 to-ember-400',
-  'from-gulf-400 to-oasis-500',
-  'from-ember-400 to-dune-300',
-  'from-oasis-500 to-dune-400',
-]
-
-const userAvatarGradient = 'from-oasis-400 to-gulf-400'
 
 function timeAgo(ts: { seconds: number } | null) {
   if (!ts?.seconds) return 'just now'
@@ -91,13 +82,13 @@ function CreatePost({ user }: { user: any }) {
   }
 
   return (
-    <div className="bg-surface-raised/60 backdrop-blur-sm rounded-2xl border border-border p-4 mb-4">
+    <div className="gallery-card p-5 mb-5">
       <textarea
         value={text}
         onChange={e => setText(e.target.value)}
-        placeholder="What's on your mind?"
+        placeholder="Share an action with your community..."
         rows={2}
-        className="w-full bg-transparent font-body text-[13px] text-text-primary placeholder:text-text-muted resize-none outline-none"
+        className="w-full bg-transparent font-body text-[15px] leading-relaxed text-text-primary placeholder:text-text-muted resize-none outline-none"
       />
       {image && (
         <div className="relative mt-2 rounded-xl overflow-hidden border border-border flex justify-center bg-surface-overlay/20">
@@ -115,7 +106,7 @@ function CreatePost({ user }: { user: any }) {
         <button
           onClick={handlePost}
           disabled={!text.trim() || posting}
-          className="flex items-center gap-1.5 bg-oasis-500 hover:bg-oasis-600 disabled:opacity-40 disabled:cursor-not-allowed text-surface rounded-xl px-4 py-1.5 transition-colors"
+          className="gallery-primary flex items-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed px-4 py-2 transition-opacity"
         >
           <span className="font-body text-[11px] font-medium">Post</span>
           {posting ? (
@@ -143,19 +134,114 @@ function CreatePost({ user }: { user: any }) {
   )
 }
 
+const suggestedActions = [
+  { label: 'Take public transport', detail: '35 pts · 2.4 kg CO₂', Icon: Train },
+  { label: 'Choose a plant-based meal', detail: '20 pts · 1.1 kg CO₂', Icon: Leaf },
+  { label: 'Walk instead of driving', detail: '20 pts · 1.2 kg CO₂', Icon: Footprints },
+  { label: 'Take a shorter shower', detail: '25 pts · 60 L', Icon: Droplets },
+]
+
+function ImpactRibbon() {
+  const { user, points, co2Saved, waterSaved, streak } = useApp()
+  const values = [
+    { label: 'Points earned', value: user ? points.toLocaleString() : '—', unit: 'Total', accent: true },
+    { label: 'Carbon saved', value: user ? co2Saved.toFixed(1) : '—', unit: 'kg CO₂' },
+    { label: 'Water saved', value: user ? waterSaved.toLocaleString() : '—', unit: 'litres' },
+    { label: 'Current streak', value: user ? String(streak) : '—', unit: 'days' },
+  ]
+  return <section className="dashboard-stats" aria-label="Your impact summary">{values.map(item => <div key={item.label}><p>{item.label}</p><div><DotNumber value={item.value}/><span className={item.accent ? 'stat-unit stat-accent' : 'stat-unit'}>{item.unit}</span></div></div>)}</section>
+}
+
+function ImpactCards() {
+  const { user, co2Saved, waterSaved, setActiveTab, setShowSignIn } = useApp()
+  return <section className="impact-card-grid" aria-label="Your environmental impact">
+    <button className="impact-card carbon-card" onClick={() => user ? setActiveTab('impact') : setShowSignIn(true)}>
+      <span className="impact-card-heading">Carbon saved</span>
+      <div className="impact-card-value"><DotNumber value={user ? co2Saved.toFixed(1) : '—'}/><span>kg of CO₂ saved</span></div>
+      <span className="impact-card-dots" aria-hidden="true"/>
+    </button>
+    <button className="impact-card water-card" onClick={() => user ? setActiveTab('impact') : setShowSignIn(true)}>
+      <span className="impact-card-heading">Water saved</span>
+      <div className="impact-card-value"><DotNumber value={user ? waterSaved.toLocaleString() : '—'}/><span>litres of water saved</span></div>
+      <span className="impact-card-dots" aria-hidden="true"/>
+    </button>
+  </section>
+}
+
+function GuestActivation() {
+  const { signInWithGoogle } = useApp()
+  return (
+    <section className="guest-welcome">
+      <div className="flex flex-col justify-between gap-5 md:flex-row md:items-center">
+        <div className="max-w-[560px]">
+          <h2 className="text-[24px] font-medium leading-tight text-text-primary">Your next chapter starts small.</h2>
+          <p className="mt-2 max-w-[60ch] text-[13px] leading-5 text-text-muted">Save your everyday wins, find your people, and watch your impact grow.</p>
+        </div>
+        <button onClick={signInWithGoogle} className="gallery-primary inline-flex shrink-0 items-center justify-center gap-2 px-5 py-3 text-[13px] font-medium">Continue with Google <ArrowRight size={15} /></button>
+      </div>
+    </section>
+  )
+}
+
+function FieldStationRail() {
+  const { user, level, streak, setActiveTab, setShowSignIn } = useApp()
+  const chooseAction = () => user ? setActiveTab('log') : setShowSignIn(true)
+
+  return (
+    <aside className="space-y-4 lg:sticky lg:top-0 lg:self-start">
+      <section className="gallery-card overflow-hidden">
+        <div className="flex items-center justify-between border-b border-border px-4 py-3.5">
+          <h2 className="text-[13px] font-medium text-text-primary">Something good for today</h2>
+          <button onClick={chooseAction} className="text-[11px] font-medium text-text-muted transition-colors hover:text-text-primary">See all</button>
+        </div>
+        <div className="divide-y divide-border">
+          {suggestedActions.map(({ label, detail, Icon }) => (
+            <button key={label} onClick={chooseAction} className="group flex w-full items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-surface-overlay active:scale-[0.99]">
+              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-border text-text-secondary transition-colors group-hover:border-oasis-500 group-hover:text-text-primary"><Icon size={16} strokeWidth={1.7} /></span>
+              <span className="min-w-0 flex-1"><span className="block text-[12px] font-medium text-text-primary">{label}</span><span className="mt-0.5 block font-mono text-[9px] text-text-muted">{detail}</span></span>
+              <ArrowRight size={14} className="text-text-muted" />
+            </button>
+          ))}
+        </div>
+      </section>
+
+      <section className="gallery-card p-4">
+        <h2 className="text-[13px] font-medium text-text-primary">Find your rhythm</h2>
+        {user ? (
+          <div className="mt-4 grid grid-cols-2 divide-x divide-border border-y border-border py-3">
+            <div><p className="font-mono text-[20px] text-text-primary">{streak}</p><p className="mt-1 text-[10px] text-text-muted">day streak</p></div>
+            <div className="pl-4"><p className="font-mono text-[20px] text-text-primary">L{level}</p><p className="mt-1 text-[10px] text-text-muted">current level</p></div>
+          </div>
+        ) : (
+          <div className="mt-4 flex gap-3 border-t border-border pt-4"><Camera size={18} className="mt-0.5 shrink-0 text-text-muted" /><p className="text-[11px] leading-5 text-text-muted">One action is all it takes to begin. Come back tomorrow and make it a habit.</p></div>
+        )}
+      </section>
+    </aside>
+  )
+}
+
 export function FeedTab() {
   const [posts, setPosts] = useState<FeedPost[]>([])
   const [loaded, setLoaded] = useState(false)
-  const { user } = useApp()
+  const { user, setActiveTab, setShowSignIn } = useApp()
 
   useEffect(() => {
+    if (!user) {
+      setPosts([])
+      setLoaded(true)
+      return
+    }
+    setLoaded(false)
     const q = query(collection(db, 'posts'), orderBy('timestamp', 'desc'), limit(50))
     const unsub = onSnapshot(q, (snap) => {
       setPosts(snap.docs.map(d => ({ id: d.id, ...d.data() } as FeedPost)))
       setLoaded(true)
+    }, (error) => {
+      console.warn('Unable to load the community feed.', error)
+      setLoaded(true)
     })
     return unsub
-  }, [])
+  }, [user])
 
   return (
     <motion.div
@@ -164,38 +250,29 @@ export function FeedTab() {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.2 }}
-      className="px-4 pb-4"
+      className="dashboard-overview"
     >
-      <div className="flex items-center justify-between mb-4 pt-1">
-        <div>
-          <h2 className="font-display text-[24px] tracking-[0.1em] text-text-primary">THE FEED</h2>
-          <p className="font-mono text-[10px] text-text-muted mt-0.5">ripples across the UAE</p>
-        </div>
-        <div className="flex items-center gap-1.5 bg-oasis-500/10 rounded-full px-3 py-1">
-          <div className="w-1.5 h-1.5 rounded-full bg-oasis-400 animate-ripple-pulse" />
-          <span className="font-mono text-[10px] text-oasis-400">Live</span>
-        </div>
+      <div className="dashboard-greeting">
+        <div><h1>{user ? `Hello, ${user.displayName?.split(' ')[0] || 'you'}.` : 'A little better, every day.'}</h1><p>Your everyday choices. A positive difference.</p></div>
+        <button onClick={() => user ? setActiveTab('log') : setShowSignIn(true)} className="gallery-primary dashboard-log">Log an action <Camera size={18}/></button>
       </div>
+      <ImpactRibbon />
+      <ImpactCards />
+      {!user && <GuestActivation />}
 
-      {user && <CreatePost user={user} />}
-
-      {!loaded ? (
-        <div className="space-y-3">
-          {Array.from({ length: 3 }).map((_, i) => <SkeletonCard key={i} />)}
+      <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
+        <div className="min-w-0"><div className="community-heading"><h2>Better together</h2><p>Everyday wins from the Rippl community.</p></div>
+          {user && <CreatePost user={user} />}
+          {!loaded ? (
+            <div className="space-y-3">{Array.from({ length: 3 }).map((_, i) => <SkeletonCard key={i} />)}</div>
+          ) : posts.length === 0 ? (
+            <div className="community-empty"><p className="text-[13px] text-text-primary">{user ? 'Be the first to share a little good.' : 'Good things happen together.'}</p>{!user && <p className="community-empty-detail">Sign in to see what others are doing and share your own small wins.</p>}{user && <button onClick={() => setActiveTab('log')} className="mt-3 text-[12px] font-medium text-text-muted underline underline-offset-4">Log the first action</button>}</div>
+          ) : (
+            <div className="flex flex-col space-y-3"><AnimatePresence mode="popLayout" initial={false}>{posts.map((post, i) => <FeedCard key={post.id} post={post} index={i} />)}</AnimatePresence></div>
+          )}
         </div>
-      ) : posts.length === 0 ? (
-        <div className="text-center py-16">
-          <p className="font-mono text-[11px] text-text-muted">No activity yet. Be the first to post!</p>
-        </div>
-      ) : (
-        <div className="space-y-3 flex flex-col">
-          <AnimatePresence mode="popLayout" initial={false}>
-            {posts.map((post, i) => (
-              <FeedCard key={post.id} post={post} index={i} />
-            ))}
-          </AnimatePresence>
-        </div>
-      )}
+        <FieldStationRail />
+      </div>
     </motion.div>
   )
 }
@@ -314,15 +391,15 @@ function FeedCard({ post, index }: { post: FeedPost; index: number }) {
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.8, height: 0, padding: 0, marginTop: 0, marginBottom: 0, border: 0 }}
         transition={{ delay: index * 0.08, duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
-        className="bg-surface-raised/60 backdrop-blur-sm rounded-2xl border border-border p-4 group hover:border-border-active transition-colors duration-300 overflow-hidden"
+        className="gallery-card p-5 group hover:bg-surface-overlay transition-colors duration-300 overflow-hidden"
       >
         <div className="flex items-start gap-3">
-          <div className={`w-9 h-9 rounded-full bg-gradient-to-br ${isOwner ? userAvatarGradient : avatarGradients[index % avatarGradients.length]} flex items-center justify-center shrink-0`}>
-            <span className="text-[10px] font-body font-bold text-surface">{post.userAvatar}</span>
+          <div className="w-10 h-10 rounded-full border border-white/15 bg-black flex items-center justify-center shrink-0">
+            <span className="text-[10px] font-mono font-medium text-white">{post.userAvatar}</span>
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
-              <span className="font-body text-[13px] font-semibold text-text-primary">{post.userName}</span>
+              <span className="font-body text-[13px] font-medium text-text-primary">{post.userName}</span>
               <span className="font-mono text-[9px] text-text-muted">{timeAgo(post.timestamp)}</span>
             </div>
             {editing ? (
@@ -339,7 +416,7 @@ function FeedCard({ post, index }: { post: FeedPost; index: number }) {
                 </div>
               </div>
             ) : (
-              <p className="font-body text-[12px] text-text-secondary mt-1 leading-relaxed">{post.action}</p>
+              <p className="font-body text-[14px] text-text-secondary mt-2 leading-relaxed">{post.action}</p>
             )}
             {post.imageBase64 && (
               <div className="mt-2 rounded-xl overflow-hidden border border-border flex justify-center bg-surface-overlay/20">
@@ -348,12 +425,12 @@ function FeedCard({ post, index }: { post: FeedPost; index: number }) {
             )}
             {post.category && cat && (
               <div className="flex items-center gap-2 mt-2.5">
-                <div className={`flex items-center gap-1.5 ${cat.bg} rounded-full px-2 py-0.5`}>
+                <div className="flex items-center gap-1.5 rounded-lg border border-border bg-surface-overlay px-2.5 py-1">
                   <cat.icon size={10} className={cat.color} />
-                  <span className={`font-mono text-[9px] ${cat.color}`}>{post.impact}</span>
+                  <span className="font-mono text-[9px] text-text-secondary">{post.impact}</span>
                 </div>
-                <div className="flex items-center gap-1 bg-oasis-400/8 rounded-full px-2 py-0.5">
-                  <span className="font-mono text-[9px] text-oasis-400">+{post.points} pts</span>
+                <div className="flex items-center gap-1 rounded-lg border border-border bg-surface-overlay px-2.5 py-1">
+                  <span className="font-mono text-[9px] text-text-secondary">+{post.points} pts</span>
                 </div>
               </div>
             )}
@@ -367,7 +444,7 @@ function FeedCard({ post, index }: { post: FeedPost; index: number }) {
                 <motion.div
                   initial={{ opacity: 0, scale: 0.95, y: -4 }}
                   animate={{ opacity: 1, scale: 1, y: 0 }}
-                  className="absolute right-0 top-8 z-50 bg-surface-raised border border-border rounded-xl p-1.5 shadow-xl min-w-[120px]"
+                  className="absolute right-0 top-8 z-50 bg-surface-raised border border-border rounded-xl p-1.5 min-w-[120px]"
                 >
                   <button
                     onClick={() => { setEditing(true); setMenuOpen(false); setEditText(post.action) }}

@@ -31,7 +31,7 @@ export function PrivacyTab() {
       <div className="space-y-4">
         <PolicySection icon={<Shield size={16} />} title="Data Protection" color="text-oasis-400">
           <p>
-            Rippl is committed to protecting your personal data in full compliance with applicable UAE and international privacy regulations. We collect the minimum information required to operate the platform, including your name, email address, profile photo, and activity logs tied to your sustainability actions.
+            Rippl is committed to protecting your personal data in accordance with applicable privacy regulations. We collect the minimum information required to operate the platform, including your name, email address, profile photo, and activity logs tied to your sustainability actions.
           </p>
           <p>
             All data is encrypted in transit using TLS and stored on secure, access-controlled servers. We conduct regular security audits and apply industry best practices to prevent unauthorized access, disclosure, or loss of your information.
@@ -46,7 +46,7 @@ export function PrivacyTab() {
             <li>Environmental metrics: CO2 saved, water conserved, and streak data</li>
             <li>Reward history: points balance and redeemed rewards</li>
             <li>Device and usage data: app version, session timestamps, and interaction patterns</li>
-            <li>Location context: city-level region used to power UAE leaderboards</li>
+            <li>Location context: city-level region used to power relevant community features</li>
           </ul>
         </PolicySection>
 

@@ -14,7 +14,6 @@ import { CorporateTab } from './tabs/CorporateTab'
 import { PartnershipsTab } from './tabs/PartnershipsTab'
 import { ExtrasTab } from './tabs/ExtrasTab'
 import { TermsTab } from './tabs/TermsTab'
-import { LandingPage } from './LandingPage'
 import { SignInModal } from './components/SignInModal'
 import { auth, db, googleProvider } from './firebase'
 import { signInWithPopup, onAuthStateChanged, signOut as fbSignOut, type User } from 'firebase/auth'
@@ -35,8 +34,10 @@ interface AppContextType {
   addWater: (n: number) => void
   darkMode: boolean
   setDarkMode: (d: boolean) => void
+  syncError: string | null
   user: User | null
   userData: UserData | null
+  isAdmin: boolean
   signInWithGoogle: () => Promise<void>
   signOut: () => Promise<void>
   showSignIn: boolean
@@ -88,18 +89,24 @@ const defaultBadges = {
 
 function App() {
   const [activeTab, setActiveTab] = useState<Tab>('feed')
-  const [darkMode, setDarkMode] = useState(true)
+  const [darkMode, setDarkMode] = useState(() => {
+    const savedTheme = localStorage.getItem('rippl-field-theme')
+    return savedTheme ? savedTheme === 'dark' : false
+  })
   const [user, setUser] = useState<User | null>(null)
+  const [isAdmin, setIsAdmin] = useState(false)
   const [userData, setUserData] = useState<UserData>(emptyUserData)
   const [ready, setReady] = useState(false)
   const [showSignIn, setShowSignIn] = useState(false)
   const [isAuthenticating, setIsAuthenticating] = useState(false)
   const [authFinished, setAuthFinished] = useState(false)
   const [authFailed, setAuthFailed] = useState(false)
+  const [syncError, setSyncError] = useState<string | null>(null)
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (fbUser) => {
+    const unsub = onAuthStateChanged(auth, async (fbUser) => {
       setUser(fbUser)
+      setIsAdmin(fbUser ? (await fbUser.getIdTokenResult()).claims.admin === true : false)
       setReady(true)
     })
     return unsub
@@ -111,30 +118,24 @@ function App() {
       return
     }
     const userRef = doc(db, 'users', user.uid)
-        const unsub = onSnapshot(userRef, (snap) => {
-          if (snap.exists()) {
-            const data = snap.data() as UserData
-            setUserData(data)
-            if (user.email) {
-              const email = user.email.toLowerCase()
-              const updates: any = {}
-              if ((data as any).email !== email) updates.email = email
-              if (email === 'aarush.uae@gmail.com' && !data.isAdmin) updates.isAdmin = true
-              
-              if (Object.keys(updates).length > 0) {
-                updateDoc(userRef, updates).catch(() => {})
-              }
-            }
-          } else {
+    const unsub = onSnapshot(userRef, (snap) => {
+      setSyncError(null)
+      if (snap.exists()) {
+        const data = snap.data() as UserData
+        setUserData(data)
+      } else {
         setDoc(userRef, {
           ...emptyUserData,
           displayName: user.displayName ?? '',
           photoURL: user.photoURL ?? '',
           email: user.email?.toLowerCase() ?? '',
           badges: defaultBadges,
-          isAdmin: user.email?.toLowerCase() === 'aarush.uae@gmail.com',
+          isAdmin: false,
         })
       }
+    }, (error) => {
+      console.warn('Unable to sync the user profile.', error)
+      setSyncError('Your account could not sync. Please refresh or check your Firestore access.')
     })
     return unsub
   }, [user])
@@ -167,10 +168,10 @@ function App() {
           if (action.includes('metro')) metroCount++
           if (action.includes('solar')) solarCount++
         })
-        
+
         if (metroCount >= 10 && !newBadges.b2?.unlocked) { newBadges.b2 = { unlocked: true, progress: 100 }; updated = true }
         if (solarCount >= 5 && !newBadges.b4?.unlocked) { newBadges.b4 = { unlocked: true, progress: 100 }; updated = true }
-        
+
         if (!newBadges.b2?.unlocked) {
           const p = Math.min(Math.floor((metroCount / 10) * 100), 99)
           if (p > (newBadges.b2?.progress || 0)) { newBadges.b2 = { unlocked: false, progress: p }; updated = true }
@@ -192,6 +193,7 @@ function App() {
     } else {
       document.documentElement.classList.add('light-mode')
     }
+    localStorage.setItem('rippl-field-theme', darkMode ? 'dark' : 'light')
   }, [darkMode])
 
   const signInWithGoogle = async () => {
@@ -279,7 +281,9 @@ function App() {
       level,
       waterSaved: userData.waterSaved, addWater,
       darkMode, setDarkMode,
+      syncError,
       user, userData,
+      isAdmin,
       signInWithGoogle, signOut,
       showSignIn, setShowSignIn,
     }}>
@@ -289,25 +293,25 @@ function App() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className={`fixed inset-0 z-[100] flex flex-col items-center justify-center transition-colors duration-700 ${authFinished ? 'bg-[#b7ff3c]' : authFailed ? 'bg-red-500' : 'bg-surface'}`}
+            className={`fixed inset-0 z-[100] flex flex-col items-center justify-center transition-colors duration-700 ${authFinished ? 'bg-oasis-500' : authFailed ? 'bg-red-500' : 'bg-surface'}`}
           >
-            <motion.h1 
+            <motion.h1
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              className={`font-display text-[42px] tracking-widest mb-8 transition-colors duration-700 ${authFinished || authFailed ? 'text-[#07110d]' : 'text-[#b7ff3c]'}`}
+              className={`font-display text-[42px] mb-8 transition-colors duration-700 ${authFinished || authFailed ? 'text-black' : 'text-text-primary'}`}
             >
               RIPPL
             </motion.h1>
-            
+
             <div className="w-48 h-1 bg-surface-raised rounded-full overflow-hidden relative">
-              <motion.div 
+              <motion.div
                 initial={{ x: '-100%' }}
                 animate={{ x: authFinished || authFailed ? '0%' : '100%' }}
                 transition={{ repeat: authFinished || authFailed ? 0 : Infinity, duration: 1.5, ease: "linear" }}
-                className={`absolute inset-0 transition-colors duration-700 ${authFinished || authFailed ? 'bg-[#07110d]' : 'bg-[#b7ff3c]'}`}
+                className={`absolute inset-0 transition-colors duration-700 ${authFinished || authFailed ? 'bg-black' : 'bg-white'}`}
               />
             </div>
-            
+
             <p className={`font-mono text-[10px] uppercase tracking-[0.2em] mt-4 transition-colors duration-700 ${authFinished || authFailed ? 'text-[#07110d]' : 'text-text-muted'}`}>
               {authFinished ? 'Authenticated' : authFailed ? 'Authentication Failed' : 'authenticating...'}
             </p>
@@ -315,15 +319,11 @@ function App() {
         )}
       </AnimatePresence>
 
-      {user ? (
-        <AppShell>
-          <AnimatePresence mode="wait">
-            {renderTab()}
-          </AnimatePresence>
-        </AppShell>
-      ) : (
-        <LandingPage />
-      )}
+      <AppShell>
+        <AnimatePresence mode="wait">
+          {renderTab()}
+        </AnimatePresence>
+      </AppShell>
       <SignInModal />
     </AppContext.Provider>
   )
