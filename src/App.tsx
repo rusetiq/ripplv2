@@ -89,7 +89,7 @@ const defaultBadges = {
 }
 
 function App() {
-  const [activeTab, setActiveTab] = useState<Tab>('feed')
+  const [activeTab, setActiveTab] = useState<Tab>(() => window.location.pathname === '/app/terms' ? 'terms' : window.location.pathname === '/app/privacy' ? 'privacy' : 'feed')
   const [darkMode, setDarkMode] = useState(() => {
     const savedTheme = localStorage.getItem('rippl-field-theme')
     return savedTheme ? savedTheme === 'dark' : false

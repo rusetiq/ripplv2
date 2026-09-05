@@ -1,10 +1,9 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
   ArrowUpRight,
   ArrowRight,
   Plus,
   Minus,
-  Menu,
   Sparkles,
   Check,
   Crown,
@@ -16,6 +15,7 @@ import {
   ShieldCheck,
 } from 'lucide-react'
 import LiquidLogo from './components/LiquidLogo'
+import ParticleWordmark from './components/ParticleLogo'
 import { DotNumber } from './components/DotNumber'
 import './landing.css'
 
@@ -29,45 +29,57 @@ const questions = [
 
 export default function LandingPage() {
   const [openQuestion, setOpenQuestion] = useState<number | null>(0)
+  const [menuOpen, setMenuOpen] = useState(false)
+  const pageRef = useRef<HTMLElement>(null)
+  const menuButtonRef = useRef<HTMLButtonElement>(null)
+
+  useEffect(() => {
+    const page = pageRef.current
+    if (!page || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    const items = page.querySelectorAll('.landing-section-header, .step-card, .features-grid > *, .evidence-card, .pricing-card, .footer-top, .footer-signature')
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-revealed')
+          observer.unobserve(entry.target)
+        }
+      })
+    }, { root: page, threshold: 0.08 })
+    items.forEach((item, i) => {
+      item.classList.add('landing-reveal')
+      ;(item as HTMLElement).style.setProperty('--reveal-delay', `${(i % 3) * 75}ms`)
+      observer.observe(item)
+    })
+    return () => {
+      observer.disconnect()
+      items.forEach(item => item.classList.remove('landing-reveal', 'is-revealed'))
+    }
+  }, [])
 
   return (
-    <main className="rippl-landing">
+    <main className="rippl-landing" ref={pageRef} onKeyDown={event => {
+      if (event.key === 'Escape' && menuOpen) {
+        setMenuOpen(false)
+        menuButtonRef.current?.focus()
+      }
+    }}>
       <a className="landing-skip" href="#how-it-works">Skip to content</a>
 
       <div className="landing-nav-wrapper">
-        <header className="landing-nav">
-          <a className="wordmark" href="/" aria-label="Rippl home">
+        <header className={`reference-nav ${menuOpen ? 'is-open' : ''}`}>
+          <div className="reference-nav-top">
+          <a className="contrast-logo" href="/" aria-label="Rippl home">
             <span className="rippl-brand-mark" aria-hidden="true" />
-            rippl
           </a>
-
-          <nav aria-label="Main navigation">
-            <a href="#how-it-works">How it works</a>
-            <a href="#features">Features</a>
-            <a href="#community-proof">Community proof</a>
-            <a href="#pricing">Pricing</a>
-            <a href="#questions">FAQs</a>
-          </nav>
-
-          <div className="flex items-center gap-3">
-            <a className="nav-app-btn" href="/app">
-              <span>Open app</span>
-              <ArrowUpRight size={15} />
-            </a>
-
-            <details className="mobile-navigation">
-              <summary aria-label="Navigation menu">
-                <Menu size={20} />
-              </summary>
-              <nav aria-label="Mobile navigation">
-                <a href="#how-it-works" onClick={e => e.currentTarget.closest('details')?.removeAttribute('open')}>How it works</a>
-                <a href="#features" onClick={e => e.currentTarget.closest('details')?.removeAttribute('open')}>Features</a>
-                <a href="#community-proof" onClick={e => e.currentTarget.closest('details')?.removeAttribute('open')}>Community proof</a>
-                <a href="#pricing" onClick={e => e.currentTarget.closest('details')?.removeAttribute('open')}>Pricing</a>
-                <a href="#questions" onClick={e => e.currentTarget.closest('details')?.removeAttribute('open')}>FAQs</a>
-                <a href="/app" className="font-semibold text-blue-600">Open app</a>
-              </nav>
-            </details>
+          <button ref={menuButtonRef} type="button" className="reference-menu-toggle" aria-label={menuOpen ? 'Close navigation' : 'Open navigation'} aria-expanded={menuOpen} aria-controls="landing-menu" onClick={() => setMenuOpen(value => !value)}>
+            <Plus size={38} strokeWidth={1.5} />
+          </button>
+          </div>
+          <div className="reference-menu" id="landing-menu" inert={!menuOpen}>
+            <nav aria-label="Main navigation" onClick={() => setMenuOpen(false)}>
+              <div><h2>product</h2><a href="#features">features</a><a href="/app/terms">terms</a><a href="/app/privacy">privacy policy</a></div>
+              <div><h2>developer</h2><a href="https://rusetiq.github.io/" target="_blank" rel="noreferrer">portfolio</a><a href="https://www.linkedin.com/in/rusetiq/" target="_blank" rel="noreferrer">linkedin</a><a href="https://instagram.com/rusetiq/" target="_blank" rel="noreferrer">instagram</a></div>
+            </nav>
           </div>
         </header>
       </div>
@@ -521,17 +533,9 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <footer className="landing-footer">
-        <a className="wordmark" href="/">
-          <span className="rippl-brand-mark" aria-hidden="true" />
-          rippl
-        </a>
-        <p>Good for you. Better for the planet.</p>
-        <span>© {new Date().getFullYear()} Rippl Inc. UAE.</span>
-        <a href="/app" className="landing-btn-secondary">
-          <span>Open app</span>
-          <ArrowUpRight size={15} />
-        </a>
+      <footer className="landing-footer fancy-footer">
+        <div className="footer-glow" aria-hidden="true" />
+        <ParticleWordmark />
       </footer>
     </main>
   )
