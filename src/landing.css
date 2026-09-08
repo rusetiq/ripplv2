@@ -16,7 +16,7 @@
 html.landing-page-active,
 body.landing-page-active {
   background: #ffffff;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 /* Keep the standard arrow everywhere on the marketing page, including links,
@@ -148,10 +148,9 @@ html.lenis, html.lenis body {
   color: #182d44;
 }
 
-/* The nav rides out of view with the hero rather than pinning, so a jump only
-   needs to clear the status bar in standalone mode. */
+/* Keep anchor targets clear of the sticky navigation and device safe area. */
 .rippl-landing section[id] {
-  scroll-margin-top: calc(32px + env(safe-area-inset-top, 0px));
+  scroll-margin-top: calc(108px + env(safe-area-inset-top, 0px));
 }
 
 .landing-skip {

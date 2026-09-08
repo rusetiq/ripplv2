@@ -1,6 +1,7 @@
 import { useState, createContext, useContext, useEffect, useCallback, lazy, Suspense, startTransition } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Check, AlertCircle, Loader2 } from 'lucide-react'
+import { Check, AlertCircle } from 'lucide-react'
+import { DotLoader } from './components/DotLoader'
 import { AppShell } from './components/AppShell'
 import { FeedTab } from './tabs/FeedTab'
 import { SignInModal } from './components/SignInModal'
@@ -295,8 +296,8 @@ function App() {
   if (!ready) {
     return (
       <div className="flex min-h-[100dvh] w-full items-center justify-center bg-surface">
-        <div className="text-center">
-          <div className="w-8 h-8 border-2 border-oasis-400 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+        <div role="status" className="text-center">
+          <DotLoader size={44} className="text-oasis-400 mx-auto mb-4" />
           <p className="font-mono text-[10px] text-text-muted">Loading...</p>
         </div>
       </div>
@@ -336,7 +337,7 @@ function App() {
                 <AlertCircle size={12} strokeWidth={2.5} />
               </span>
             ) : (
-              <Loader2 size={14} className="animate-spin text-text-muted" />
+              <DotLoader size={20} className="text-text-muted" />
             )}
             <span className="font-body text-[12px] font-medium text-text-primary">
               {authFinished ? 'Signed in successfully' : authFailed ? 'Authentication failed' : 'Signing in with Google...'}
@@ -361,7 +362,7 @@ function TabFallback() {
   return (
     <div role="status" aria-live="polite" className="flex min-h-[50vh] items-center justify-center">
       <span className="sr-only">Loading</span>
-      <div className="h-7 w-7 animate-spin rounded-full border-2 border-oasis-400 border-t-transparent" aria-hidden="true" />
+      <DotLoader className="text-oasis-400" />
     </div>
   )
 }
