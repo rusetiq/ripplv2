@@ -134,14 +134,14 @@ export function LogTab() {
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.2 }}
-        className="px-4 pb-8 md:px-0"
+        className="pb-2"
       >
         <div className="mb-5 pt-1">
           <p className="gallery-label mb-1.5 text-text-muted">new entry</p>
           <h2 className="font-display text-[26px] leading-tight text-text-primary">log an action</h2>
           <p className="mt-1 text-[13px] text-text-muted">track everyday wins for personal impact</p>
         </div>
-        <div className="expressive-card aurora-card flex flex-col items-center justify-center p-10 text-center rounded-[34px] shadow-xl text-white">
+        <div className="expressive-card aurora-card flex flex-col items-center justify-center rounded-[34px] p-7 text-center text-white shadow-xl sm:p-10">
           <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center mb-4 text-white">
             <LogIn size={26} strokeWidth={2} />
           </div>
@@ -290,12 +290,19 @@ export function LogTab() {
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
+    // Reset the input so picking the same photo twice still fires a change.
+    e.target.value = ''
     if (!file) return
-    const base64 = await compressImage(file)
-    setPendingImage(base64)
-    setPhotoError(false)
-    setVerifyError(null)
-    handleAutoLog(base64)
+    try {
+      const base64 = await compressImage(file)
+      setPendingImage(base64)
+      setPhotoError(false)
+      setVerifyError(null)
+      handleAutoLog(base64)
+    } catch {
+      setPendingImage(null)
+      setVerifyError('That photo could not be read on this device. Try taking a new one, or pick a JPEG or PNG.')
+    }
   }
 
   return (
@@ -305,7 +312,7 @@ export function LogTab() {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.2 }}
-      className="px-4 pb-14 md:px-0"
+      className="pb-2"
     >
       <AnimatePresence>
         {isAutoLogging && (
@@ -314,7 +321,7 @@ export function LogTab() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -24, scale: 0.94 }}
             transition={{ type: 'spring', stiffness: 450, damping: 30 }}
-            className="fixed top-5 left-1/2 -translate-x-1/2 z-[100] flex items-center gap-3 px-5 py-3 rounded-full shadow-2xl border border-white/20 bg-[#162722]/90 backdrop-blur-md text-white"
+            className="app-toast fixed left-1/2 z-[100] flex -translate-x-1/2 items-center gap-3 rounded-full border border-white/20 bg-[#162722]/90 px-4 py-3 text-white shadow-2xl backdrop-blur-md"
           >
             {autoLogSuccess ? (
               <span className="flex items-center justify-center w-6 h-6 rounded-full bg-oasis-400 text-surface shadow-xs">
@@ -347,7 +354,7 @@ export function LogTab() {
         <p className="mt-1 text-[13px] text-text-muted">attach a quick photo, then tap to record your impact.</p>
       </div>
 
-      <div className="flex gap-2 mb-6 overflow-x-auto pb-1.5 scrollbar-none">
+      <div className="category-rail mb-6 flex snap-x snap-mandatory gap-2 overflow-x-auto pb-1.5 scrollbar-none">
         {categories.map(cat => {
           const Icon = cat.icon
           const isActive = selectedCategory === cat.id
@@ -360,7 +367,7 @@ export function LogTab() {
             <button
               key={cat.id}
               onClick={() => setSelectedCategory(cat.id)}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-full shrink-0 text-[12px] transition-all duration-150 ${
+              className={`flex min-h-11 shrink-0 snap-start items-center gap-2 rounded-full px-4 text-[12px] transition-all duration-150 ${
                 isActive
                   ? `${activeBg} text-white font-semibold shadow-md`
                   : 'bg-surface-raised/70 text-text-muted hover:text-text-primary border border-border/70 hover:bg-surface-raised font-medium'
@@ -377,24 +384,23 @@ export function LogTab() {
         layout
         className={`expressive-card ${activeCategory.gradientClass} p-6 md:p-8 mb-6 rounded-[34px] shadow-xl text-white relative transition-all duration-300`}
       >
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2">
-          </div>
-          {pendingImage && (
-            <span className="font-body text-[11px] text-white/90 bg-white/15 backdrop-blur-md px-3 py-0.5 rounded-full">
+        {pendingImage && (
+          <div className="mb-4 flex justify-end">
+            <span className="rounded-full bg-white/15 px-3 py-0.5 font-body text-[11px] text-white/90 backdrop-blur-md">
               photo ready
             </span>
-          )}
-        </div>
+          </div>
+        )}
 
         {pendingImage ? (
           <div className="relative rounded-2xl overflow-hidden border border-white/25 flex justify-center bg-black/30 mb-4">
-            <img src={pendingImage} alt="Proof" className="max-h-72 object-contain" />
+            <img src={pendingImage} alt="Proof" className="max-h-[45vh] w-full object-contain" />
             <button
               onClick={() => { setPendingImage(null); setPhotoError(false); setVerifyError(null) }}
-              className="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/60 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-black/80 transition-colors"
+              aria-label="remove photo"
+              className="absolute top-3 right-3 flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-black/60 text-white backdrop-blur-sm transition-colors hover:bg-black/80"
             >
-              <X size={15} />
+              <X size={17} />
             </button>
           </div>
         ) : (
@@ -423,7 +429,7 @@ export function LogTab() {
 
         <button
           onClick={pendingImage ? handleAutoLog : handleImagePick}
-          className="gradient-card-action w-full py-4 rounded-full font-body text-[13px] font-semibold shadow-lg active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+          className="gradient-card-action flex min-h-14 w-full items-center justify-center gap-2 rounded-full py-4 font-body text-[13px] font-semibold shadow-lg transition-all active:scale-[0.98]"
         >
           <Camera size={16} />
           <span>{pendingImage ? 'auto-verify with gemini ai' : 'take or upload photo'}</span>
@@ -459,7 +465,6 @@ export function LogTab() {
         ref={fileRef}
         type="file"
         accept="image/*"
-        capture="environment"
         onChange={handleFileChange}
         className="hidden"
       />
@@ -493,7 +498,7 @@ export function LogTab() {
                 transition={{ type: 'spring', stiffness: 450, damping: 28 }}
                 onClick={() => handleLog(action)}
                 disabled={isLogged || isLoading || verifying || !hasPhoto}
-                className={`w-full flex items-center gap-4 p-4 rounded-[26px] border transition-all duration-200 text-left relative overflow-hidden group ${isLogged
+                className={`group relative flex w-full items-center gap-3 overflow-hidden rounded-[26px] border p-3.5 text-left transition-all duration-200 sm:gap-4 sm:p-4 ${isLogged
                     ? 'bg-oasis-500/15 border-oasis-500/35 shadow-sm'
                     : !hasPhoto || verifying
                       ? 'bg-surface-raised/40 border-border/60 opacity-60 cursor-not-allowed'
@@ -509,12 +514,18 @@ export function LogTab() {
                   <action.Icon size={19} strokeWidth={1.9} />
                 </div>
 
-                <div className="flex-1 min-w-0">
+                <div className="min-w-0 flex-1">
                   <p className={`font-display text-[14px] leading-snug ${isLogged ? 'text-oasis-400 font-semibold' : hasPhoto && !verifying ? 'text-text-primary' : 'text-text-muted'
                     }`}>
                     {action.label.toLowerCase()}
                   </p>
-                  <div className="flex items-center gap-2 mt-1">
+                  <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1">
+                    <span className={`rounded-full px-2 py-0.5 font-mono text-[11px] font-semibold ${isLogged
+                        ? 'bg-oasis-400/20 text-oasis-400 border border-oasis-400/30'
+                        : 'bg-surface-overlay text-text-muted border border-border'
+                      }`}>
+                      +{action.points} pts
+                    </span>
                     {action.co2 > 0 && (
                       <span className="font-body text-[11px] text-text-muted">{action.co2} kg CO₂</span>
                     )}
@@ -524,15 +535,8 @@ export function LogTab() {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3 shrink-0">
-                  <span className={`font-mono text-[12px] font-semibold px-3 py-1 rounded-full ${isLogged
-                      ? 'bg-oasis-400/20 text-oasis-400 border border-oasis-400/30'
-                      : 'bg-surface-overlay text-text-muted border border-border'
-                    }`}>
-                    +{action.points} pts
-                  </span>
-
-                  <div className={`w-9 h-9 rounded-full flex items-center justify-center transition-all ${isLogged
+                <div className="flex shrink-0 items-center">
+                  <div className={`flex h-10 w-10 items-center justify-center rounded-full transition-all ${isLogged
                       ? 'bg-oasis-400 text-surface shadow-sm'
                       : isLoading
                         ? 'bg-surface-overlay'

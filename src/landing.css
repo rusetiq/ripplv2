@@ -1,37 +1,95 @@
 .rippl-landing {
   --blue: #0284c7;
-  height: 100dvh;
-  overflow-y: auto;
-  overflow-x: hidden;
+  --page-gutter: 5%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  height: auto;
+  overflow-x: clip;
   background: #f2f4f1;
   color: #111512;
   scroll-behavior: smooth;
   font-family: 'Manrope', sans-serif;
+  letter-spacing: -0.018em;
   scrollbar-color: #a1aaa3 #f2f4f1;
+  padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+}
+html.landing-page-active,
+body.landing-page-active {
+  background: #ffffff;
+  overflow-x: hidden;
+}
+
+/* Keep the standard arrow everywhere on the marketing page, including links,
+   controls, canvases, and their descendants. */
+.rippl-landing,
+.rippl-landing * {
+  cursor: default !important;
+}
+
+html.lenis, html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
 }
 
 /* Match the app's translucent navigation on the light landing surface. */
-.landing-nav-wrapper { padding: 0 4%; }
-.reference-nav { --nav-surface: rgba(236, 243, 242, .32); --nav-ink: #111512; max-width: 1160px; margin: auto; padding: 9px; border: 1px solid rgba(255, 255, 255, .75); border-radius: 24px; background: var(--nav-surface); color: var(--nav-ink); backdrop-filter: blur(10px) saturate(125%); -webkit-backdrop-filter: blur(10px) saturate(125%); box-shadow: inset 0 1px 0 #ffffffb3, inset 0 -1px 0 #ffffff38, 0 8px 28px #1b343b16; transition: border-radius .45s; }
+.landing-nav-wrapper {
+  position: sticky;
+  top: calc(12px + env(safe-area-inset-top, 0px));
+  z-index: 40;
+  height: 74px;
+  margin-bottom: 8px;
+}
+.reference-nav {
+  --nav-surface: rgba(242, 244, 241, 0.72);
+  --nav-ink: #111512;
+  --nav-radius: 24px;
+  --nav-padding: 9px;
+  position: absolute;
+  inset: 0 calc(4% + env(safe-area-inset-right, 0px)) auto calc(4% + env(safe-area-inset-left, 0px));
+  max-width: 1160px;
+  margin: auto;
+  padding: var(--nav-padding);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  border-radius: var(--nav-radius);
+  background: var(--nav-surface);
+  color: var(--nav-ink);
+  isolation: isolate;
+  -webkit-backdrop-filter: blur(14px) saturate(130%);
+  backdrop-filter: blur(14px) saturate(130%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85), inset 0 -1px 0 rgba(255, 255, 255, 0.35), 0 8px 28px rgba(27, 52, 59, 0.08);
+  transition: border-radius .45s cubic-bezier(.22, 1, .36, 1);
+}
+@supports not (backdrop-filter: blur(10px)) {
+  .reference-nav {
+    background: rgba(242, 244, 241, 0.94);
+  }
+}
 .reference-nav-top { height: 56px; display: flex; align-items: center; justify-content: space-between; }
 .contrast-logo { display: grid; place-items: center; width: 56px; height: 54px; }
 .reference-nav .rippl-brand-mark { width: 40px; height: 40px; background: var(--nav-ink); }
-.reference-menu-toggle { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%; border: 1px solid #ffffffa6; background: linear-gradient(155deg, #ffffff70, #ffffff14); box-shadow: inset 0 1px 0 #ffffffd9, 0 2px 7px #23455312; color: inherit; transition: background .2s, border-radius .35s cubic-bezier(.22,1,.36,1), transform .2s; }
-.reference-menu-toggle:hover { background: #ffffff70; }
+.reference-menu-toggle { display: grid; place-items: center; width: 52px; height: 52px; border-radius: calc(var(--nav-radius) - var(--nav-padding)); border: 1px solid #ffffffa6; background: linear-gradient(155deg, #ffffff70, #ffffff14); box-shadow: inset 0 1px 0 #ffffffd9, 0 2px 7px #23455312; color: inherit; transition: background .2s, border-radius .45s cubic-bezier(.22,1,.36,1), transform .2s; }
+@media (hover: hover) { .reference-menu-toggle:hover { background: #ffffff70; } }
 .reference-menu-toggle svg { transition: transform .45s cubic-bezier(.22,1,.36,1); }
-.is-open .reference-menu-toggle { border-radius: 38%; }
 .is-open .reference-menu-toggle svg { transform: rotate(45deg); }
 .reference-menu { display: grid; grid-template-rows: 0fr; visibility: hidden; transition: grid-template-rows .5s cubic-bezier(.22,1,.36,1), visibility .5s; }
 .is-open .reference-menu { grid-template-rows: 1fr; visibility: visible; }
 .reference-menu nav { min-height: 0; overflow: hidden; display: grid; grid-template-columns: 1fr 1fr; text-align: center; }
-.reference-menu nav > div { padding: 0 10px; opacity: 0; transform: translateY(-10px); transition: padding .5s, opacity .25s, transform .45s; }
-.is-open .reference-menu nav > div { padding: 52px 10px 20px; opacity: 1; transform: none; }
+.reference-menu nav > div { padding: 52px 10px 20px; opacity: 0; transform: translateY(-10px); transition: opacity .3s, transform .45s cubic-bezier(.22,1,.36,1); }
+.is-open .reference-menu nav > div { opacity: 1; transform: none; }
 .reference-menu h2 { font: 400 36px/1.2 Georgia, serif; letter-spacing: -.04em; margin: 0 0 12px; }
-.reference-menu a { display: block; width: fit-content; margin: auto; padding: 8px 0; font-size: 21px; line-height: 1.25; opacity: .88; transition: opacity .2s, transform .2s; }
-.reference-menu a:hover { opacity: 1; transform: translateX(3px); }
-.reference-nav.is-open { border-radius: 42px; }
+.reference-menu a { display: flex; align-items: center; justify-content: center; width: fit-content; min-height: 44px; margin: auto; padding: 6px 8px; font-size: 21px; line-height: 1.25; opacity: .88; transition: opacity .2s, transform .2s; }
+@media (hover: hover) { .reference-menu a:hover { opacity: 1; transform: translateX(3px); } }
+.reference-nav.is-open { --nav-radius: 42px; }
 @media (prefers-reduced-transparency: reduce) {
-  .reference-nav { --nav-surface: #edf2f0; backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .reference-nav { --nav-surface: #edf2f0; -webkit-backdrop-filter: none; backdrop-filter: none; }
 }
 .landing-reveal { opacity: 0; transform: translateY(28px); transition: opacity .75s ease var(--reveal-delay,0ms), transform .75s cubic-bezier(.22,1,.36,1) var(--reveal-delay,0ms); }
 .landing-reveal.is-revealed { opacity: 1; transform: none; }
@@ -39,27 +97,29 @@
 .hero-art { animation: landing-enter 1.1s .15s cubic-bezier(.22,1,.36,1) both; }
 @keyframes landing-enter { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
 .evidence-img-box img { transition: transform .7s cubic-bezier(.22,1,.36,1); }
-.evidence-card:hover .evidence-img-box img { transform: scale(1.055); }
+@media (hover: hover) { .evidence-card:hover .evidence-img-box img { transform: scale(1.055); } }
 .faq-answer { animation: landing-enter .35s ease both; }
-.landing-footer.fancy-footer { isolation: isolate; position: relative; max-width: none; min-height: clamp(460px, 58vw, 720px); margin: 50px 2% 20px; padding: 0; display: grid; place-items: center; border: 1px solid #ffffff2b; border-radius: 42px; background: #07111e; color: #f7fbff; overflow: hidden; box-shadow: inset 0 1px 0 #ffffff2e, 0 24px 60px #0d274229; }
+.landing-footer.fancy-footer { isolation: isolate; position: relative; max-width: none; min-height: clamp(460px, 58vw, 720px); margin: 50px 2% 0; padding: 0; display: grid; place-items: center; border: 1px solid #ffffff2b; border-radius: 42px; background: #07111e; color: #f7fbff; overflow: hidden; box-shadow: inset 0 1px 0 #ffffff2e, 0 24px 60px #0d274229; }
 .fancy-footer::before { content: ''; position: absolute; z-index: 0; width: min(88%, 1180px); aspect-ratio: 2.7 / 1; border-radius: 50%; background: radial-gradient(ellipse, #08142e70 0%, #14204a30 48%, transparent 76%); filter: blur(34px); pointer-events: none; }
-.fancy-footer::after { content: ''; position: absolute; inset: 0; z-index: -1; opacity: .16; pointer-events: none; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.34'/%3E%3C/svg%3E"); mix-blend-mode: soft-light; }
+.fancy-footer::after { content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: radial-gradient(ellipse 70% 60% at 50% 100%, rgba(40, 102, 239, 0.18) 0%, transparent 70%); }
 .footer-glow { position: absolute; z-index: -2; left: -12%; right: -12%; bottom: -28%; height: 115%; pointer-events: none; filter: blur(44px) saturate(118%); opacity: .92; background: radial-gradient(ellipse 54% 34% at 50% 80%, #2866ef 0%, #2866ef 34%, transparent 72%), radial-gradient(ellipse 56% 35% at 50% 56%, #ffd752 0%, #ffcf4a 29%, #ff7b69 54%, transparent 76%), radial-gradient(ellipse 56% 44% at 50% 28%, #e452ed 0%, #be3bec 38%, transparent 76%); transform: scaleX(1.18); }
-.particle-wordmark-canvas { position: relative; z-index: 1; display: block; width: min(94%, 1240px); aspect-ratio: 2.8125 / 1; cursor: crosshair; touch-action: pan-y; filter: drop-shadow(0 0 12px #d8efff80) drop-shadow(0 20px 44px #071a42a8); }
+.particle-wordmark-canvas { position: absolute; z-index: 1; inset: 0; display: block; width: 100%; height: 100%; touch-action: pan-y; filter: drop-shadow(0 0 12px #d8efff80) drop-shadow(0 20px 44px #071a42a8); }
 .particle-wordmark-fallback { position: relative; z-index: 1; color: #eef7ff !important; font-size: clamp(76px, 16vw, 230px) !important; font-weight: 600; letter-spacing: -.075em; text-shadow: 0 15px 50px #193b86b5; }
 @media (max-width: 600px) {
-  .reference-nav { padding: 7px; border-radius: 21px; }
+  .landing-nav-wrapper { height: 58px; }
+  .reference-nav { --nav-padding: 7px; --nav-radius: 21px; }
   .reference-nav-top { height: 44px; }
-  .reference-menu-toggle { width: 42px; height: 42px; border-radius: 50%; }
+  .reference-menu-toggle { width: 42px; height: 42px; }
   .contrast-logo { height: 42px; width: 48px; }
   .reference-nav .rippl-brand-mark { width: 34px; height: 34px; }
   .reference-menu h2 { font-size: 29px; }
   .reference-menu a { font-size: 17px; }
   .is-open .reference-menu nav > div { padding: 35px 5px 20px; }
-  .reference-nav.is-open { border-radius: 28px; }
+  .reference-nav.is-open { --nav-radius: 28px; }
   .landing-footer.fancy-footer { min-height: 360px; margin-inline: 10px; border-radius: 28px; }
   .footer-glow { left: -70%; right: -70%; height: 120%; bottom: -23%; }
-  .particle-wordmark-canvas { width: 112%; }
+  .particle-wordmark-canvas { width: 100%; }
+  .hero-copy h1 { font-size: clamp(48px, 15vw, 56px); }
 }
 @media (prefers-reduced-motion: reduce) {
   .rippl-landing { scroll-behavior: auto; }
@@ -88,8 +148,10 @@
   color: #182d44;
 }
 
+/* The nav rides out of view with the hero rather than pinning, so a jump only
+   needs to clear the status bar in standalone mode. */
 .rippl-landing section[id] {
-  scroll-margin-top: 40px;
+  scroll-margin-top: calc(32px + env(safe-area-inset-top, 0px));
 }
 
 .landing-skip {
@@ -110,14 +172,6 @@
   transform: translateY(0);
 }
 
-.landing-nav-wrapper {
-  position: sticky;
-  top: 16px;
-  z-index: 40;
-  padding: 0 5%;
-  margin-bottom: 8px;
-}
-
 .landing-nav {
   max-width: 1440px;
   margin: 0 auto;
@@ -128,8 +182,8 @@
   padding: 0 24px;
   border-radius: 9999px;
   background: rgba(242, 244, 241, 0.82);
-  backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
   border: 1px solid rgba(17, 21, 18, 0.1);
   box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.06);
 }
@@ -137,7 +191,7 @@
 .wordmark {
   font-size: 32px;
   font-weight: 600;
-  letter-spacing: -2px;
+  letter-spacing: -0.05em;
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -178,9 +232,11 @@
   transition: transform 0.18s, box-shadow 0.18s;
 }
 
-.nav-app-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+@media (hover: hover) {
+  .nav-app-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+  }
 }
 
 .mobile-navigation {
@@ -192,15 +248,16 @@
   margin: 0 auto;
   min-height: 600px;
   display: grid;
-  grid-template-columns: 1.15fr 0.85fr;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
   align-items: center;
-  padding: 30px 5% 48px;
+  padding: 30px calc(var(--page-gutter) + env(safe-area-inset-right, 0px)) 48px calc(var(--page-gutter) + env(safe-area-inset-left, 0px));
   gap: 40px;
   position: relative;
 }
 
 .hero-copy {
   z-index: 2;
+  min-width: 0;
 }
 
 .landing-badge {
@@ -218,15 +275,39 @@
 }
 
 .hero-copy h1 {
-  font-size: clamp(52px, 6vw, 92px);
-  line-height: 1.04;
-  letter-spacing: -0.04em;
-  font-weight: 400;
-  margin: 0 0 22px;
+  font-size: clamp(56px, 6.6vw, 102px);
+  line-height: 0.94;
+  letter-spacing: -0.065em;
+  font-weight: 600;
+  margin: 0 0 30px;
+  text-wrap: balance;
 }
 
-.hero-copy h1 span {
-  color: #0284c7;
+.hero-title-lead {
+  color: #111512;
+}
+
+.hero-title-second {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.13em;
+  margin-top: 0.04em;
+  color: #111512;
+  font-family: 'Manrope', sans-serif;
+  font-size: 1.08em;
+  font-weight: 600;
+  letter-spacing: -0.065em;
+  line-height: 0.96;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+.hero-title-gradient {
+  color: transparent;
+  background: linear-gradient(112deg, #071d56 0%, #1761d2 32%, #7eb7f2 56%, #264ba8 76%, #081844 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  font-weight: 700;
 }
 
 .hero-description {
@@ -261,10 +342,12 @@
   transition: transform 0.18s, box-shadow 0.18s, background 0.18s;
 }
 
-.landing-btn-white:hover {
-  transform: scale(1.02);
-  background: #ffffff;
-  box-shadow: 0 12px 28px -4px rgba(0, 0, 0, 0.18);
+@media (hover: hover) {
+  .landing-btn-white:hover {
+    transform: scale(1.02);
+    background: #ffffff;
+    box-shadow: 0 12px 28px -4px rgba(0, 0, 0, 0.18);
+  }
 }
 
 .landing-btn-white:active {
@@ -286,9 +369,11 @@
   transition: background 0.18s, transform 0.18s;
 }
 
-.landing-btn-secondary:hover {
-  background: rgba(17, 21, 18, 0.1);
-  transform: translateY(-1px);
+@media (hover: hover) {
+  .landing-btn-secondary:hover {
+    background: rgba(17, 21, 18, 0.1);
+    transform: translateY(-1px);
+  }
 }
 
 .hero-stats-strip {
@@ -337,7 +422,7 @@
   font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: -0.01em;
   color: #ffffff;
   opacity: 0.85;
   margin: 6px 0 0;
@@ -345,12 +430,28 @@
 
 .hero-art {
   position: relative;
+  min-width: 0;
   width: 100%;
   aspect-ratio: 1;
   max-height: 580px;
   display: flex;
   align-items: center;
   justify-content: center;
+  isolation: isolate;
+}
+
+/* The sculpture is mostly negative space, so on the near-white page it reads as
+   fragments floating on nothing. A faint pool of the brand blue gives it a
+   surface to sit on without introducing a visible container. */
+.hero-art::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 4%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 50%, rgba(23, 97, 210, .15) 0%, rgba(23, 97, 210, .09) 38%, rgba(23, 97, 210, .03) 62%, rgba(23, 97, 210, 0) 80%);
+  filter: blur(26px);
+  pointer-events: none;
 }
 
 .liquid-canvas {
@@ -359,6 +460,9 @@
   position: relative;
   z-index: 1;
   cursor: crosshair;
+  /* The canvas reacts to pointer movement; reserving vertical panning keeps a
+     drag that starts on the artwork scrolling the page. */
+  touch-action: pan-y;
 }
 
 .liquid-fallback {
@@ -370,7 +474,7 @@
 .belief-strip {
   max-width: 1440px;
   margin: 0 auto;
-  padding: 24px 5%;
+  padding: 24px calc(var(--page-gutter) + env(safe-area-inset-right, 0px)) 24px calc(var(--page-gutter) + env(safe-area-inset-left, 0px));
   border-top: 1px solid rgba(17, 21, 18, 0.1);
   border-bottom: 1px solid rgba(17, 21, 18, 0.1);
   display: flex;
@@ -408,9 +512,11 @@
   flex-shrink: 0;
 }
 
-.belief-strip>a:hover {
-  transform: rotate(-35deg);
-  background: rgba(17, 21, 18, 0.05);
+@media (hover: hover) {
+  .belief-strip>a:hover {
+    transform: rotate(-35deg);
+    background: rgba(17, 21, 18, 0.05);
+  }
 }
 
 .rippl-landing .expressive-card {
@@ -481,7 +587,7 @@
 .landing-section {
   max-width: 1440px;
   margin: 0 auto;
-  padding: 80px 5%;
+  padding: 80px calc(var(--page-gutter) + env(safe-area-inset-right, 0px)) 80px calc(var(--page-gutter) + env(safe-area-inset-left, 0px));
 }
 
 .landing-section-header {
@@ -492,7 +598,7 @@
   display: inline-block;
   font-size: 11px;
   text-transform: lowercase;
-  letter-spacing: 0.05em;
+  letter-spacing: -0.01em;
   color: #6b7280;
   margin-bottom: 8px;
 }
@@ -515,8 +621,23 @@
 
 .features-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 24px;
+}
+
+.features-grid .expressive-card {
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 36px;
+}
+
+.features-grid .expressive-card h3,
+.pricing-plan-title {
+  font-family: 'Manrope', sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.045em;
 }
 
 .feature-top {
@@ -531,6 +652,7 @@
   height: 48px;
   border-radius: 18px;
   background: rgba(255, 255, 255, 0.22);
+  -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.25);
   display: flex;
@@ -540,7 +662,7 @@
 
 .steps-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 20px;
 }
 
@@ -553,13 +675,16 @@
   flex-direction: column;
   justify-content: space-between;
   min-height: 260px;
+  -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
   transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.step-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 28px -10px rgba(0, 0, 0, 0.08);
+@media (hover: hover) {
+  .step-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 28px -10px rgba(0, 0, 0, 0.08);
+  }
 }
 
 .step-badge {
@@ -618,7 +743,7 @@
 
 .evidence-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 24px;
 }
 
@@ -646,8 +771,10 @@
   transition: transform 0.3s;
 }
 
-.evidence-card:hover .evidence-img-box img {
-  transform: scale(1.04);
+@media (hover: hover) {
+  .evidence-card:hover .evidence-img-box img {
+    transform: scale(1.04);
+  }
 }
 
 .evidence-card-content {
@@ -755,26 +882,21 @@
   opacity: 0.85;
 }
 
-.pricing-number-card {
+.pricing-number {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 6px 14px;
-  border-radius: 14px;
-  background: rgba(0, 0, 0, 0.22);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  backdrop-filter: blur(8px);
 }
 
-.pricing-number-card .dot-number {
-  height: 32px;
+.pricing-number .dot-number {
+  height: 40px;
   color: #ffffff;
   fill: #ffffff;
 }
 
 .pricing-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 24px;
 }
 
@@ -795,10 +917,11 @@
   padding: 4px 12px;
   border-radius: 9999px;
   background: rgba(255, 255, 255, 0.2);
+  -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
   font-size: 11px;
   font-weight: 600;
-  letter-spacing: 0.04em;
+  letter-spacing: -0.01em;
   width: fit-content;
   border: 1px solid rgba(255, 255, 255, 0.25);
   color: #ffffff;
@@ -891,24 +1014,34 @@
   color: #000000 !important;
 }
 
-.pricing-btn-white:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 24px -4px rgba(0, 0, 0, 0.22);
+@media (hover: hover) {
+  .pricing-btn-white:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px -4px rgba(0, 0, 0, 0.22);
+  }
 }
 
 .faq-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
   max-width: 860px;
 }
 
 .faq-card {
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.72);
   border: 1px solid rgba(17, 21, 18, 0.08);
   border-radius: 22px;
-  padding: 20px 24px;
+  padding: 22px 28px;
+  -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
+  transition: background 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.faq-card.is-open {
+  background: rgba(255, 255, 255, 0.96);
+  border-color: rgba(17, 21, 18, 0.14);
+  box-shadow: 0 12px 32px -8px rgba(17, 21, 18, 0.08);
 }
 
 .faq-trigger {
@@ -918,19 +1051,66 @@
   width: 100%;
   background: none;
   border: none;
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 500;
   color: #111512;
   cursor: pointer;
   padding: 0;
+  min-height: 44px;
+  gap: 16px;
   text-align: left;
+  letter-spacing: -0.02em;
 }
 
-.faq-answer {
-  font-size: 13px;
-  line-height: 1.8;
-  color: #6b7280;
-  margin: 14px 0 0;
+.faq-icon-wrap {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(17, 21, 18, 0.05);
+  flex-shrink: 0;
+  transition: background 0.25s, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.faq-card.is-open .faq-icon-wrap {
+  background: rgba(17, 21, 18, 0.1);
+  transform: rotate(45deg);
+}
+
+.faq-plus-icon {
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.faq-answer-wrapper {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  overflow: hidden;
+}
+
+.faq-card.is-open .faq-answer-wrapper {
+  grid-template-rows: 1fr;
+}
+
+.faq-answer-inner {
+  min-height: 0;
+  opacity: 0;
+  transform: translateY(-8px);
+  transition: opacity 0.3s cubic-bezier(0.22, 1, 0.36, 1), transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.faq-card.is-open .faq-answer-inner {
+  opacity: 1;
+  transform: translateY(0);
+  padding-top: 14px;
+}
+
+.faq-answer-inner p {
+  font-size: 14px;
+  line-height: 1.75;
+  color: #4b5563;
+  margin: 0;
 }
 
 .landing-footer {
@@ -957,17 +1137,11 @@
 }
 
 @media (max-width: 1024px) {
-  .features-grid {
-    grid-template-columns: 1fr;
-  }
-  .steps-grid {
-    grid-template-columns: 1fr;
-  }
-  .evidence-grid {
-    grid-template-columns: 1fr;
-  }
+  .features-grid,
+  .steps-grid,
+  .evidence-grid,
   .pricing-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
   .landing-hero {
     grid-template-columns: 1fr;
@@ -1027,4 +1201,126 @@
   .belief-strip > span {
     margin-left: 0;
   }
+}
+
+/* ---------------------------------------------------------------------------
+   Handset layout
+   The marketing page is authored for a wide canvas: three-up grids, 36px card
+   padding, and a headline held on one line. Below the tablet breakpoint each of
+   those has to give, or the page either clips or turns into a very long stack
+   of near-identical blocks.
+   --------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+  .rippl-landing { --page-gutter: 20px; }
+
+  .landing-section { padding-top: 56px; padding-bottom: 56px; }
+  .landing-section-header { margin-bottom: 28px; }
+  .landing-title { font-size: clamp(30px, 8vw, 40px); }
+  .landing-subtitle { font-size: 14px; line-height: 1.7; }
+
+  /* Both hero actions become full-width rows so either can be reached with a
+     thumb without aiming. */
+  .hero-actions { gap: 10px; margin-bottom: 32px; }
+  .landing-btn-white,
+  .landing-btn-secondary { flex: 1 1 100%; padding-block: 15px; }
+
+  /* Three stacked stat cards pushed the fold well past the headline. As a rail
+     they stay legible and the overflow tells you there is more. */
+  .hero-stats-strip {
+    display: flex;
+    min-width: 0;
+    grid-template-columns: none;
+    gap: 12px;
+    max-width: none;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+    margin-inline: calc(var(--page-gutter) * -1);
+    padding-inline: var(--page-gutter);
+    scroll-padding-inline: var(--page-gutter);
+  }
+  .hero-stats-strip::-webkit-scrollbar { display: none; }
+  .hero-stat-card {
+    flex: 0 0 clamp(146px, 46%, 190px);
+    scroll-snap-align: start;
+    min-height: 86px;
+    padding: 15px 17px;
+    border-radius: 20px;
+  }
+
+  .rippl-landing .expressive-card { padding: 24px 22px; border-radius: 26px; }
+  .features-grid { gap: 14px; }
+  .features-grid .expressive-card { min-height: 0; padding: 26px 22px; }
+  .features-grid .expressive-card h3 { font-size: 20px; }
+
+  .steps-grid { gap: 14px; }
+  .step-card { min-height: 0; padding: 24px 22px; border-radius: 24px; }
+  .step-card h3 { font-size: 18px; }
+
+  .pricing-grid { gap: 14px; }
+  .pricing-card { min-height: 0; padding: 26px 22px; border-radius: 26px; }
+  .pricing-plan-title { font-size: 20px; margin-top: 0; }
+  .pricing-btn-white { padding-block: 16px; }
+  .pricing-number .dot-number { height: 34px; }
+
+  .faq-card { padding: 6px 20px; border-radius: 18px; }
+  .faq-trigger { font-size: 15px; padding-block: 14px; }
+  .faq-answer-inner p { font-size: 13px; }
+  .faq-card.is-open .faq-answer-inner { padding-bottom: 14px; }
+
+  .belief-strip p { font-size: 16px; }
+}
+
+@media (max-width: 600px) {
+  /* The headline's second line is deliberately held together, but at handset
+     scale it has to fit the screen: the type steps down, and wrapping is
+     allowed as a floor so the words can never be clipped by the page. */
+  .hero-copy h1 { font-size: clamp(40px, 13.5vw, 52px); margin-bottom: 22px; }
+  .hero-title-second { flex-wrap: wrap; white-space: normal; }
+  .hero-description { font-size: 15px; line-height: 1.7; margin-bottom: 26px; }
+  .landing-hero { min-height: 0; padding-top: 18px; padding-bottom: 36px; gap: 24px; }
+  .hero-art { max-height: min(340px, 78vw); }
+
+  .landing-footer.fancy-footer {
+    margin-left: calc(10px + env(safe-area-inset-left, 0px));
+    margin-right: calc(10px + env(safe-area-inset-right, 0px));
+  }
+}
+
+@media (max-width: 380px) {
+  .rippl-landing { --page-gutter: 16px; }
+  .landing-title { font-size: 28px; }
+  .rippl-landing .expressive-card,
+  .features-grid .expressive-card,
+  .step-card,
+  .pricing-card { padding: 22px 18px; }
+  .faq-card { padding: 4px 16px; }
+}
+
+/* Landscape on a handset leaves almost no vertical room; the hero should not
+   reserve a full square for the artwork. */
+@media (max-height: 520px) and (orientation: landscape) {
+  .landing-hero { min-height: 0; padding-block: 16px; }
+  .hero-art { max-height: 62vh; }
+  .landing-section { padding-top: 44px; padding-bottom: 44px; }
+}
+
+/* While the panel is open the page behind it must not scroll away underneath.
+   Smooth scrolling is paused through the library so its position stays in sync
+   when the panel closes. */
+html.landing-menu-open,
+html.landing-menu-open body {
+  overflow: hidden;
+}
+.landing-skip {
+  left: calc(6% + env(safe-area-inset-left, 0px));
+}
+/* In landscape the open panel can be taller than the screen, so it scrolls
+   inside itself rather than running off the bottom. */
+.reference-menu nav {
+  max-height: calc(100dvh - 140px - env(safe-area-inset-top, 0px));
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }

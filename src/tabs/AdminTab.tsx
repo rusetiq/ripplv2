@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useApp } from '../App'
 import { db } from '../firebase'
 import { collection, query, where, getDocs, doc, updateDoc, addDoc, deleteDoc, onSnapshot, orderBy } from 'firebase/firestore'
+import { resolveSponsoredImageUrl, SPONSORED_LOCAL_FALLBACKS } from '../sponsoredImages'
 
 interface AdminUser {
   uid: string
@@ -127,13 +128,13 @@ export function AdminTab() {
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.2 }}
-        className="px-4 pb-4 md:px-0"
+        className="pb-2"
       >
         <div className="mb-5 pt-1">
           <p className="gallery-label mb-1.5 text-text-muted">system</p>
           <h2 className="font-display text-[26px] leading-tight text-text-primary">admin panel</h2>
         </div>
-        <div className="gallery-card p-10 flex flex-col items-center justify-center text-center rounded-[30px] border border-border">
+        <div className="gallery-card flex flex-col items-center justify-center rounded-[30px] border border-border p-7 text-center sm:p-10">
           <div className="w-14 h-14 rounded-2xl bg-surface-overlay flex items-center justify-center mb-4 text-text-muted">
             <Shield size={26} strokeWidth={1.8} />
           </div>
@@ -153,7 +154,7 @@ export function AdminTab() {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.2 }}
-      className="px-4 pb-8 md:px-0"
+      className="pb-2"
     >
       <div className="mb-5 pt-1">
         <p className="gallery-label mb-1.5 text-text-muted">system</p>
@@ -164,7 +165,7 @@ export function AdminTab() {
       <div className="flex gap-2 mb-6">
         <button
           onClick={() => setActiveSection('admins')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-full text-[12px] font-medium transition-all ${
+          className={`flex min-h-11 items-center gap-2 rounded-full px-4 text-[12px] font-medium transition-all ${
             activeSection === 'admins'
               ? 'bg-[#d5e0eb] text-[#253b54] shadow-sm'
               : 'bg-surface-raised text-text-muted hover:text-text-primary border border-border/70'
@@ -175,7 +176,7 @@ export function AdminTab() {
         </button>
         <button
           onClick={() => setActiveSection('rewards')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-full text-[12px] font-medium transition-all ${
+          className={`flex min-h-11 items-center gap-2 rounded-full px-4 text-[12px] font-medium transition-all ${
             activeSection === 'rewards'
               ? 'bg-[#d5e0eb] text-[#253b54] shadow-sm'
               : 'bg-surface-raised text-text-muted hover:text-text-primary border border-border/70'
@@ -193,7 +194,7 @@ export function AdminTab() {
               <Shield size={15} className="text-oasis-400" />
               <h3 className="font-display text-[15px] text-text-primary">add administrator</h3>
             </div>
-            <div className="flex gap-2.5">
+            <div className="flex flex-col gap-2.5 sm:flex-row">
               <input
                 type="email"
                 value={searchEmail}
@@ -205,7 +206,7 @@ export function AdminTab() {
               <button
                 onClick={handleAddAdmin}
                 disabled={!searchEmail.trim() || addingAdmin}
-                className="gallery-primary px-5 py-2.5 transition-all flex items-center justify-center shrink-0"
+                className="gallery-primary flex min-h-12 shrink-0 items-center justify-center px-5 transition-all"
               >
                 {addingAdmin ? (
                   <div className="w-4 h-4 border-2 border-surface border-t-transparent rounded-full animate-spin" />
@@ -242,7 +243,7 @@ export function AdminTab() {
                     <button
                       onClick={() => handleRemoveAdmin(u.uid)}
                       disabled={u.uid === user?.uid}
-                      className="w-7 h-7 rounded-full flex items-center justify-center text-red-400 hover:bg-red-400/10 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                      aria-label="remove administrator" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-red-400 transition-colors hover:bg-red-400/10 disabled:cursor-not-allowed disabled:opacity-30"
                     >
                       <X size={14} />
                     </button>
@@ -256,11 +257,11 @@ export function AdminTab() {
 
       {activeSection === 'rewards' && (
         <>
-          <div className="flex items-center justify-between mb-4">
-            <span className="gallery-label text-text-muted">sponsored campaigns ({sponsored.length})</span>
+          <div className="mb-4 flex items-center justify-between gap-3">
+            <span className="gallery-label min-w-0 truncate text-text-muted">sponsored campaigns ({sponsored.length})</span>
             <button
               onClick={() => setShowRewardForm(v => !v)}
-              className="gallery-primary inline-flex items-center gap-1.5 px-3.5 py-1.5 transition-all text-[11px]"
+              className="gallery-primary inline-flex min-h-11 shrink-0 items-center gap-1.5 px-4 text-[11px] transition-all"
             >
               <Plus size={13} />
               <span>new campaign</span>
@@ -336,7 +337,7 @@ export function AdminTab() {
                 <button
                   onClick={handleSaveReward}
                   disabled={savingReward || !rewardForm.name || !rewardForm.href || !rewardForm.imageUrl}
-                  className="gallery-primary w-full py-3 transition-all"
+                  className="gallery-primary min-h-12 w-full py-3 transition-all"
                 >
                   <span className="font-body text-[12px] font-medium">
                     {savingReward ? 'saving...' : 'publish reward'}
@@ -355,9 +356,12 @@ export function AdminTab() {
             <div className="space-y-2.5">
               {sponsored.map((sp) => (
                 <div key={sp.id} className="gallery-card flex items-center gap-3.5 p-3 rounded-[20px] border border-border">
-                  <div
-                    className="w-14 h-14 rounded-2xl bg-cover bg-center shrink-0 border border-border"
-                    style={{ backgroundImage: sp.imageUrl ? `url('${sp.imageUrl}')` : undefined }}
+                  <img
+                    className="w-14 h-14 rounded-2xl object-cover shrink-0 border border-border bg-surface-overlay"
+                    src={resolveSponsoredImageUrl(sp.imageUrl, SPONSORED_LOCAL_FALLBACKS[0])}
+                    alt=""
+                    referrerPolicy="no-referrer"
+                    onError={event => { event.currentTarget.src = SPONSORED_LOCAL_FALLBACKS[0] }}
                   />
                   <div className="flex-1 min-w-0">
                     <p className="font-display text-[14px] text-text-primary truncate">{sp.name}</p>
@@ -369,7 +373,7 @@ export function AdminTab() {
                   </div>
                   <button
                     onClick={() => handleDeleteReward(sp.id)}
-                    className="w-8 h-8 rounded-full flex items-center justify-center text-red-400 hover:bg-red-400/10 transition-colors shrink-0"
+                    aria-label="delete campaign" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-red-400 transition-colors hover:bg-red-400/10"
                   >
                     <Trash2 size={14} />
                   </button>

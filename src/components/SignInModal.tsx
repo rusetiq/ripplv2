@@ -13,7 +13,7 @@ export function SignInModal() {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.15 }}
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm px-4"
+          className="sign-in-overlay fixed inset-0 z-[100] flex items-center justify-center overflow-y-auto overscroll-contain bg-black/40 backdrop-blur-sm"
           onClick={() => setShowSignIn(false)}
         >
           <motion.div
@@ -22,7 +22,7 @@ export function SignInModal() {
             exit={{ opacity: 0, scale: 0.94, y: 8 }}
             transition={{ type: 'spring', stiffness: 420, damping: 32 }}
             onClick={e => e.stopPropagation()}
-            className="w-full max-w-[360px] rounded-[30px] bg-surface p-7 border border-border shadow-2xl"
+            role="dialog" aria-modal="true" aria-label="sign in to rippl" className="my-auto w-full max-w-[360px] rounded-[30px] border border-border bg-surface p-6 shadow-2xl sm:p-7"
           >
             <div className="flex items-start justify-between mb-5">
               <div className="flex items-center gap-3">
@@ -36,9 +36,10 @@ export function SignInModal() {
               </div>
               <button
                 onClick={() => setShowSignIn(false)}
-                className="w-7 h-7 rounded-full flex items-center justify-center text-text-muted hover:text-text-primary hover:bg-surface-overlay transition-colors"
+                aria-label="close"
+                className="-mr-2 -mt-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-text-muted transition-colors hover:bg-surface-overlay hover:text-text-primary"
               >
-                <X size={15} />
+                <X size={17} />
               </button>
             </div>
             <p className="font-body text-[13px] leading-relaxed text-text-secondary mb-6">
@@ -46,7 +47,7 @@ export function SignInModal() {
             </p>
             <button
               onClick={() => { signInWithGoogle(); setShowSignIn(false) }}
-              className="gallery-primary flex items-center justify-center gap-3 w-full py-3.5 transition-all active:scale-[0.98]"
+              className="gallery-primary flex min-h-13 w-full items-center justify-center gap-3 py-3.5 transition-all active:scale-[0.98]"
             >
               <svg viewBox="0 0 24 24" className="w-4 h-4 shrink-0">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/>

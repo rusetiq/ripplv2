@@ -97,7 +97,7 @@ export function ImpactTab() {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.2 }}
-      className="px-4 pb-14 md:px-0"
+      className="pb-2"
     >
       <div className="mb-5 pt-1">
         <p className="gallery-label mb-1.5 text-text-muted">all time</p>
@@ -106,14 +106,14 @@ export function ImpactTab() {
       </div>
 
       <div className="expressive-card aurora-card p-6 md:p-8 mb-6 rounded-[34px] shadow-xl text-white relative">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-white border border-white/20">
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
+          <div className="flex min-w-0 items-center gap-2.5">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-2xl border border-white/20 bg-white/20 text-white backdrop-blur-md">
               <Target size={18} />
             </div>
             <span className="font-display text-[17px] text-white">net zero milestone</span>
           </div>
-          <span className="font-mono text-[12px] text-white bg-white/20 backdrop-blur-md px-3 py-1 rounded-full border border-white/20 font-semibold">
+          <span className="shrink-0 rounded-full border border-white/20 bg-white/20 px-3 py-1 font-mono text-[12px] font-semibold text-white backdrop-blur-md">
             {Math.round(netZeroProgress)}% completed
           </span>
         </div>
@@ -127,13 +127,13 @@ export function ImpactTab() {
           />
         </div>
 
-        <div className="flex justify-between items-center text-[13px] text-white/95">
+        <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 text-[13px] text-white/95">
           <span className="font-mono font-semibold">{co2Saved.toFixed(1)} kg CO₂ avoided</span>
           <span className="font-mono text-white/80">{netZeroTarget} kg target</span>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 mb-7">
+      <div className="mb-7 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-3.5">
         {!user ? (
           <>
             <SkeletonMetricCard />
@@ -146,7 +146,7 @@ export function ImpactTab() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.08 }}
-              className="expressive-card forest-card p-5 rounded-[26px] shadow-md flex flex-col justify-between min-h-[140px] text-white"
+              className="expressive-card forest-card flex min-h-[120px] flex-col justify-between rounded-[26px] p-5 text-white shadow-md sm:min-h-[140px]"
             >
               <div className="w-9 h-9 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-white">
                 <Wind size={18} />
@@ -161,7 +161,7 @@ export function ImpactTab() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.12 }}
-              className="expressive-card sapphire-card p-5 rounded-[26px] shadow-md flex flex-col justify-between min-h-[140px] text-white"
+              className="expressive-card sapphire-card flex min-h-[120px] flex-col justify-between rounded-[26px] p-5 text-white shadow-md sm:min-h-[140px]"
             >
               <div className="w-9 h-9 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-white">
                 <Droplets size={18} />
@@ -179,7 +179,7 @@ export function ImpactTab() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.16 }}
-              className="expressive-card solar-card p-5 rounded-[26px] shadow-md flex flex-col justify-between min-h-[140px] text-white"
+              className="expressive-card solar-card col-span-2 flex min-h-[120px] flex-col justify-between rounded-[26px] p-5 text-white shadow-md sm:col-span-1 sm:min-h-[140px]"
             >
               <div className="w-9 h-9 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-white">
                 <TreePine size={18} />
@@ -194,7 +194,7 @@ export function ImpactTab() {
       </div>
 
       {!user ? (
-        <div className="expressive-card silver-card p-10 flex flex-col items-center justify-center text-center rounded-[34px] shadow-lg text-white">
+        <div className="expressive-card silver-card flex flex-col items-center justify-center rounded-[34px] p-7 text-center text-white shadow-lg sm:p-10">
           <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center mb-4 text-white">
             <LogIn size={26} strokeWidth={1.8} />
           </div>

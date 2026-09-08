@@ -1,0 +1,16 @@
+{
+  "name": "Rippl",
+  "short_name": "Rippl",
+  "description": "Rippl turns everyday sustainable actions into measurable community impact.",
+  "start_url": "/app",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f2f4f1",
+  "theme_color": "#f2f4f1",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

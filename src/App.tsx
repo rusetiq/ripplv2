@@ -1,22 +1,40 @@
-import { useState, createContext, useContext, useEffect } from 'react'
+import { useState, createContext, useContext, useEffect, useCallback, lazy, Suspense, startTransition } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Check, AlertCircle, Loader2 } from 'lucide-react'
 import { AppShell } from './components/AppShell'
 import { FeedTab } from './tabs/FeedTab'
-import { LogTab } from './tabs/LogTab'
-import { RewardsTab } from './tabs/RewardsTab'
-import { RankTab } from './tabs/RankTab'
-import { ImpactTab } from './tabs/ImpactTab'
-import { ProfileTab } from './tabs/ProfileTab'
-import { AdminTab } from './tabs/AdminTab'
-import { PrivacyTab } from './tabs/PrivacyTab'
-import { PricingTab } from './tabs/PricingTab'
-import { CorporateTab } from './tabs/CorporateTab'
-import { PartnershipsTab } from './tabs/PartnershipsTab'
-import { ExtrasTab } from './tabs/ExtrasTab'
-import { TermsTab } from './tabs/TermsTab'
 import { SignInModal } from './components/SignInModal'
 import { auth, db, googleProvider } from './firebase'
+
+/* Only the tab that opens first is part of the initial payload; the rest arrive
+   as their own chunks. They are warmed on idle so a tab switch still feels
+   instant on a fast connection, and startTransition keeps the current tab on
+   screen while a cold one downloads. */
+const LogTab = lazy(() => import('./tabs/LogTab').then(m => ({ default: m.LogTab })))
+const RewardsTab = lazy(() => import('./tabs/RewardsTab').then(m => ({ default: m.RewardsTab })))
+const RankTab = lazy(() => import('./tabs/RankTab').then(m => ({ default: m.RankTab })))
+const ImpactTab = lazy(() => import('./tabs/ImpactTab').then(m => ({ default: m.ImpactTab })))
+const ProfileTab = lazy(() => import('./tabs/ProfileTab').then(m => ({ default: m.ProfileTab })))
+const AdminTab = lazy(() => import('./tabs/AdminTab').then(m => ({ default: m.AdminTab })))
+const PrivacyTab = lazy(() => import('./tabs/PrivacyTab').then(m => ({ default: m.PrivacyTab })))
+const PricingTab = lazy(() => import('./tabs/PricingTab').then(m => ({ default: m.PricingTab })))
+const CorporateTab = lazy(() => import('./tabs/CorporateTab').then(m => ({ default: m.CorporateTab })))
+const PartnershipsTab = lazy(() => import('./tabs/PartnershipsTab').then(m => ({ default: m.PartnershipsTab })))
+const ExtrasTab = lazy(() => import('./tabs/ExtrasTab').then(m => ({ default: m.ExtrasTab })))
+const TermsTab = lazy(() => import('./tabs/TermsTab').then(m => ({ default: m.TermsTab })))
+
+const warmTabs = () => {
+  // Prefetching costs the user data, so it is skipped on a metered or slow
+  // connection; those tabs still load on demand.
+  const link = (navigator as { connection?: { saveData?: boolean; effectiveType?: string } }).connection
+  if (link?.saveData || (link?.effectiveType && /(^|-)2g$/.test(link.effectiveType))) return
+  void import('./tabs/LogTab')
+  void import('./tabs/ProfileTab')
+  void import('./tabs/RewardsTab')
+  void import('./tabs/RankTab')
+  void import('./tabs/ExtrasTab')
+  void import('./tabs/ImpactTab')
+}
 import { signInWithPopup, onAuthStateChanged, signOut as fbSignOut, type User } from 'firebase/auth'
 import { doc, onSnapshot, setDoc, updateDoc, increment, collection, query, where, getDocs } from 'firebase/firestore'
 
@@ -89,7 +107,8 @@ const defaultBadges = {
 }
 
 function App() {
-  const [activeTab, setActiveTab] = useState<Tab>(() => window.location.pathname === '/app/terms' ? 'terms' : window.location.pathname === '/app/privacy' ? 'privacy' : 'feed')
+  const [activeTab, setRawActiveTab] = useState<Tab>(() => window.location.pathname === '/app/terms' ? 'terms' : window.location.pathname === '/app/privacy' ? 'privacy' : 'feed')
+  const setActiveTab = useCallback((tab: Tab) => { startTransition(() => setRawActiveTab(tab)) }, [])
   const [darkMode, setDarkMode] = useState(() => {
     const savedTheme = localStorage.getItem('rippl-field-theme')
     return savedTheme ? savedTheme === 'dark' : false
@@ -103,6 +122,12 @@ function App() {
   const [authFinished, setAuthFinished] = useState(false)
   const [authFailed, setAuthFailed] = useState(false)
   const [syncError, setSyncError] = useState<string | null>(null)
+
+  useEffect(() => {
+    const idle = window.requestIdleCallback ?? ((cb: () => void) => window.setTimeout(cb, 1500))
+    const handle = idle(warmTabs)
+    return () => window.cancelIdleCallback?.(handle as number)
+  }, [])
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (fbUser) => {
@@ -194,6 +219,11 @@ function App() {
     } else {
       document.documentElement.classList.add('light-mode')
     }
+    /* Safari paints the area above and below the page (the status bar in
+       standalone mode, the rubber-band overscroll everywhere) with the theme
+       colour, so it has to follow the in-app switch rather than the OS. */
+    document.documentElement.style.colorScheme = darkMode ? 'dark' : 'light'
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', darkMode ? '#15191b' : '#e9ecea')
     localStorage.setItem('rippl-field-theme', darkMode ? 'dark' : 'light')
   }, [darkMode])
 
@@ -264,7 +294,7 @@ function App() {
 
   if (!ready) {
     return (
-      <div className="h-full w-full max-w-[430px] mx-auto bg-surface flex items-center justify-center">
+      <div className="flex min-h-[100dvh] w-full items-center justify-center bg-surface">
         <div className="text-center">
           <div className="w-8 h-8 border-2 border-oasis-400 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
           <p className="font-mono text-[10px] text-text-muted">Loading...</p>
@@ -295,7 +325,7 @@ function App() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -20, scale: 0.95 }}
             transition={{ type: 'spring', stiffness: 450, damping: 30 }}
-            className="fixed top-5 left-1/2 -translate-x-1/2 z-[100] flex items-center gap-2.5 px-4 py-2.5 rounded-full shadow-lg border border-border/80 bg-surface/90 backdrop-blur-md"
+            className="app-toast fixed left-1/2 z-[100] flex -translate-x-1/2 items-center gap-2.5 rounded-full border border-border/80 bg-surface/90 px-4 py-2.5 shadow-lg backdrop-blur-md"
           >
             {authFinished ? (
               <span className="flex items-center justify-center w-5 h-5 rounded-full bg-oasis-500/20 text-oasis-400">
@@ -316,12 +346,23 @@ function App() {
       </AnimatePresence>
 
       <AppShell>
-        <AnimatePresence mode="wait">
-          {renderTab()}
-        </AnimatePresence>
+        <Suspense fallback={<TabFallback />}>
+          <AnimatePresence mode="wait">
+            {renderTab()}
+          </AnimatePresence>
+        </Suspense>
       </AppShell>
       <SignInModal />
     </AppContext.Provider>
+  )
+}
+
+function TabFallback() {
+  return (
+    <div role="status" aria-live="polite" className="flex min-h-[50vh] items-center justify-center">
+      <span className="sr-only">Loading</span>
+      <div className="h-7 w-7 animate-spin rounded-full border-2 border-oasis-400 border-t-transparent" aria-hidden="true" />
+    </div>
   )
 }
 

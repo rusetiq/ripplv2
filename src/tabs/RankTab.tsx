@@ -60,7 +60,7 @@ export function RankTab() {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.2 }}
-      className="px-4 pb-14 md:px-0"
+      className="pb-2"
     >
       <div className="mb-5 pt-1">
         <p className="gallery-label mb-1.5 text-text-muted">collective progress</p>
@@ -73,7 +73,7 @@ export function RankTab() {
           <button
             key={s}
             onClick={() => setScope(s)}
-            className={`relative flex-1 py-2 rounded-full font-body text-[12px] font-medium transition-all ${
+            className={`relative min-h-11 flex-1 rounded-full py-2 font-body text-[12px] font-medium transition-all ${
               scope === s ? 'text-[#253b54]' : 'text-text-muted hover:text-text-primary'
             }`}
           >
@@ -90,7 +90,7 @@ export function RankTab() {
       </div>
 
       {!user ? (
-        <div className="expressive-card aurora-card p-10 flex flex-col items-center justify-center text-center rounded-[34px] shadow-xl text-white">
+        <div className="expressive-card aurora-card flex flex-col items-center justify-center rounded-[34px] p-7 text-center text-white shadow-xl sm:p-10">
           <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center mb-4 text-white">
             <LogIn size={26} strokeWidth={1.8} />
           </div>
@@ -113,19 +113,19 @@ export function RankTab() {
       ) : (
         <>
           {myPlayer && (
-            <div className="expressive-card sapphire-card p-5 rounded-[28px] mb-7 shadow-lg flex items-center justify-between text-white">
-              <div className="flex items-center gap-3.5">
-                <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md border border-white/25 flex items-center justify-center font-display text-[16px] font-bold text-white">
+            <div className="expressive-card sapphire-card mb-7 flex flex-col gap-4 rounded-[28px] p-5 text-white shadow-lg sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex min-w-0 items-center gap-3.5">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-white/25 bg-white/20 font-display text-[16px] font-bold text-white backdrop-blur-md">
                   {myPlayer.avatar}
                 </div>
-                <div>
-                  <span className="font-body text-[11px] text-white/80 uppercase tracking-wider">your standing</span>
-                  <h3 className="font-display text-[18px] text-white leading-tight">rank #{myPlayer.rank} overall</h3>
+                <div className="min-w-0">
+                  <span className="font-body text-[11px] uppercase tracking-tight text-white/80">your standing</span>
+                  <h3 className="font-display text-[18px] leading-tight text-white">rank #{myPlayer.rank} overall</h3>
                 </div>
               </div>
-              <div className="text-right">
-                <DotNumber value={myPlayer.points.toLocaleString()} className="text-white fill-white h-6 mb-0.5 ml-auto" />
-                <span className="block font-body text-[11px] text-white/80">points</span>
+              <div className="flex items-baseline gap-2 border-t border-white/20 pt-3 sm:block sm:shrink-0 sm:border-0 sm:pt-0 sm:text-right">
+                <DotNumber value={myPlayer.points.toLocaleString()} className="text-white fill-white h-6 sm:mb-0.5 sm:ml-auto" />
+                <span className="font-body text-[11px] text-white/80 sm:block">points</span>
               </div>
             </div>
           )}
@@ -222,7 +222,7 @@ export function RankTab() {
                 key={player.rank}
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                className={`flex items-center gap-3.5 p-3.5 rounded-[22px] border transition-all ${
+                className={`flex items-center gap-3 rounded-[22px] border p-3.5 transition-all sm:gap-3.5 ${
                   player.isUser
                     ? 'bg-oasis-500/15 border-oasis-500/35 shadow-sm'
                     : 'bg-surface-raised/70 border-border/70 hover:bg-surface-raised'
@@ -244,7 +244,7 @@ export function RankTab() {
                     {player.points.toLocaleString()} community points
                   </p>
                 </div>
-                <div className="flex items-center gap-1.5 shrink-0 px-2.5 py-1 rounded-full bg-surface-overlay/80 border border-border">
+                <div className="hidden shrink-0 items-center gap-1.5 rounded-full border border-border bg-surface-overlay/80 px-2.5 py-1 min-[380px]:flex">
                   <TrendingUp size={11} className="text-oasis-400" />
                   <span className="font-mono text-[10px] text-text-muted">+{player.change || 1}</span>
                 </div>

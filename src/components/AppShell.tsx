@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react'
+import { type ReactNode, useEffect } from 'react'
 import { BottomNav } from './BottomNav'
 import { StatusBar } from './StatusBar'
 import { AlertCircle } from 'lucide-react'
@@ -7,6 +7,16 @@ import '../dashboard.css'
 
 export function AppShell({ children }: { children: ReactNode }) {
   const { syncError } = useApp()
+
+  useEffect(() => {
+    document.documentElement.classList.add('in-app')
+    document.body.classList.add('in-app')
+    return () => {
+      document.documentElement.classList.remove('in-app')
+      document.body.classList.remove('in-app')
+    }
+  }, [])
+
   return <div className="app-gallery dashboard-shell">
     <StatusBar />
     <main className="dashboard-main" id="dashboard-content">

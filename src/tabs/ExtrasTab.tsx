@@ -51,7 +51,7 @@ export function ExtrasTab() {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.2 }}
-      className="px-4 pb-12 md:px-0"
+      className="pb-2"
     >
       <div className="mb-5 pt-1">
         <p className="gallery-label mb-1.5 text-text-muted">explore</p>
@@ -67,14 +67,14 @@ export function ExtrasTab() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.04 }}
             onClick={() => setActiveTab(link.id as any)}
-            className="w-full flex items-center gap-4 p-4 rounded-[22px] gallery-card border border-border hover:border-border-active transition-all text-left group"
+            className="gallery-card group flex w-full items-center gap-3.5 rounded-[22px] border border-border p-4 text-left transition-all hover:border-border-active"
           >
             <div className="w-11 h-11 rounded-2xl bg-surface-overlay flex items-center justify-center shrink-0">
               {link.icon}
             </div>
             <div className="flex-1 min-w-0">
               <h3 className="font-display text-[15px] text-text-primary leading-snug">{link.label}</h3>
-              <p className="font-body text-[12px] text-text-muted mt-0.5 truncate">{link.desc}</p>
+              <p className="mt-0.5 line-clamp-2 font-body text-[12px] leading-snug text-text-muted">{link.desc}</p>
             </div>
             <ChevronRight size={16} className="text-text-muted group-hover:translate-x-1 transition-transform shrink-0" />
           </motion.button>

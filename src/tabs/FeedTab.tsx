@@ -93,20 +93,20 @@ function CreatePost({ user }: { user: any }) {
       {image && (
         <div className="relative mt-2 rounded-xl overflow-hidden border border-border flex justify-center bg-surface-overlay/20">
           <img src={image} alt="" className="max-h-60 object-contain" />
-          <button onClick={() => setImage(null)} className="absolute top-2 right-2 w-6 h-6 rounded-full bg-surface/80 flex items-center justify-center">
-            <X size={12} className="text-text-primary" />
+          <button onClick={() => setImage(null)} aria-label="remove photo" className="absolute top-2 right-2 flex h-9 w-9 items-center justify-center rounded-full bg-surface/85 backdrop-blur-sm">
+            <X size={15} className="text-text-primary" />
           </button>
         </div>
       )}
       <div className="flex items-center justify-between mt-3 pt-3 border-t border-border">
-        <button onClick={() => fileRef.current?.click()} className="flex items-center gap-1.5 text-text-muted hover:text-text-secondary transition-colors">
-          <Image size={14} />
-          <span className="font-mono text-[9px]">Photo</span>
+        <button onClick={() => fileRef.current?.click()} className="-my-1 -ml-2 flex min-h-11 items-center gap-1.5 rounded-xl px-2 text-text-muted transition-colors hover:text-text-secondary">
+          <Image size={16} />
+          <span className="font-mono text-[11px]">Photo</span>
         </button>
         <button
           onClick={handlePost}
           disabled={!text.trim() || posting}
-          className="gallery-primary flex items-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed px-4 py-2 transition-opacity"
+          className="gallery-primary flex min-h-11 items-center gap-2 px-5 py-2 transition-opacity disabled:cursor-not-allowed disabled:opacity-40"
         >
           <span className="font-body text-[11px] font-medium">Post</span>
           {posting ? (
@@ -118,6 +118,7 @@ function CreatePost({ user }: { user: any }) {
       </div>
       <input ref={fileRef} type="file" accept="image/*" onChange={async e => {
         const f = e.target.files?.[0]
+        e.target.value = ''
         if (f) {
           try {
             setImage(await compressImage(f))
@@ -128,7 +129,7 @@ function CreatePost({ user }: { user: any }) {
         }
       }} className="hidden" />
       {imageError && (
-        <p className="font-mono text-[8px] text-red-400 mt-1">Image too large</p>
+        <p className="mt-2 font-body text-[11px] text-red-400">That photo could not be read. Try a JPEG or PNG.</p>
       )}
     </div>
   )
@@ -192,7 +193,7 @@ function FieldStationRail() {
       <section className="gallery-card overflow-hidden">
         <div className="flex items-center justify-between border-b border-border px-4 py-3.5">
           <h2 className="text-[13px] font-medium text-text-primary">Something good for today</h2>
-          <button onClick={chooseAction} className="text-[11px] font-medium text-text-muted transition-colors hover:text-text-primary">See all</button>
+          <button onClick={chooseAction} className="-my-2 -mr-2 flex min-h-11 items-center rounded-xl px-2 text-[12px] font-medium text-text-muted transition-colors hover:text-text-primary">See all</button>
         </div>
         <div className="divide-y divide-border">
           {suggestedActions.map(({ label, detail, Icon }) => (
@@ -296,11 +297,11 @@ function FeedCard({ post, index }: { post: FeedPost; index: number }) {
   const isAdmin = (appCtx.userData as any)?.isAdmin
 
   useEffect(() => {
-    const handleClick = (e: MouseEvent) => {
+    const handleClick = (e: Event) => {
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) setMenuOpen(false)
     }
-    document.addEventListener('mousedown', handleClick)
-    return () => document.removeEventListener('mousedown', handleClick)
+    document.addEventListener('pointerdown', handleClick)
+    return () => document.removeEventListener('pointerdown', handleClick)
   }, [])
 
   useEffect(() => {
@@ -410,9 +411,9 @@ function FeedCard({ post, index }: { post: FeedPost; index: number }) {
                   className="w-full bg-surface-overlay rounded-lg p-2 font-body text-[12px] text-text-primary outline-none border border-border resize-none"
                   rows={2}
                 />
-                <div className="flex gap-2 mt-1.5">
-                  <button onClick={handleEdit} className="font-mono text-[9px] text-oasis-400 hover:text-oasis-300">Save</button>
-                  <button onClick={() => { setEditing(false); setEditText(post.action) }} className="font-mono text-[9px] text-text-muted hover:text-text-secondary">Cancel</button>
+                <div className="mt-1 flex gap-1">
+                  <button onClick={handleEdit} className="min-h-11 rounded-lg px-3 font-mono text-[12px] text-oasis-400 hover:text-oasis-300">Save</button>
+                  <button onClick={() => { setEditing(false); setEditText(post.action) }} className="min-h-11 rounded-lg px-3 font-mono text-[12px] text-text-muted hover:text-text-secondary">Cancel</button>
                 </div>
               </div>
             ) : (
@@ -437,8 +438,13 @@ function FeedCard({ post, index }: { post: FeedPost; index: number }) {
           </div>
           {(isOwner || isAdmin) && (
             <div className="relative shrink-0" ref={menuRef}>
-              <button onClick={() => setMenuOpen(!menuOpen)} className="text-text-muted hover:text-text-secondary p-1 rounded-lg hover:bg-surface-overlay transition-colors">
-                <MoreVertical size={14} />
+              <button
+                onClick={() => setMenuOpen(!menuOpen)}
+                aria-label="post options"
+                aria-expanded={menuOpen}
+                className="-mr-2 -mt-2 flex h-11 w-11 items-center justify-center rounded-lg text-text-muted transition-colors hover:bg-surface-overlay hover:text-text-secondary"
+              >
+                <MoreVertical size={16} />
               </button>
               {menuOpen && (
                 <motion.div
@@ -448,14 +454,14 @@ function FeedCard({ post, index }: { post: FeedPost; index: number }) {
                 >
                   <button
                     onClick={() => { setEditing(true); setMenuOpen(false); setEditText(post.action) }}
-                    className="flex items-center gap-2 w-full px-3 py-2 rounded-lg hover:bg-surface-overlay transition-colors text-left"
+                    className="flex min-h-11 w-full items-center gap-2 rounded-lg px-3 py-2 text-left transition-colors hover:bg-surface-overlay"
                   >
                     <Edit2 size={12} className="text-text-muted" />
                     <span className="font-body text-[11px] text-text-primary">Edit</span>
                   </button>
                   <button
                     onClick={handleDelete}
-                    className="flex items-center gap-2 w-full px-3 py-2 rounded-lg hover:bg-surface-overlay transition-colors text-left"
+                    className="flex min-h-11 w-full items-center gap-2 rounded-lg px-3 py-2 text-left transition-colors hover:bg-surface-overlay"
                   >
                     <Trash size={12} className="text-red-400" />
                     <span className="font-body text-[11px] text-red-400">Delete</span>
@@ -463,7 +469,7 @@ function FeedCard({ post, index }: { post: FeedPost; index: number }) {
                   {isAdmin && post.imageBase64 && (
                     <button
                       onClick={handleRemoveImage}
-                      className="flex items-center gap-2 w-full px-3 py-2 rounded-lg hover:bg-surface-overlay transition-colors text-left"
+                      className="flex min-h-11 w-full items-center gap-2 rounded-lg px-3 py-2 text-left transition-colors hover:bg-surface-overlay"
                     >
                       <Image size={12} className="text-text-muted" />
                       <span className="font-body text-[11px] text-text-primary">Remove image</span>
@@ -472,7 +478,7 @@ function FeedCard({ post, index }: { post: FeedPost; index: number }) {
                   {isAdmin && (
                     <button
                       onClick={handleAdminEditPoints}
-                      className="flex items-center gap-2 w-full px-3 py-2 rounded-lg hover:bg-surface-overlay transition-colors text-left"
+                      className="flex min-h-11 w-full items-center gap-2 rounded-lg px-3 py-2 text-left transition-colors hover:bg-surface-overlay"
                     >
                       <span className="font-body text-[11px] text-text-primary">Set points</span>
                     </button>
@@ -484,16 +490,16 @@ function FeedCard({ post, index }: { post: FeedPost; index: number }) {
         </div>
 
         <div className="flex items-center justify-between mt-3.5 pt-3 border-t border-border">
-          <button onClick={handleLike} className="flex items-center gap-1.5 group/btn">
+          <button onClick={handleLike} aria-pressed={liked} aria-label={liked ? 'unlike' : 'like'} className="group/btn -my-1 flex min-h-11 flex-1 items-center justify-start gap-1.5 rounded-xl px-2">
             <Heart
-              size={14}
+              size={16}
               className={`transition-all duration-200 ${liked ? 'text-red-400 fill-red-400 scale-110' : 'text-text-muted group-hover/btn:text-red-400'}`}
             />
-            <span className={`font-mono text-[10px] ${liked ? 'text-red-400' : 'text-text-muted'}`}>{likeCount}</span>
+            <span className={`font-mono text-[11px] ${liked ? 'text-red-400' : 'text-text-muted'}`}>{likeCount}</span>
           </button>
-          <button onClick={handleCommentClick} className="flex items-center gap-1.5 group/btn">
-            <MessageCircle size={14} className="text-text-muted group-hover/btn:text-gulf-400 transition-colors" />
-            <span className="font-mono text-[10px] text-text-muted">{commentCount}</span>
+          <button onClick={handleCommentClick} aria-label="comments" className="group/btn -my-1 flex min-h-11 flex-1 items-center justify-end gap-1.5 rounded-xl px-2">
+            <MessageCircle size={16} className="text-text-muted group-hover/btn:text-gulf-400 transition-colors" />
+            <span className="font-mono text-[11px] text-text-muted">{commentCount}</span>
           </button>
         </div>
       </motion.div>
@@ -504,15 +510,19 @@ function FeedCard({ post, index }: { post: FeedPost; index: number }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[90] flex flex-col bg-surface/95 backdrop-blur-md"
+            className="comments-sheet fixed inset-0 z-[90] flex flex-col bg-surface/95 backdrop-blur-md"
           >
-            <div className="flex items-center justify-between px-4 pt-4 pb-2 border-b border-border">
+            <div className="flex items-center justify-between gap-2 px-4 py-2 border-b border-border">
               <h3 className="font-body text-[14px] font-bold text-text-primary">Comments</h3>
-              <button onClick={() => setShowComments(false)} className="text-text-muted hover:text-text-secondary">
-                <X size={16} />
+              <button
+                onClick={() => setShowComments(false)}
+                aria-label="close comments"
+                className="-mr-2 flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-text-muted transition-colors hover:bg-surface-overlay hover:text-text-secondary"
+              >
+                <X size={18} />
               </button>
             </div>
-            <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3">
+            <div className="flex-1 overflow-y-auto overscroll-contain px-4 py-3 space-y-3">
               {comments.length === 0 ? (
                 <p className="font-mono text-[10px] text-text-muted text-center py-10">No comments yet</p>
               ) : comments.map(c => (
@@ -532,20 +542,23 @@ function FeedCard({ post, index }: { post: FeedPost; index: number }) {
                 </div>
               ))}
             </div>
-            <div className="px-4 py-3 border-t border-border flex gap-2">
+            <div className="comments-composer flex shrink-0 gap-2 border-t border-border px-4 py-3">
               <input
                 value={commentText}
                 onChange={e => setCommentText(e.target.value)}
                 placeholder="Write a comment..."
-                className="flex-1 bg-surface-overlay rounded-xl px-3 py-2 font-body text-[12px] text-text-primary placeholder:text-text-muted outline-none border border-border"
+                enterKeyHint="send"
+                autoComplete="off"
+                className="min-w-0 flex-1 rounded-xl border border-border bg-surface-overlay px-3 py-2.5 font-body text-[14px] text-text-primary placeholder:text-text-muted outline-none"
                 onKeyDown={e => e.key === 'Enter' && handleAddComment()}
               />
               <button
                 onClick={handleAddComment}
                 disabled={!commentText.trim()}
-                className="bg-oasis-500 hover:bg-oasis-600 disabled:opacity-40 disabled:cursor-not-allowed rounded-xl px-3 py-2 transition-colors"
+                aria-label="send comment"
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-oasis-500 transition-colors hover:bg-oasis-600 disabled:cursor-not-allowed disabled:opacity-40"
               >
-                <Send size={14} className="text-surface" />
+                <Send size={16} className="text-surface" />
               </button>
             </div>
           </motion.div>

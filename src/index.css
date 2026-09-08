@@ -55,9 +55,33 @@
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 ::selection { background: #c5d6ea; color: #111512; }
 :focus-visible { outline: 2px solid #426da9; outline-offset: 2px; }
-html, body, #root { height: 100%; margin: 0; overflow: hidden; }
-body { background: var(--color-surface); color: var(--color-text-primary); font-family: var(--font-body); font-weight: 400; -webkit-font-smoothing: antialiased; }
-button, input, textarea, select { font: inherit; }
+html, body, #root {
+  min-height: 100%;
+  margin: 0;
+}
+html:has(.dashboard-shell),
+body:has(.dashboard-shell),
+html.in-app,
+body.in-app {
+  height: 100%;
+  overflow: hidden;
+}
+body {
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  font-family: var(--font-body);
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: -0.018em;
+  caret-color: #365c92;
+}
+button, input, textarea, select {
+  font: inherit;
+  letter-spacing: inherit;
+}
+h1, h2, h3, h4, h5, h6 {
+  letter-spacing: -0.03em;
+}
 button { cursor: pointer; }
 ::-webkit-scrollbar { width: 8px; }
 ::-webkit-scrollbar-thumb { border: 2px solid transparent; border-radius: 8px; background: var(--color-border-active); background-clip: padding-box; }
@@ -74,13 +98,13 @@ button { cursor: pointer; }
 @utility glass-panel { background: var(--color-surface-glass); border: 1px solid var(--color-border); backdrop-filter: blur(20px); box-shadow: none; }
 
 .gallery-card { border: 1px solid var(--color-border); border-radius: 8px; background: var(--color-surface-raised); box-shadow: none; }
-.gallery-label { font-family: var(--font-mono); font-size: 10px; font-weight: 500; letter-spacing: 0; line-height: 1.5; text-transform: uppercase; }
+.gallery-label { font-family: var(--font-mono); font-size: 10px; font-weight: 500; letter-spacing: -0.01em; line-height: 1.5; text-transform: uppercase; }
 .gallery-primary { border-radius: 9999px; background: #c5d6ea; color: #111512; }
 .gallery-primary:hover { background: #b4cbe7; }
 .gallery-nav-active { background: #c5d6ea; color: #111512; }
 .gallery-nav-text-active { color: #111512; }
 .gallery-logo { background: #c5d6ea; color: #111512; }
-.app-gallery .font-display { font-weight: 400; letter-spacing: 0; }
+.app-gallery .font-display { font-weight: 400; letter-spacing: -0.03em; }
 .app-gallery { font-variant-numeric: tabular-nums; }
 .app-gallery button, .app-gallery input, .app-gallery textarea, .app-gallery select { border-radius: 8px; }
 .app-gallery .rounded-2xl, .app-gallery .rounded-3xl, .app-gallery .rounded-xl { border-radius: 8px; }
@@ -116,4 +140,46 @@ body, body *, body *::before, body *::after, input::placeholder, textarea::place
   --color-gulf-400: #386476;
   --color-dune-400: #7b622b;
   --color-ember-400: #a74740;
+}
+
+/* ---------------------------------------------------------------------------
+   Mobile / iOS foundations
+   Safari-specific behaviours that break touch layouts unless opted out of:
+   landscape text inflation, focus-zoom on small controls, and the synthetic
+   300ms delay that follows a double-tap-to-zoom gesture.
+   --------------------------------------------------------------------------- */
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+button, a, label, summary, select,
+[role="button"], [role="tab"], [role="switch"] {
+  touch-action: manipulation;
+}
+
+/* Safari zooms the viewport whenever a focused control renders under 16px.
+   Touch devices get the full 16px; pointer devices keep the designed sizes. */
+@media (pointer: coarse) {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+}
+
+/* Horizontal rails (category pickers, chip rows) scroll without a visible bar
+   and snap back inside their own container rather than bouncing the page. */
+@utility scrollbar-none {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+}
+.scrollbar-none::-webkit-scrollbar { width: 0; height: 0; display: none; }
+
+/* Long words (emails, urls, generated names) must not push a card wider than
+   the screen. */
+body {
+  overflow-wrap: break-word;
 }

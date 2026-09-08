@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { Check, Crown, ArrowRight, Leaf, Star, Zap, Building2, Sparkles } from 'lucide-react'
+import { Check, ArrowRight, Leaf, Star, Zap, Building2, Sparkles } from 'lucide-react'
 import { useApp } from '../App'
 import { DotNumber } from '../components/DotNumber'
 
@@ -41,7 +41,7 @@ export function PricingTab() {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.2 }}
-      className="px-4 pb-14 md:px-0"
+      className="pb-2"
     >
       <div className="mb-6 pt-1">
         <p className="gallery-label mb-1.5 text-text-muted">membership & tiers</p>
@@ -50,18 +50,9 @@ export function PricingTab() {
       </div>
 
       <div className="space-y-5 mb-8">
-        <div className="expressive-card aurora-card p-6 md:p-8 rounded-[36px] shadow-xl text-white relative">
-          <div className="flex items-center justify-between mb-4">
-            <span className="px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-white font-body text-[11px] font-semibold border border-white/20">
-              most popular
-            </span>
-            <div className="flex items-center gap-1 text-white/90">
-              <Crown size={20} />
-            </div>
-          </div>
-
+        <div className="expressive-card aurora-card relative rounded-[36px] p-6 text-white shadow-xl md:p-8">
           <div className="mb-6">
-            <p className="font-body text-[12px] text-white/80 uppercase tracking-wider">rippl supporter</p>
+            <p className="font-body text-[12px] text-white/80 uppercase tracking-tight">rippl supporter</p>
             <div className="flex items-baseline gap-2 mt-1">
               <DotNumber value="20" className="text-white fill-white h-11" />
               <div className="flex flex-col leading-tight">
@@ -101,7 +92,6 @@ export function PricingTab() {
         <div className="expressive-card silver-card p-6 md:p-8 rounded-[36px] shadow-lg text-white relative">
           <div className="flex items-start justify-between mb-4">
             <div>
-              <span className="font-body text-[11px] text-white/70 uppercase tracking-wider">standard plan</span>
               <h3 className="font-display text-[24px] text-white mt-0.5">free tier</h3>
               <p className="font-body text-[13px] text-white/80 mt-1">for individual citizens building daily green routines</p>
             </div>
@@ -133,7 +123,6 @@ export function PricingTab() {
         <div className="expressive-card sapphire-card p-6 md:p-8 rounded-[36px] shadow-xl text-white relative">
           <div className="flex items-start justify-between mb-4">
             <div>
-              <span className="font-body text-[11px] text-white/80 uppercase tracking-wider">enterprise organizations</span>
               <h3 className="font-display text-[26px] text-white mt-0.5">corporate esg</h3>
               <p className="font-body text-[13px] text-white/85 mt-1">for companies measuring Scope 3 employee emissions</p>
             </div>

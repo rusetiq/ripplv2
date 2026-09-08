@@ -1,11 +1,16 @@
 import { motion } from 'framer-motion'
 import { Moon, Sun, ChevronRight, LogOut, Flame, Trophy, Zap, Target, LogIn, MapPin, Camera, Share2, Newspaper } from 'lucide-react'
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, lazy, Suspense } from 'react'
 import { useApp } from '../App'
 import { db } from '../firebase'
 import { doc, updateDoc, collection, query, where, orderBy, limit as fbLimit, onSnapshot } from 'firebase/firestore'
-import { ShareCard } from '../components/ShareCard'
+
+import { compressImage } from '../utils'
 import { DotNumber } from '../components/DotNumber'
+
+/* The share sheet pulls in the image exporter, which nobody needs until they
+   actually open it. */
+const ShareCard = lazy(() => import('../components/ShareCard').then(m => ({ default: m.ShareCard })))
 
 interface MyPost {
   id: string
@@ -32,6 +37,7 @@ export function ProfileTab() {
   const [myPosts, setMyPosts] = useState<MyPost[]>([])
   const [showShare, setShowShare] = useState(false)
   const avatarRef = useRef<HTMLInputElement>(null)
+  const [avatarError, setAvatarError] = useState<string | null>(null)
 
   useEffect(() => {
     if (!user) return
@@ -50,14 +56,14 @@ export function ProfileTab() {
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.2 }}
-        className="px-4 pb-4 md:px-0"
+        className="pb-2"
       >
         <div className="mb-5 pt-1">
           <p className="gallery-label mb-1.5 text-text-muted">account</p>
           <h2 className="font-display text-[26px] leading-tight text-text-primary">profile</h2>
           <p className="mt-1 text-[13px] text-text-muted">manage your account and environmental record</p>
         </div>
-        <div className="gallery-card p-8 md:p-10 flex flex-col items-center justify-center text-center rounded-[30px] border border-border">
+        <div className="gallery-card flex flex-col items-center justify-center rounded-[30px] border border-border p-7 text-center sm:p-10">
           <div className="w-14 h-14 rounded-2xl bg-surface-overlay flex items-center justify-center mb-4 text-oasis-400">
             <LogIn size={26} strokeWidth={1.8} />
           </div>
@@ -87,13 +93,18 @@ export function ProfileTab() {
 
   const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
+    e.target.value = ''
     if (!file) return
-    const reader = new FileReader()
-    reader.onload = async () => {
-      const base64 = reader.result as string
+    setAvatarError(null)
+    try {
+      // A phone camera shot read straight to base64 is megabytes; Firestore
+      // rejects documents over 1MB, so the avatar goes through the same
+      // downscale as every other upload.
+      const base64 = await compressImage(file, 512, 0.8)
       await updateDoc(doc(db, 'users', user.uid), { photoURL: base64 })
+    } catch {
+      setAvatarError('That photo could not be used. Try a JPEG or PNG.')
     }
-    reader.readAsDataURL(file)
   }
 
   return (
@@ -103,7 +114,7 @@ export function ProfileTab() {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.2 }}
-      className="px-4 pb-20 md:px-0"
+      className="pb-2"
     >
       <div className="mb-5 pt-1">
         <p className="gallery-label mb-1.5 text-text-muted">account</p>
@@ -116,7 +127,12 @@ export function ProfileTab() {
         className="gallery-card p-6 md:p-7 mb-4 rounded-[30px] border border-border shadow-xs"
       >
         <div className="flex items-center gap-4">
-          <div className="relative group cursor-pointer" onClick={() => avatarRef.current?.click()}>
+          <button
+            type="button"
+            onClick={() => avatarRef.current?.click()}
+            aria-label="change profile photo"
+            className="group relative shrink-0 cursor-pointer rounded-2xl"
+          >
             {userPhotoBase64 || googlePhotoURL ? (
               <img src={userPhotoBase64 || googlePhotoURL} alt="" className="w-16 h-16 rounded-2xl object-cover border border-border" />
             ) : (
@@ -124,13 +140,18 @@ export function ProfileTab() {
                 {initials}
               </div>
             )}
-            <div className="absolute inset-0 rounded-2xl bg-black/40 backdrop-blur-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+            <span className="absolute inset-0 flex items-center justify-center rounded-2xl bg-black/40 opacity-0 backdrop-blur-xs transition-opacity group-hover:opacity-100">
               <Camera size={16} className="text-white" />
-            </div>
-            <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-oasis-400 text-surface flex items-center justify-center shadow-xs font-mono text-[9px] font-bold">
+            </span>
+            {/* Touch devices never hover, so the camera badge is always visible
+                there and the level moves to the opposite corner. */}
+            <span className="absolute -bottom-1 -left-1 hidden h-6 w-6 items-center justify-center rounded-full border border-border bg-surface-raised text-text-primary shadow-xs [@media(hover:none)]:flex">
+              <Camera size={11} />
+            </span>
+            <span className="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full bg-oasis-400 font-mono text-[9px] font-bold text-surface shadow-xs">
               {level}
-            </div>
-          </div>
+            </span>
+          </button>
           <div className="flex-1 min-w-0">
             <h3 className="font-display text-[18px] text-text-primary font-semibold truncate">{displayName.toLowerCase()}</h3>
             {userData?.location ? (
@@ -160,10 +181,11 @@ export function ProfileTab() {
       </motion.div>
 
       <input ref={avatarRef} type="file" accept="image/*" onChange={handleAvatarChange} className="hidden" />
+      {avatarError && <p role="alert" className="mb-3 font-body text-[11px] text-red-400">{avatarError}</p>}
 
       <button
         onClick={() => setShowShare(true)}
-        className="gallery-primary w-full flex items-center justify-center gap-2 py-3 mb-5 transition-all"
+        className="gallery-primary mb-5 flex min-h-12 w-full items-center justify-center gap-2 py-3 transition-all"
       >
         <Share2 size={14} />
         <span className="font-body text-[12px] font-medium">share your impact</span>
@@ -184,13 +206,15 @@ export function ProfileTab() {
           </div>
           <div className="space-y-2">
             {myPosts.slice(0, 5).map(p => (
-              <div key={p.id} className="flex items-center gap-3 bg-surface-raised/70 rounded-2xl border border-border p-3">
-                <div className="w-2 h-2 rounded-full bg-oasis-400 shrink-0" />
-                <p className="flex-1 font-body text-[12px] text-text-secondary truncate">{p.action.toLowerCase()}</p>
+              <div key={p.id} className="flex items-center gap-3 rounded-2xl border border-border bg-surface-raised/70 p-3">
+                <div className="h-2 w-2 shrink-0 rounded-full bg-oasis-400" />
+                <div className="min-w-0 flex-1">
+                  <p className="truncate font-body text-[12px] text-text-secondary">{p.action.toLowerCase()}</p>
+                  <p className="mt-0.5 font-body text-[10px] text-text-muted">{timeAgo(p.timestamp)}</p>
+                </div>
                 {p.points > 0 && (
-                  <span className="font-mono text-[10px] text-oasis-400 shrink-0 font-medium">+{p.points} pts</span>
+                  <span className="shrink-0 font-mono text-[10px] font-medium text-oasis-400">+{p.points} pts</span>
                 )}
-                <span className="font-body text-[10px] text-text-muted shrink-0">{timeAgo(p.timestamp)}</span>
               </div>
             ))}
           </div>
@@ -198,26 +222,31 @@ export function ProfileTab() {
       )}
 
       <div className="gallery-card rounded-[26px] border border-border divide-y divide-border overflow-hidden">
-        <div className="flex items-center justify-between p-4">
-          <div className="flex items-center gap-3">
+        <button
+          onClick={() => setDarkMode(!darkMode)}
+          role="switch"
+          aria-checked={darkMode}
+          className="flex min-h-14 w-full items-center justify-between gap-3 p-4 text-left transition-colors hover:bg-surface-overlay/50"
+        >
+          <span className="flex items-center gap-3">
             {darkMode ? <Moon size={16} className="text-gulf-400" /> : <Sun size={16} className="text-dune-400" />}
             <span className="font-body text-[13px] text-text-primary">dark theme</span>
-          </div>
-          <button
-            onClick={() => setDarkMode(!darkMode)}
-            className={`w-11 h-6 rounded-full relative transition-colors duration-200 p-0.5 ${darkMode ? 'bg-[#253b54]' : 'bg-surface-overlay'}`}
+          </span>
+          <span
+            aria-hidden="true"
+            className={`relative h-6 w-11 shrink-0 rounded-full p-0.5 transition-colors duration-200 ${darkMode ? 'bg-[#253b54]' : 'bg-surface-overlay'}`}
           >
-            <motion.div
+            <motion.span
               animate={{ x: darkMode ? 20 : 0 }}
               transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-              className="w-5 h-5 rounded-full bg-white shadow-xs"
+              className="block h-5 w-5 rounded-full bg-white shadow-xs"
             />
-          </button>
-        </div>
+          </span>
+        </button>
 
         <button
           onClick={signOut}
-          className="w-full flex items-center justify-between p-4 text-left hover:bg-surface-overlay/50 transition-colors"
+          className="flex min-h-14 w-full items-center justify-between p-4 text-left transition-colors hover:bg-surface-overlay/50"
         >
           <div className="flex items-center gap-3">
             <LogOut size={16} className="text-red-400" />
@@ -227,7 +256,11 @@ export function ProfileTab() {
         </button>
       </div>
 
-      <ShareCard open={showShare} onClose={() => setShowShare(false)} />
+      {showShare && (
+        <Suspense fallback={null}>
+          <ShareCard open onClose={() => setShowShare(false)} />
+        </Suspense>
+      )}
     </motion.div>
   )
 }

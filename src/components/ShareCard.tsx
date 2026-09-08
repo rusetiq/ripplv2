@@ -1,94 +1,140 @@
-import { useRef, useState, useEffect } from 'react'
+import { useRef, useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { toPng } from 'html-to-image'
 import { useApp } from '../App'
-import { X, Download, Share2, Trophy, Wind, Droplets, Flame, Waves } from 'lucide-react'
+import { X, Download, Share2, AlertCircle } from 'lucide-react'
+import { DotNumber } from './DotNumber'
+import { brandFontEmbedCss } from '../brandFont'
 
 interface ShareCardProps {
   open: boolean
   onClose: () => void
 }
 
-const bgImages = [
-  'https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=1080&h=1920&fit=crop',
-  'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=1080&h=1920&fit=crop',
-  'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1080&h=1920&fit=crop',
-  'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1080&h=1920&fit=crop',
-  'https://images.unsplash.com/photo-1511497584788-876760111969?w=1080&h=1920&fit=crop',
-  'https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?w=1080&h=1920&fit=crop',
-]
+/* The card is a fixed 1080x1920 story frame authored at a third of that size.
+   CSS cannot divide one length by another, so the fit-to-viewport ratio is
+   measured here; the capture target itself is never scaled, so the exported
+   image keeps its full resolution. */
+/* Dotted numerals are wide, so large tallies are abbreviated rather than
+   allowed to shrink into illegibility. */
+function compact(value: number): string {
+  if (value >= 1_000_000) return `${(value / 1_000_000).toFixed(1)}m`
+  if (value >= 10_000) return `${(value / 1000).toFixed(1)}k`
+  return value.toLocaleString()
+}
 
-function pickImage() {
-  return bgImages[Math.floor(Math.random() * bgImages.length)]
+const CARD_W = 360
+const CARD_H = 640
+const EXPORT_SCALE = 3
+const CHROME_H = 236
+const GUTTER = 40
+
+const ACTION_COL_W = 210
+
+function useShareLayout(open: boolean) {
+  const [layout, setLayout] = useState({ scale: 1, sideBySide: false })
+  useEffect(() => {
+    if (!open) return
+    const measure = () => {
+      const width = window.innerWidth
+      const height = window.visualViewport?.height ?? window.innerHeight
+      // A phone in landscape has no room for a 9:16 card with the actions
+      // stacked under it, so the sheet turns into a row and the card is
+      // measured against the height alone.
+      const sideBySide = height < 560 && width > height
+      const availableW = sideBySide ? width - GUTTER - ACTION_COL_W : width - GUTTER
+      const availableH = sideBySide ? height - 40 : height - CHROME_H
+      setLayout({
+        sideBySide,
+        scale: Math.max(0.5, Math.min(1, availableW / CARD_W, availableH / CARD_H)),
+      })
+    }
+    measure()
+    window.addEventListener('resize', measure)
+    window.addEventListener('orientationchange', measure)
+    return () => {
+      window.removeEventListener('resize', measure)
+      window.removeEventListener('orientationchange', measure)
+    }
+  }, [open])
+  return layout
 }
 
 export function ShareCard({ open, onClose }: ShareCardProps) {
   const { points, co2Saved, waterSaved, streak, level, user, userData } = useApp()
   const cardRef = useRef<HTMLDivElement>(null)
-  const [capturing, setCapturing] = useState(false)
-  const [bg, setBg] = useState('')
-  const [loaded, setLoaded] = useState(false)
-  const displayName = user?.displayName || userData?.displayName || 'Rippl User'
+  const { scale: shareScale, sideBySide } = useShareLayout(open)
+  const displayName = (user?.displayName || userData?.displayName || 'a rippl member').trim()
+  const place = userData?.location?.trim()
+  /* Each render of the card is identified by the values it shows, so a stale
+     image is never offered for sharing when the numbers change underneath. */
+  const signature = [points, co2Saved, waterSaved, streak, level, displayName, place].join('|')
+  const [render, setRender] = useState<{ signature: string; url?: string; file?: File } | null>(null)
+  const image = render?.signature === signature && render.url && render.file
+    ? { url: render.url, file: render.file }
+    : null
+  const failed = render?.signature === signature && !render.url
 
+  /* iOS only grants navigator.share() inside the gesture that triggered it, and
+     rendering the card takes far longer than that window. So the image is built
+     as soon as the sheet opens and the button just hands over the finished file. */
   useEffect(() => {
     if (!open) return
-    setLoaded(false)
-    const src = pickImage()
-    const img = new Image()
-    img.crossOrigin = 'anonymous'
-    img.onload = () => { setBg(src); setLoaded(true) }
-    img.src = src
-  }, [open])
-
-  const captureCard = async () => {
-    if (!cardRef.current) return null
-    await new Promise(r => setTimeout(r, 100))
-    return toPng(cardRef.current, {
-      pixelRatio: 2,
-      cacheBust: true,
-      skipFonts: false,
-    })
-  }
-
-  const handleShare = async () => {
-    setCapturing(true)
-    try {
-      const dataUrl = await captureCard()
-      if (!dataUrl) return
-      const blob = await (await fetch(dataUrl)).blob()
-      const file = new File([blob], 'rippl-stats.png', { type: 'image/png' })
-      if (navigator.share && navigator.canShare?.({ files: [file] })) {
-        await navigator.share({ files: [file], title: 'My Rippl Impact' })
-      } else {
-        const a = document.createElement('a')
-        a.href = dataUrl
-        a.download = 'rippl-stats.png'
-        a.click()
+    let cancelled = false
+    const build = async () => {
+      try {
+        await document.fonts.ready
+        const fontEmbedCSS = await brandFontEmbedCss()
+        if (cancelled || !cardRef.current) return
+        const url = await toPng(cardRef.current, {
+          pixelRatio: EXPORT_SCALE,
+          width: CARD_W,
+          height: CARD_H,
+          fontEmbedCSS,
+          skipFonts: !fontEmbedCSS,
+        })
+        if (cancelled) return
+        const blob = await (await fetch(url)).blob()
+        if (cancelled) return
+        setRender({ signature, url, file: new File([blob], 'rippl-impact.png', { type: 'image/png' }) })
+      } catch {
+        if (!cancelled) setRender({ signature })
       }
-    } catch {
-    } finally {
-      setCapturing(false)
     }
+    // A frame of settle time so the card has painted before it is captured.
+    const timer = window.setTimeout(build, 120)
+    return () => {
+      cancelled = true
+      window.clearTimeout(timer)
+    }
+  }, [open, signature])
+
+  const save = useCallback((url: string) => {
+    const link = document.createElement('a')
+    link.href = url
+    link.download = 'rippl-impact.png'
+    link.click()
+  }, [])
+
+  const handleShare = () => {
+    if (!image) return
+    // Called with no await in front of it so the gesture is still live.
+    if (navigator.canShare?.({ files: [image.file] })) {
+      navigator.share({ files: [image.file], title: 'my rippl impact' }).catch(() => {})
+      return
+    }
+    save(image.url)
   }
 
-  const handleDownload = async () => {
-    if (!cardRef.current) return
-    setCapturing(true)
-    try {
-      const dataUrl = await captureCard()
-      if (!dataUrl) return
-      const a = document.createElement('a')
-      a.href = dataUrl
-      a.download = 'rippl-stats.png'
-      a.click()
-    } catch {} finally { setCapturing(false) }
-  }
+  // The same factor the impact tab uses, so the two screens agree.
+  const treeCount = co2Saved / 21.7
+  const trees = treeCount >= 100 ? Math.round(treeCount).toLocaleString() : treeCount.toFixed(1)
 
   const stats = [
-    { icon: <Trophy size={18} />, value: points.toLocaleString(), label: 'Points', color: '#fbbf24' },
-    { icon: <Wind size={18} />, value: `${co2Saved.toFixed(1)} kg`, label: 'CO₂ Avoided', color: '#34d399' },
-    { icon: <Droplets size={18} />, value: `${(waterSaved / 1000).toFixed(1)}k L`, label: 'Water Saved', color: '#67e8f9' },
-    { icon: <Flame size={18} />, value: `${streak} day${streak !== 1 ? 's' : ''}`, label: 'Streak', color: '#fb923c' },
+    { label: 'points earned', value: points.toLocaleString(), unit: 'lifetime' },
+    { label: 'water saved', value: compact(waterSaved), unit: 'litres' },
+    { label: 'day streak', value: String(streak), unit: 'in a row' },
+    { label: 'level', value: String(level), unit: 'reached' },
   ]
 
   return (
@@ -100,140 +146,90 @@ export function ShareCard({ open, onClose }: ShareCardProps) {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md px-4 py-8"
+          className="share-overlay fixed inset-0 z-[95] overflow-y-auto overscroll-contain bg-black/70 backdrop-blur-md"
+          onClick={onClose}
         >
           <motion.div
-            initial={{ scale: 0.92, opacity: 0 }}
+            initial={{ scale: 0.94, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.92, opacity: 0 }}
+            exit={{ scale: 0.94, opacity: 0 }}
             transition={{ type: 'spring', stiffness: 280, damping: 26 }}
-            className="relative flex flex-col items-center gap-4"
+            onClick={event => event.stopPropagation()}
+            className={`share-overlay-inner relative flex items-center gap-4 ${sideBySide ? 'is-side-by-side' : 'flex-col'}`}
+            role="dialog"
+            aria-modal="true"
+            aria-label="share your impact"
           >
             <button
               onClick={onClose}
-              className="self-end mr-1 w-8 h-8 rounded-full bg-surface-raised border border-border flex items-center justify-center hover:bg-surface-overlay transition-colors"
+              aria-label="close"
+              className="share-card-close flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white transition-colors hover:bg-white/20"
             >
-              <X size={14} className="text-text-primary" />
+              <X size={17} />
             </button>
 
-            <div
-              ref={cardRef}
-              className="relative w-[360px] h-[640px] overflow-hidden rounded-3xl"
-              style={{
-                background: loaded && bg
-                  ? `linear-gradient(rgba(6,13,9,0.55) 0%, rgba(6,13,9,0.35) 40%, rgba(6,13,9,0.8) 100%), url(${bg}) center / cover no-repeat`
-                  : '#070607',
-              }}
-            >
-              <div
-                className="absolute top-0 left-0 right-0 h-1.5"
-                style={{ background: 'linear-gradient(90deg, #34d399, #22d3ee, #34d399)' }}
-              />
+            <div className="share-card-frame" style={{ '--share-scale': shareScale } as React.CSSProperties}>
+              <div className="share-card-scaler">
+                <div ref={cardRef} className="share-card">
+                  <div className="share-card-dots" aria-hidden="true" />
 
-              <div className="absolute top-10 left-8 flex items-center gap-2.5">
-                <Waves size={16} className="text-oasis-400" strokeWidth={1.5} />
-                <span
-                  className="text-base tracking-[0.2em] font-bold leading-none"
-                  style={{
-                    background: 'linear-gradient(135deg, #34d399, #22d3ee)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    fontFamily: '"DM Serif Display", Georgia, serif',
-                  }}
-                >
-                  RIPPL
-                </span>
-              </div>
+                  <header className="share-card-head">
+                    <span className="share-card-logo">
+                      {/* A real <img> rather than a CSS mask: the exporter
+                          inlines image sources, but not mask-image. */}
+                      <img className="share-card-mark" src="/brand/rippl-mark-white.png" alt="" width={22} height={22} />
+                      rippl
+                    </span>
+                    <span className="share-card-tag">impact report</span>
+                  </header>
 
-              <div className="absolute top-28 left-0 right-0 flex flex-col items-center">
-                <p
-                  className="text-xl font-bold text-center px-8 leading-tight mb-4"
-                  style={{ color: 'rgba(245, 245, 247, 0.95)', fontFamily: '"Inter", sans-serif' }}
-                >
-                  {displayName}
-                </p>
-                <span
-                  className="px-3 py-1 rounded-full text-[10px] font-mono"
-                  style={{
-                    background: 'rgba(6, 13, 9, 0.7)',
-                    border: '1px solid rgba(52, 211, 153, 0.25)',
-                    color: '#34d399',
-                  }}
-                >
-                  Level {level} · {points.toLocaleString()} pts
-                </span>
-              </div>
-
-              <div className="absolute top-48 left-8 right-8 flex flex-col gap-3">
-                {stats.map((stat, i) => (
-                  <div
-                    key={i}
-                    className="flex items-center gap-4 px-4 py-3.5 rounded-xl"
-                    style={{
-                      background: 'rgba(6, 13, 9, 0.6)',
-                      border: '1px solid rgba(255, 255, 255, 0.08)',
-                    }}
-                  >
-                    <span style={{ color: stat.color }}>{stat.icon}</span>
-                    <div className="flex-1 min-w-0">
-                      <span
-                        className="font-mono text-[8px] uppercase tracking-wider block"
-                        style={{ color: 'rgba(255, 255, 255, 0.45)' }}
-                      >
-                        {stat.label}
-                      </span>
-                      <span
-                        className="text-lg font-bold block leading-tight mt-0.5"
-                        style={{
-                          fontFamily: '"DM Serif Display", Georgia, serif',
-                          color: 'rgba(232, 228, 220, 0.95)',
-                        }}
-                      >
-                        {stat.value}
-                      </span>
-                    </div>
+                  <div className="share-card-hero">
+                    <span className="share-card-hero-label">carbon avoided</span>
+                    <DotNumber value={co2Saved >= 10_000 ? compact(co2Saved) : co2Saved.toFixed(1)} className="share-card-hero-number" />
+                    <span className="share-card-hero-unit">kilograms of co₂</span>
+                    <span className="share-card-equivalent">≈ {trees} trees working for a year</span>
                   </div>
-                ))}
-              </div>
 
-              <div className="absolute bottom-8 left-0 right-0 text-center">
-                <span
-                  className="text-[8px] font-mono tracking-[0.25em] uppercase"
-                  style={{ color: 'rgba(255, 255, 255, 0.2)' }}
-                >
-                  saarthaii.web.app
-                </span>
+                  <div className="share-card-grid">
+                    {stats.map(stat => (
+                      <div key={stat.label} className="share-card-stat">
+                        <span className="share-card-stat-label">{stat.label}</span>
+                        <DotNumber value={stat.value} className="share-card-stat-number" />
+                        <span className="share-card-stat-unit">{stat.unit}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <footer className="share-card-foot">
+                    <div className="share-card-who">
+                      <span className="share-card-name">{displayName}</span>
+                      <span className="share-card-place">{place || 'everyday climate action'}</span>
+                    </div>
+                    <span className="share-card-domain">rippl.earth</span>
+                  </footer>
+                </div>
               </div>
             </div>
 
-            <motion.button
-              whileTap={{ scale: 0.96 }}
+            <div className="share-card-actions">
+            <button
               onClick={handleShare}
-              disabled={capturing}
-              className="flex items-center gap-2.5 px-8 py-3 rounded-2xl text-surface font-body text-[13px] font-bold disabled:opacity-60"
-              style={{
-                background: 'linear-gradient(135deg, #34d399, #22d3ee)',
-                boxShadow: '0 8px 24px rgba(52, 211, 153, 0.2)',
-              }}
+              disabled={!image}
+              className="share-card-action"
             >
-              {capturing ? (
-                <div className="w-4 h-4 border-2 border-surface border-t-transparent rounded-full animate-spin" />
-              ) : (
-                <Share2 size={16} />
-              )}
-              {capturing ? 'Generating...' : 'Share to Story'}
-            </motion.button>
+              {image ? <Share2 size={16} /> : failed ? <AlertCircle size={16} /> : <span className="share-card-spinner" aria-hidden="true" />}
+              <span>{image ? 'share your impact' : failed ? 'could not build the image' : 'preparing image...'}</span>
+            </button>
 
             <button
-              onClick={handleDownload}
-              className="flex items-center gap-2 font-mono text-[10px] transition-colors"
-              style={{ color: 'rgba(232, 228, 220, 0.4)' }}
-              onMouseEnter={e => e.currentTarget.style.color = 'rgba(232, 228, 220, 0.8)'}
-              onMouseLeave={e => e.currentTarget.style.color = 'rgba(232, 228, 220, 0.4)'}
+              onClick={() => image && save(image.url)}
+              disabled={!image}
+              className="share-card-secondary"
             >
-              <Download size={12} />
-              Download PNG
+              <Download size={13} />
+              <span>save image</span>
             </button>
+            </div>
           </motion.div>
         </motion.div>
       )}

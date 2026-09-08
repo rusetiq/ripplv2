@@ -18,11 +18,23 @@ export default function LiquidLogo() {
         p+=normalize(delta+vec2(.0001))*wave*influence*.021*strength;
         p+=vec2(sin(p.y*15.+time),cos(p.x*13.+time))*.0025*strength;
         vec3 c=texture2D(art,clamp(p,0.,1.)).rgb;
-        vec3 bg=vec3(.502,.329,1.); float difference=length(c-bg);
-        float alpha=smoothstep(.045,.17,difference);
-        vec3 blue=vec3(c.r*.34,c.g*.96,c.b*.98);
-        blue+=vec3(.13,.24,.3)*influence*strength*.28;
-        gl_FragColor=vec4(blue,alpha);
+        vec3 plate=vec3(.502,.329,1.); float difference=length(c-plate);
+        /* The plate is a flat colour, so anything measurably away from it is
+           sculpture. The old ramp only reached full opacity well past that,
+           which left the glassy passages half transparent - and half of a light
+           page showing through reads as blank white rather than as glass. */
+        float alpha=smoothstep(.038,.085,difference);
+        /* Scaling the source channels let the sculpture's highlights land close
+           to white, which vanishes against the page. Its tones are remapped onto
+           the wordmark's blue ramp instead, so even the brightest facet stays
+           clearly darker than the surface behind it. */
+        float lum=clamp(dot(c,vec3(.299,.587,.114))/.55,0.,1.);
+        vec3 deep=vec3(.024,.086,.278);
+        vec3 mid=vec3(.090,.380,.824);
+        vec3 light=vec3(.400,.639,.906);
+        vec3 tone=lum<.58?mix(deep,mid,lum/.58):mix(mid,light,(lum-.58)/.42);
+        tone+=vec3(.05,.10,.14)*influence*strength;
+        gl_FragColor=vec4(clamp(tone,0.,1.),alpha);
       }`
     const shaders: WebGLShader[] = []
     const compile = (type: number, source: string) => {

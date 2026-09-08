@@ -5,6 +5,7 @@ import { useApp } from '../App'
 import { db } from '../firebase'
 import { doc, updateDoc, arrayUnion, increment as fbIncrement, collection, onSnapshot, orderBy, query } from 'firebase/firestore'
 import { DotNumber } from '../components/DotNumber'
+import { resolveSponsoredImageUrl, SPONSORED_LOCAL_FALLBACKS } from '../sponsoredImages'
 
 interface Reward {
   id: string
@@ -65,13 +66,6 @@ const DEFAULT_SPONSORED: SponsoredReward[] = [
   },
 ]
 
-const SPONSORED_FALLBACKS = [
-  'https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=900&q=80',
-  'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=900&q=80',
-  '/assets/sustainability-icons-v2/solar-energy.png',
-  '/assets/sustainability-icons-v2/earth-leaf.png',
-]
-
 const rewards: Reward[] = [
   { id: 'r1', name: 'Transit Day Pass', description: 'A day of low-carbon local travel with a participating transit partner', cost: 220, level: 1, image: REWARD_IMAGES.r1, Icon: Recycle, gradient: 'from-oasis-400 to-oasis-500', glowColor: 'rgba(52,211,153,0.18)', accent: 'text-oasis-400', tag: 'Transit' },
   { id: 'r2', name: 'Organic Coffee', description: 'Single cup of specialty fair-trade organic coffee at partner cafes', cost: 700, level: 1, image: REWARD_IMAGES.r2, Icon: Leaf, gradient: 'from-oasis-300 to-gulf-400', glowColor: 'rgba(103,232,249,0.15)', accent: 'text-gulf-400', tag: 'Food' },
@@ -96,11 +90,11 @@ export function RewardsTab() {
       if (!snap.empty) {
         const list = snap.docs.map((d, index) => {
           const item = d.data() as Omit<SponsoredReward, 'id'>
-          const fallback = SPONSORED_FALLBACKS[index % SPONSORED_FALLBACKS.length]
+          const fallback = SPONSORED_LOCAL_FALLBACKS[index % SPONSORED_LOCAL_FALLBACKS.length]
           return {
             id: d.id,
             ...item,
-            imageUrl: item.imageUrl && item.imageUrl.trim().length > 5 ? item.imageUrl : fallback,
+            imageUrl: resolveSponsoredImageUrl(item.imageUrl, fallback),
           }
         })
         setSponsored(list)
@@ -138,7 +132,7 @@ export function RewardsTab() {
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.2 }}
-        className="px-4 pb-8 md:px-0"
+        className="pb-2"
       >
         <div className="mb-5 pt-1">
           <p className="gallery-label mb-1.5 text-text-muted">marketplace</p>
@@ -146,7 +140,7 @@ export function RewardsTab() {
           <p className="mt-1 text-[13px] text-text-muted">trade sustainability points for real-world eco perks</p>
         </div>
 
-        <div className="expressive-card aurora-card p-10 flex flex-col items-center text-center rounded-[34px] shadow-lg mb-6">
+        <div className="expressive-card aurora-card mb-6 flex flex-col items-center rounded-[34px] p-7 text-center shadow-lg sm:p-10">
           <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center mb-4 text-white">
             <Gift size={28} strokeWidth={1.8} />
           </div>
@@ -178,7 +172,7 @@ export function RewardsTab() {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.2 }}
-      className="px-4 pb-12 md:px-0"
+      className="pb-2"
     >
       <AnimatePresence mode="wait">
         {selectedReward ? (
@@ -191,21 +185,21 @@ export function RewardsTab() {
           >
             <button
               onClick={() => { setSelectedReward(null); setJustRedeemed(false) }}
-              className="inline-flex items-center gap-2 text-text-muted hover:text-text-primary mb-4 transition-colors pt-1"
+              className="-ml-2 mb-3 inline-flex min-h-11 items-center gap-2 rounded-xl px-2 text-text-muted transition-colors hover:text-text-primary"
             >
               <ArrowLeft size={15} />
               <span className="font-body text-[12px]">back to rewards</span>
             </button>
 
             <div className="expressive-card forest-card rounded-[34px] p-6 md:p-8 text-white shadow-xl relative overflow-hidden">
-              <div className="relative h-64 w-full rounded-2xl overflow-hidden mb-6 bg-black/30 border border-white/20">
+              <div className="relative mb-6 h-48 w-full overflow-hidden rounded-2xl border border-white/20 bg-black/30 sm:h-64">
                 <img
                   src={selectedReward.image}
                   alt={selectedReward.name}
                   onError={(e) => { e.currentTarget.src = '/assets/plates/meal-evidence.png' }}
                   className="w-full h-full object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+                <div className="reward-image-scrim absolute inset-0 pointer-events-none" />
                 <span className="absolute top-4 left-4 px-3 py-1 rounded-full bg-black/50 backdrop-blur-md text-white text-[11px] font-medium border border-white/20">
                   {selectedReward.tag.toLowerCase()}
                 </span>
@@ -260,7 +254,7 @@ export function RewardsTab() {
                     <button
                       onClick={() => handleRedeem(selectedReward)}
                       disabled={confirming}
-                      className="gradient-card-action w-full max-w-sm mx-auto py-3.5 rounded-full font-body text-[14px] font-medium shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2"
+                      className="gradient-card-action mx-auto flex min-h-13 w-full max-w-sm items-center justify-center gap-2 rounded-full py-3.5 font-body text-[14px] font-medium shadow-lg transition-all active:scale-95"
                     >
                       <span>{confirming ? 'redeeming...' : 'confirm redemption'}</span>
                       <ArrowRight size={15} />
@@ -275,7 +269,7 @@ export function RewardsTab() {
             <div className="expressive-card sapphire-card p-6 md:p-8 rounded-[34px] mb-8 shadow-lg">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                  <span className="font-body text-[11px] text-white/80 uppercase tracking-wider">sustainable marketplace</span>
+                  <span className="font-body text-[11px] text-white/80 uppercase tracking-tight">sustainable marketplace</span>
                   <h2 className="font-display text-[30px] text-white leading-tight mt-0.5">rewards catalog</h2>
                   <p className="font-body text-[13px] text-white/85 mt-1">redeem your verified eco habits for exclusive real-world perks.</p>
                 </div>
@@ -297,7 +291,7 @@ export function RewardsTab() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {sponsored.slice(0, 2).map((sp, i) => {
                   const cardGradientClass = i === 0 ? 'solar-card' : 'aurora-card'
-                  const fallbackImage = SPONSORED_FALLBACKS[i % SPONSORED_FALLBACKS.length]
+                  const fallbackImage = SPONSORED_LOCAL_FALLBACKS[i % SPONSORED_LOCAL_FALLBACKS.length]
                   return (
                     <motion.a
                       key={sp.id}
@@ -310,14 +304,15 @@ export function RewardsTab() {
                       className={`expressive-card ${cardGradientClass} rounded-[30px] overflow-hidden group p-6 flex flex-col justify-between min-h-[220px] shadow-lg cursor-pointer transition-all hover:shadow-xl`}
                     >
                       <img
-                        src={sp.imageUrl || fallbackImage}
+                        src={resolveSponsoredImageUrl(sp.imageUrl, fallbackImage)}
                         alt={sp.name}
+                        referrerPolicy="no-referrer"
                         onError={(e) => {
                           e.currentTarget.src = fallbackImage
                         }}
-                        className="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-45 group-hover:scale-105 group-hover:opacity-55 transition-all duration-500 pointer-events-none"
+                        className="absolute inset-0 w-full h-full object-cover opacity-65 group-hover:scale-105 group-hover:opacity-75 transition-all duration-500 pointer-events-none"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20 pointer-events-none" />
+                      <div className="sponsored-image-scrim absolute inset-0 pointer-events-none" />
 
                       <div className="relative z-10 flex items-center justify-between">
                         <div className="flex items-center gap-2">
@@ -377,14 +372,14 @@ export function RewardsTab() {
                         : 'hover:border-border-active hover:-translate-y-1 hover:shadow-md bg-surface-raised/70'
                     }`}
                   >
-                    <div className="relative h-32 w-full rounded-[20px] overflow-hidden bg-surface-overlay/40 mb-3">
+                    <div className="relative mb-3 h-28 w-full overflow-hidden rounded-[20px] bg-surface-overlay/40 sm:h-32">
                       <img
                         src={reward.image}
                         alt={reward.name}
                         onError={(e) => { e.currentTarget.src = '/assets/plates/meal-evidence.png' }}
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+                      <div className="reward-image-scrim absolute inset-0 pointer-events-none" />
                       <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5">
                         {own ? (
                           <span className="w-6 h-6 rounded-full bg-oasis-500 text-white flex items-center justify-center shadow-sm">
@@ -414,7 +409,7 @@ export function RewardsTab() {
                           {reward.description}
                         </p>
                       </div>
-                      <div className="flex items-center justify-between mt-3.5 pt-2.5 border-t border-border/50">
+                      <div className="mt-3 flex flex-wrap items-center justify-between gap-x-2 gap-y-1 border-t border-border/50 pt-2.5">
                         <span className="font-mono text-[12px] font-semibold text-text-primary">
                           {reward.cost.toLocaleString()} pts
                         </span>
