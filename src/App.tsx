@@ -5,7 +5,10 @@ import { DotLoader } from './components/DotLoader'
 import { AppShell } from './components/AppShell'
 import { FeedTab } from './tabs/FeedTab'
 import { SignInModal } from './components/SignInModal'
-import { auth, db, googleProvider } from './firebase'
+import { auth, googleProvider } from './firebase'
+import { signInWithPopup, onAuthStateChanged, signOut as fbSignOut, type User } from 'firebase/auth'
+import { api, type Me } from './api'
+import { useLive } from './useLive'
 
 /* Only the tab that opens first is part of the initial payload; the rest arrive
    as their own chunks. They are warmed on idle so a tab switch still feels
@@ -36,8 +39,6 @@ const warmTabs = () => {
   void import('./tabs/ExtrasTab')
   void import('./tabs/ImpactTab')
 }
-import { signInWithPopup, onAuthStateChanged, signOut as fbSignOut, type User } from 'firebase/auth'
-import { doc, onSnapshot, setDoc, updateDoc, increment, collection, query, where, getDocs } from 'firebase/firestore'
 
 type Tab = 'feed' | 'log' | 'rewards' | 'rank' | 'impact' | 'profile' | 'admin' | 'privacy' | 'pricing' | 'corporate' | 'partnerships' | 'extras' | 'terms'
 
@@ -45,67 +46,28 @@ interface AppContextType {
   activeTab: Tab
   setActiveTab: (tab: Tab) => void
   points: number
-  addPoints: (n: number) => void
   co2Saved: number
-  addCo2: (n: number) => void
+  waterSaved: number
   streak: number
   level: number
-  waterSaved: number
-  addWater: (n: number) => void
   darkMode: boolean
   setDarkMode: (d: boolean) => void
   syncError: string | null
   user: User | null
-  userData: UserData | null
+  me: Me | null
   isAdmin: boolean
+  /* Mutations return the updated profile, so a tab can push it straight into
+     context instead of waiting for the next revalidation. */
+  applyMe: (next: Me) => void
+  refreshMe: () => void
   signInWithGoogle: () => Promise<void>
   signOut: () => Promise<void>
   showSignIn: boolean
   setShowSignIn: (v: boolean) => void
 }
 
-export interface UserData {
-  displayName: string
-  location: string
-  photoURL: string
-  email?: string
-  points: number
-  co2Saved: number
-  waterSaved: number
-  streak: number
-  lastActiveDate: string
-  badges: Record<string, { unlocked: boolean; progress: number }>
-  redeemedRewards: string[]
-  isAdmin?: boolean
-}
-
 export const AppContext = createContext<AppContextType>({} as AppContextType)
 export const useApp = () => useContext(AppContext)
-
-const emptyUserData: UserData = {
-  displayName: '',
-  location: '',
-  photoURL: '',
-  points: 0,
-  co2Saved: 0,
-  waterSaved: 0,
-  streak: 0,
-  lastActiveDate: '',
-  badges: {},
-  redeemedRewards: [],
-  isAdmin: false,
-}
-
-const defaultBadges = {
-  b1: { unlocked: false, progress: 0 },
-  b2: { unlocked: false, progress: 0 },
-  b3: { unlocked: false, progress: 0 },
-  b4: { unlocked: false, progress: 0 },
-  b5: { unlocked: false, progress: 0 },
-  b6: { unlocked: false, progress: 0 },
-  b7: { unlocked: false, progress: 0 },
-  b8: { unlocked: false, progress: 0 },
-}
 
 function App() {
   const [activeTab, setRawActiveTab] = useState<Tab>(() => window.location.pathname === '/app/terms' ? 'terms' : window.location.pathname === '/app/privacy' ? 'privacy' : 'feed')
@@ -115,14 +77,11 @@ function App() {
     return savedTheme ? savedTheme === 'dark' : false
   })
   const [user, setUser] = useState<User | null>(null)
-  const [isAdmin, setIsAdmin] = useState(false)
-  const [userData, setUserData] = useState<UserData>(emptyUserData)
   const [ready, setReady] = useState(false)
   const [showSignIn, setShowSignIn] = useState(false)
   const [isAuthenticating, setIsAuthenticating] = useState(false)
   const [authFinished, setAuthFinished] = useState(false)
   const [authFailed, setAuthFailed] = useState(false)
-  const [syncError, setSyncError] = useState<string | null>(null)
 
   useEffect(() => {
     const idle = window.requestIdleCallback ?? ((cb: () => void) => window.setTimeout(cb, 1500))
@@ -131,88 +90,20 @@ function App() {
   }, [])
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, async (fbUser) => {
+    const unsub = onAuthStateChanged(auth, fbUser => {
       setUser(fbUser)
-      setIsAdmin(fbUser ? (await fbUser.getIdTokenResult()).claims.admin === true : false)
       setReady(true)
     })
     return unsub
   }, [])
 
-  useEffect(() => {
-    if (!user) {
-      setUserData(emptyUserData)
-      return
-    }
-    const userRef = doc(db, 'users', user.uid)
-    const unsub = onSnapshot(userRef, (snap) => {
-      setSyncError(null)
-      if (snap.exists()) {
-        const data = snap.data() as UserData
-        setUserData(data)
-      } else {
-        setDoc(userRef, {
-          ...emptyUserData,
-          displayName: user.displayName ?? '',
-          photoURL: user.photoURL ?? '',
-          email: user.email?.toLowerCase() ?? '',
-          badges: defaultBadges,
-          isAdmin: false,
-        })
-      }
-    }, (error) => {
-      console.warn('Unable to sync the user profile.', error)
-      setSyncError('Your account could not sync. Please refresh or check your Firestore access.')
-    })
-    return unsub
-  }, [user])
+  /* The profile is the one thing worth keeping warm: points and streak change
+     from the user's own actions, so it revalidates on focus like everything
+     else but on a slower timer. */
+  const profile = useLive<Me>(signal => api.me(signal), [user?.uid], { enabled: !!user, intervalMs: 120_000 })
+  const me = profile.data
 
-  const level = Math.floor(userData.points / 500) + 1
-
-  useEffect(() => {
-    if (!user || !userData || !userData.points) return
-    const checkBadges = async () => {
-      const userRef = doc(db, 'users', user.uid)
-      const newBadges = { ...userData.badges }
-      let updated = false
-
-      if (userData.points > 0 && !newBadges.b1?.unlocked) { newBadges.b1 = { unlocked: true, progress: 100 }; updated = true }
-      if (level >= 2 && !newBadges.b2?.unlocked) { newBadges.b2 = { unlocked: true, progress: 100 }; updated = true }
-      if (userData.waterSaved >= 1000 && !newBadges.b3?.unlocked) { newBadges.b3 = { unlocked: true, progress: 100 }; updated = true }
-      if (level >= 3 && !newBadges.b4?.unlocked) { newBadges.b4 = { unlocked: true, progress: 100 }; updated = true }
-      if (userData.co2Saved >= 500 && !newBadges.b5?.unlocked) { newBadges.b5 = { unlocked: true, progress: 100 }; updated = true }
-      if (userData.streak >= 30 && !newBadges.b6?.unlocked) { newBadges.b6 = { unlocked: true, progress: 100 }; updated = true }
-      if (userData.co2Saved >= 1000 && !newBadges.b7?.unlocked) { newBadges.b7 = { unlocked: true, progress: 100 }; updated = true }
-      if (level >= 5 && !newBadges.b8?.unlocked) { newBadges.b8 = { unlocked: true, progress: 100 }; updated = true }
-
-      if (!newBadges.b2?.unlocked || !newBadges.b4?.unlocked) {
-        const q = query(collection(db, 'userActions'), where('userId', '==', user.uid))
-        const snap = await getDocs(q)
-        let metroCount = 0
-        let solarCount = 0
-        snap.forEach(d => {
-          const action = d.data().label?.toLowerCase() || ''
-          if (action.includes('metro')) metroCount++
-          if (action.includes('solar')) solarCount++
-        })
-
-        if (metroCount >= 10 && !newBadges.b2?.unlocked) { newBadges.b2 = { unlocked: true, progress: 100 }; updated = true }
-        if (solarCount >= 5 && !newBadges.b4?.unlocked) { newBadges.b4 = { unlocked: true, progress: 100 }; updated = true }
-
-        if (!newBadges.b2?.unlocked) {
-          const p = Math.min(Math.floor((metroCount / 10) * 100), 99)
-          if (p > (newBadges.b2?.progress || 0)) { newBadges.b2 = { unlocked: false, progress: p }; updated = true }
-        }
-        if (!newBadges.b4?.unlocked) {
-          const p = Math.min(Math.floor((solarCount / 5) * 100), 99)
-          if (p > (newBadges.b4?.progress || 0)) { newBadges.b4 = { unlocked: false, progress: p }; updated = true }
-        }
-      }
-
-      if (updated) await updateDoc(userRef, { badges: newBadges })
-    }
-    checkBadges()
-  }, [level, user, userData])
+  const applyMe = useCallback((next: Me) => profile.set(() => next), [profile])
 
   useEffect(() => {
     if (darkMode) {
@@ -251,30 +142,6 @@ function App() {
     await fbSignOut(auth)
   }
 
-  const addPoints = async (n: number) => {
-    if (!user) return
-    const userRef = doc(db, 'users', user.uid)
-    const today = new Date().toISOString().split('T')[0]
-    const updates: Record<string, any> = { points: increment(n) }
-    if (userData.lastActiveDate !== today) {
-      updates.streak = increment(1)
-      updates.lastActiveDate = today
-    }
-    await updateDoc(userRef, updates)
-  }
-
-  const addCo2 = async (n: number) => {
-    if (!user) return
-    const userRef = doc(db, 'users', user.uid)
-    await updateDoc(userRef, { co2Saved: increment(n) })
-  }
-
-  const addWater = async (n: number) => {
-    if (!user) return
-    const userRef = doc(db, 'users', user.uid)
-    await updateDoc(userRef, { waterSaved: increment(n) })
-  }
-
   const renderTab = () => {
     switch (activeTab) {
       case 'feed': return <FeedTab />
@@ -307,15 +174,16 @@ function App() {
   return (
     <AppContext.Provider value={{
       activeTab, setActiveTab,
-      points: userData.points, addPoints,
-      co2Saved: userData.co2Saved, addCo2,
-      streak: userData.streak,
-      level,
-      waterSaved: userData.waterSaved, addWater,
+      points: me?.points ?? 0,
+      co2Saved: me?.co2Saved ?? 0,
+      waterSaved: me?.waterSaved ?? 0,
+      streak: me?.streak ?? 0,
+      level: me?.level ?? 1,
       darkMode, setDarkMode,
-      syncError,
-      user, userData,
-      isAdmin,
+      syncError: profile.error,
+      user, me,
+      isAdmin: me?.isAdmin ?? false,
+      applyMe, refreshMe: profile.refresh,
       signInWithGoogle, signOut,
       showSignIn, setShowSignIn,
     }}>

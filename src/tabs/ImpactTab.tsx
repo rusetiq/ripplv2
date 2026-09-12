@@ -1,9 +1,8 @@
 import { motion } from 'framer-motion'
 import { TreePine, Droplets, Wind, Target, Lock, Award, CheckCircle2, Train, Sun, Globe, Flower, Shield, Trophy, LogIn, Sparkles } from 'lucide-react'
 import { useApp } from '../App'
-import { useState, useEffect } from 'react'
-import { db } from '../firebase'
-import { collection, query, where, getDocs, Timestamp } from 'firebase/firestore'
+import { api } from '../api'
+import { useLive } from '../useLive'
 import { SkeletonMetricCard, SkeletonBadgeCard, SkeletonBarChart } from '../components/Skeleton'
 import { DotNumber } from '../components/DotNumber'
 
@@ -27,67 +26,22 @@ const badgeDefs: Badge[] = [
   { id: 'b8', name: 'community champion', description: 'reach the top 10 community leaderboard', Icon: Trophy, gradient: 'from-dune-300 to-dune-500', glowColor: 'rgba(237, 214, 154, 0.3)' },
 ]
 
-function getWeekDates() {
-  const days = []
-  for (let i = 6; i >= 0; i--) {
-    const d = new Date()
-    d.setDate(d.getDate() - i)
-    days.push(d)
-  }
-  return days
-}
-
-function useWeeklyData(userId: string | undefined) {
-  const [dailyPoints, setDailyPoints] = useState<number[]>([0, 0, 0, 0, 0, 0, 0])
-
-  useEffect(() => {
-    if (!userId) return
-    const week = getWeekDates()
-    const startOfWeek = new Date(week[0])
-    startOfWeek.setHours(0, 0, 0, 0)
-    const endOfWeek = new Date(week[6])
-    endOfWeek.setHours(23, 59, 59, 999)
-
-    const q = query(
-      collection(db, 'userActions'),
-      where('userId', '==', userId),
-      where('timestamp', '>=', Timestamp.fromDate(startOfWeek)),
-      where('timestamp', '<=', Timestamp.fromDate(endOfWeek)),
-    )
-
-    getDocs(q).then(snap => {
-      const pointsByDay = week.map(d => d.toISOString().split('T')[0]).reduce((acc, day) => {
-        acc[day] = 0
-        return acc
-      }, {} as Record<string, number>)
-
-      snap.forEach(doc => {
-        const data = doc.data()
-        const ts = data.timestamp
-        if (ts?.seconds) {
-          const day = new Date(ts.seconds * 1000).toISOString().split('T')[0]
-          if (pointsByDay[day] !== undefined) {
-            pointsByDay[day] += data.points || 0
-          }
-        }
-      })
-
-      setDailyPoints(week.map(d => pointsByDay[d.toISOString().split('T')[0]]))
-    })
-  }, [userId])
-
-  return dailyPoints
+/* The seven-day chart is aggregated by the Worker in one SQL query rather
+   than by pulling a week of action rows into the browser. */
+function useWeeklyData(enabled: boolean) {
+  const week = useLive(signal => api.week(signal), [enabled], { enabled, intervalMs: 300_000 })
+  return week.data?.days.map(d => d.points) ?? [0, 0, 0, 0, 0, 0, 0]
 }
 
 export function ImpactTab() {
-  const { co2Saved, waterSaved, userData, user, setShowSignIn } = useApp()
-  const dailyPoints = useWeeklyData(user?.uid)
+  const { co2Saved, waterSaved, me, user, setShowSignIn } = useApp()
+  const dailyPoints = useWeeklyData(!!user)
   const treesEquivalent = (co2Saved / 21.7).toFixed(1)
 
   const netZeroTarget = 350
   const netZeroProgress = Math.min((co2Saved / netZeroTarget) * 100, 100)
 
-  const userBadges = userData?.badges ?? {}
+  const userBadges = me?.badges ?? {}
   const unlockedCount = badgeDefs.filter(b => userBadges[b.id]?.unlocked).length
 
   return (
@@ -224,7 +178,7 @@ export function ImpactTab() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {!userData?.points && !userData?.badges ? (
+              {!me ? (
                 Array.from({ length: 4 }).map((_, i) => <SkeletonBadgeCard key={i} />)
               ) : badgeDefs.map((badge, i) => {
                 const userBadge = userBadges[badge.id]

@@ -1,28 +1,18 @@
 import { motion } from 'framer-motion'
-import { Moon, Sun, ChevronRight, LogOut, Flame, Trophy, Zap, Target, LogIn, MapPin, Camera, Share2, Newspaper } from 'lucide-react'
-import { useState, useRef, useEffect, lazy, Suspense } from 'react'
+import { Moon, Sun, ChevronRight, LogOut, Flame, Trophy, Zap, Target, LogIn, MapPin, Camera, Share2, Newspaper, Download, Trash2 } from 'lucide-react'
+import { useState, useRef } from 'react'
 import { useApp } from '../App'
-import { db } from '../firebase'
-import { doc, updateDoc, collection, query, where, orderBy, limit as fbLimit, onSnapshot } from 'firebase/firestore'
+import { api, ApiError, type Post } from '../api'
+import { useLive } from '../useLive'
 
 import { compressImage } from '../utils'
 import { DotNumber } from '../components/DotNumber'
 
-/* The share sheet pulls in the image exporter, which nobody needs until they
-   actually open it. */
-const ShareCard = lazy(() => import('../components/ShareCard').then(m => ({ default: m.ShareCard })))
+import { ShareCard } from '../components/ShareCard'
 
-interface MyPost {
-  id: string
-  action: string
-  points: number
-  category: string
-  timestamp: { seconds: number } | null
-}
-
-function timeAgo(ts: { seconds: number } | null) {
-  if (!ts?.seconds) return 'just now'
-  const diff = Date.now() - ts.seconds * 1000
+function timeAgo(seconds: number) {
+  if (!seconds) return 'just now'
+  const diff = Date.now() - seconds * 1000
   const mins = Math.floor(diff / 60000)
   if (mins < 1) return 'just now'
   if (mins < 60) return `${mins}m ago`
@@ -33,20 +23,15 @@ function timeAgo(ts: { seconds: number } | null) {
 }
 
 export function ProfileTab() {
-  const { points, co2Saved, streak, level, waterSaved, darkMode, setDarkMode, userData, user, setShowSignIn, signOut } = useApp()
-  const [myPosts, setMyPosts] = useState<MyPost[]>([])
+  const { points, co2Saved, streak, level, waterSaved, darkMode, setDarkMode, me, user, setShowSignIn, signOut, refreshMe } = useApp()
   const [showShare, setShowShare] = useState(false)
   const avatarRef = useRef<HTMLInputElement>(null)
   const [avatarError, setAvatarError] = useState<string | null>(null)
+  const [busy, setBusy] = useState<'export' | 'delete' | null>(null)
+  const [accountError, setAccountError] = useState<string | null>(null)
 
-  useEffect(() => {
-    if (!user) return
-    const q = query(collection(db, 'posts'), where('userId', '==', user.uid), orderBy('timestamp', 'desc'), fbLimit(20))
-    const unsub = onSnapshot(q, (snap) => {
-      setMyPosts(snap.docs.map(d => ({ id: d.id, ...d.data() } as MyPost)))
-    }, (error) => console.warn('Unable to load profile activity.', error))
-    return unsub
-  }, [user])
+  const activity = useLive(signal => api.myPosts(signal), [user?.uid], { enabled: !!user, intervalMs: 120_000 })
+  const myPosts: Post[] = activity.data?.posts ?? []
 
   if (!user) {
     return (
@@ -87,7 +72,7 @@ export function ProfileTab() {
   const displayName = user.displayName || 'fellow citizen'
   const initials = displayName.split(' ').map(s => s[0]).join('').slice(0, 2).toUpperCase()
 
-  const photoURL = userData?.photoURL || user.photoURL || ''
+  const photoURL = me?.photoURL || user.photoURL || ''
   const userPhotoBase64 = photoURL.startsWith('data:') ? photoURL : ''
   const googlePhotoURL = photoURL && !photoURL.startsWith('data:') ? photoURL : ''
 
@@ -97,13 +82,48 @@ export function ProfileTab() {
     if (!file) return
     setAvatarError(null)
     try {
-      // A phone camera shot read straight to base64 is megabytes; Firestore
-      // rejects documents over 1MB, so the avatar goes through the same
-      // downscale as every other upload.
-      const base64 = await compressImage(file, 512, 0.8)
-      await updateDoc(doc(db, 'users', user.uid), { photoURL: base64 })
+      // Downscaled here, then stored as an object in R2 rather than as base64
+      // inside the profile row.
+      await api.uploadAvatar(await compressImage(file, 512, 0.85))
+      refreshMe()
     } catch {
       setAvatarError('That photo could not be used. Try a JPEG or PNG.')
+    }
+  }
+
+  /* Both of these are promised by the privacy policy and had no
+     implementation before the move to D1. */
+  const handleExport = async () => {
+    setBusy('export')
+    setAccountError(null)
+    try {
+      const blob = await api.exportData()
+      const url = URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      link.download = 'rippl-export.json'
+      document.body.append(link)
+      link.click()
+      link.remove()
+      URL.revokeObjectURL(url)
+    } catch (error) {
+      setAccountError(error instanceof ApiError ? error.message : 'Could not build your export.')
+    } finally {
+      setBusy(null)
+    }
+  }
+
+  const handleDeleteAccount = async () => {
+    if (!confirm('Permanently delete your account, posts, photos and impact record? This cannot be undone.')) return
+    if (!confirm('This is permanent. Delete everything?')) return
+    setBusy('delete')
+    setAccountError(null)
+    try {
+      await api.deleteMe()
+      await signOut()
+    } catch (error) {
+      setAccountError(error instanceof ApiError ? error.message : 'Could not delete the account.')
+      setBusy(null)
     }
   }
 
@@ -154,10 +174,10 @@ export function ProfileTab() {
           </button>
           <div className="flex-1 min-w-0">
             <h3 className="font-display text-[18px] text-text-primary font-semibold truncate">{displayName.toLowerCase()}</h3>
-            {userData?.location ? (
+            {me?.location ? (
               <p className="font-body text-[11px] text-text-muted mt-0.5 flex items-center gap-1">
                 <MapPin size={11} className="text-text-muted" />
-                {userData.location}
+                {me.location}
               </p>
             ) : (
               <p className="font-body text-[11px] text-text-muted mt-0.5">verified member</p>
@@ -210,7 +230,7 @@ export function ProfileTab() {
                 <div className="h-2 w-2 shrink-0 rounded-full bg-oasis-400" />
                 <div className="min-w-0 flex-1">
                   <p className="truncate font-body text-[12px] text-text-secondary">{p.action.toLowerCase()}</p>
-                  <p className="mt-0.5 font-body text-[10px] text-text-muted">{timeAgo(p.timestamp)}</p>
+                  <p className="mt-0.5 font-body text-[10px] text-text-muted">{timeAgo(p.createdAt)}</p>
                 </div>
                 {p.points > 0 && (
                   <span className="shrink-0 font-mono text-[10px] font-medium text-oasis-400">+{p.points} pts</span>
@@ -245,6 +265,20 @@ export function ProfileTab() {
         </button>
 
         <button
+          onClick={handleExport}
+          disabled={busy !== null}
+          className="flex min-h-14 w-full items-center justify-between p-4 text-left transition-colors hover:bg-surface-overlay/50 disabled:opacity-50"
+        >
+          <div className="flex items-center gap-3">
+            <Download size={16} className="text-gulf-400" />
+            <span className="font-body text-[13px] text-text-primary">
+              {busy === 'export' ? 'preparing your data…' : 'export my data'}
+            </span>
+          </div>
+          <ChevronRight size={15} className="text-text-muted" />
+        </button>
+
+        <button
           onClick={signOut}
           className="flex min-h-14 w-full items-center justify-between p-4 text-left transition-colors hover:bg-surface-overlay/50"
         >
@@ -254,12 +288,28 @@ export function ProfileTab() {
           </div>
           <ChevronRight size={15} className="text-text-muted" />
         </button>
+
+        <button
+          onClick={handleDeleteAccount}
+          disabled={busy !== null}
+          className="flex min-h-14 w-full items-center justify-between p-4 text-left transition-colors hover:bg-surface-overlay/50 disabled:opacity-50"
+        >
+          <div className="flex items-center gap-3">
+            <Trash2 size={16} className="text-red-400" />
+            <span className="font-body text-[13px] text-red-400">
+              {busy === 'delete' ? 'deleting…' : 'delete my account'}
+            </span>
+          </div>
+          <ChevronRight size={15} className="text-text-muted" />
+        </button>
       </div>
 
+      {accountError && (
+        <p role="alert" className="mt-3 font-body text-[12px] text-red-400">{accountError}</p>
+      )}
+
       {showShare && (
-        <Suspense fallback={null}>
-          <ShareCard open onClose={() => setShowShare(false)} />
-        </Suspense>
+        <ShareCard open onClose={() => setShowShare(false)} />
       )}
     </motion.div>
   )

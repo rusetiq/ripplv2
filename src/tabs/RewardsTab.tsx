@@ -1,11 +1,11 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { Gift, TreePine, Droplets, Zap, Shield, Leaf, ShoppingBag, Recycle, Award, Check, Sparkles, ArrowLeft, Lock, ExternalLink, ArrowRight } from 'lucide-react'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useApp } from '../App'
-import { db } from '../firebase'
-import { doc, updateDoc, arrayUnion, increment as fbIncrement, collection, onSnapshot, orderBy, query } from 'firebase/firestore'
+import { api, ApiError, type Sponsored } from '../api'
+import { useLive } from '../useLive'
 import { DotNumber } from '../components/DotNumber'
-import { resolveSponsoredImageUrl, SPONSORED_LOCAL_FALLBACKS } from '../sponsoredImages'
+import { SPONSORED_LOCAL_FALLBACKS } from '../sponsoredImages'
 
 interface Reward {
   id: string
@@ -21,16 +21,7 @@ interface Reward {
   tag: string
 }
 
-interface SponsoredReward {
-  id: string
-  name: string
-  subtitle: string
-  href: string
-  imageUrl: string
-  points: number
-  badge?: string
-  order?: number
-}
+type SponsoredReward = Sponsored
 
 const REWARD_IMAGES: Record<string, string> = {
   r1: 'https://images.unsplash.com/photo-1568844293986-ca9c5b825c37?auto=format&fit=crop&w=800&q=80',
@@ -52,7 +43,6 @@ const DEFAULT_SPONSORED: SponsoredReward[] = [
     imageUrl: 'https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=900&q=80',
     points: 200,
     badge: 'Clean Energy',
-    order: 0,
   },
   {
     id: 'sp-lulu',
@@ -62,7 +52,6 @@ const DEFAULT_SPONSORED: SponsoredReward[] = [
     imageUrl: 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=900&q=80',
     points: 150,
     badge: 'Zero Waste',
-    order: 1,
   },
 ]
 
@@ -78,50 +67,36 @@ const rewards: Reward[] = [
 ]
 
 export function RewardsTab() {
-  const { points, user, userData, level, setShowSignIn } = useApp()
+  const { points, user, me, level, setShowSignIn, applyMe } = useApp()
   const [selectedReward, setSelectedReward] = useState<Reward | null>(null)
   const [confirming, setConfirming] = useState(false)
   const [justRedeemed, setJustRedeemed] = useState(false)
-  const [sponsored, setSponsored] = useState<SponsoredReward[]>(DEFAULT_SPONSORED)
+  const [redeemError, setRedeemError] = useState<string | null>(null)
 
-  useEffect(() => {
-    const q = query(collection(db, 'sponsoredRewards'), orderBy('order', 'asc'))
-    const unsub = onSnapshot(q, (snap) => {
-      if (!snap.empty) {
-        const list = snap.docs.map((d, index) => {
-          const item = d.data() as Omit<SponsoredReward, 'id'>
-          const fallback = SPONSORED_LOCAL_FALLBACKS[index % SPONSORED_LOCAL_FALLBACKS.length]
-          return {
-            id: d.id,
-            ...item,
-            imageUrl: resolveSponsoredImageUrl(item.imageUrl, fallback),
-          }
-        })
-        setSponsored(list)
-      }
-    }, (error) => console.warn('Unable to load sponsored rewards.', error))
-    return unsub
-  }, [])
+  const campaigns = useLive(signal => api.sponsored(signal), [], { intervalMs: 300_000, enabled: !!user })
+  const sponsored: SponsoredReward[] = campaigns.data?.sponsored.length ? campaigns.data.sponsored : DEFAULT_SPONSORED
 
-  const redeemed = userData?.redeemedRewards || []
+  const redeemed = me?.redeemedRewards ?? []
 
+  /* Cost, level gate, balance and the already-redeemed check are all enforced
+     by the Worker; this only decides what to show. */
   const handleRedeem = async (reward: Reward) => {
-    if (!user) return
-    if (points < reward.cost) return
-    if (level < reward.level) return
-    if (redeemed.includes(reward.id)) return
+    if (!user || confirming) return
     setConfirming(true)
-    const userRef = doc(db, 'users', user.uid)
-    await updateDoc(userRef, {
-      points: fbIncrement(-reward.cost),
-      redeemedRewards: arrayUnion(reward.id),
-    })
-    setConfirming(false)
-    setJustRedeemed(true)
-    setTimeout(() => {
-      setJustRedeemed(false)
-      setSelectedReward(null)
-    }, 1800)
+    setRedeemError(null)
+    try {
+      const result = await api.redeem(reward.id)
+      applyMe(result.me)
+      setJustRedeemed(true)
+      setTimeout(() => {
+        setJustRedeemed(false)
+        setSelectedReward(null)
+      }, 1800)
+    } catch (error) {
+      setRedeemError(error instanceof ApiError ? error.message : 'That redemption did not go through.')
+    } finally {
+      setConfirming(false)
+    }
   }
 
   if (!user) {
@@ -251,14 +226,19 @@ export function RewardsTab() {
                       </span>
                     </div>
                   ) : (
-                    <button
-                      onClick={() => handleRedeem(selectedReward)}
-                      disabled={confirming}
-                      className="gradient-card-action mx-auto flex min-h-13 w-full max-w-sm items-center justify-center gap-2 rounded-full py-3.5 font-body text-[14px] font-medium shadow-lg transition-all active:scale-95"
-                    >
-                      <span>{confirming ? 'redeeming...' : 'confirm redemption'}</span>
-                      <ArrowRight size={15} />
-                    </button>
+                    <>
+                      <button
+                        onClick={() => handleRedeem(selectedReward)}
+                        disabled={confirming}
+                        className="gradient-card-action mx-auto flex min-h-13 w-full max-w-sm items-center justify-center gap-2 rounded-full py-3.5 font-body text-[14px] font-medium shadow-lg transition-all active:scale-95"
+                      >
+                        <span>{confirming ? 'redeeming...' : 'confirm redemption'}</span>
+                        <ArrowRight size={15} />
+                      </button>
+                      {redeemError && (
+                        <p role="alert" className="mt-3 text-center font-body text-[12px] text-red-400">{redeemError}</p>
+                      )}
+                    </>
                   )}
                 </div>
               </div>
@@ -304,7 +284,7 @@ export function RewardsTab() {
                       className={`expressive-card ${cardGradientClass} rounded-[30px] overflow-hidden group p-6 flex flex-col justify-between min-h-[220px] shadow-lg cursor-pointer transition-all hover:shadow-xl`}
                     >
                       <img
-                        src={resolveSponsoredImageUrl(sp.imageUrl, fallbackImage)}
+                        src={sp.imageUrl || fallbackImage}
                         alt={sp.name}
                         referrerPolicy="no-referrer"
                         onError={(e) => {

@@ -1,10 +1,8 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { Train, Leaf, Zap, Droplets, Trash2, Plus, Check, Car, Bike, Footprints, Utensils, Recycle, ShoppingBag, Package, Sun, Snowflake, Plug, Lightbulb, Bath, Wrench, Droplet, Shirt, Gift, Ban, Camera, X, LogIn, AlertTriangle, ShieldX } from 'lucide-react'
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect, useMemo } from 'react'
 import { useApp } from '../App'
-import { db } from '../firebase'
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
-import { verifyActionPhoto } from '../gemini'
+import { api, ApiError } from '../api'
 import { compressImage } from '../utils'
 
 interface Action {
@@ -99,20 +97,12 @@ const categories: Category[] = [
   },
 ]
 
-const impactLabels: Record<string, (a: Action) => string> = {
-  transport: (a) => `${a.co2} kg CO₂`,
-  food: (a) => `${a.co2} kg CO₂`,
-  energy: (a) => `${a.co2} kg CO₂`,
-  water: (a) => `${a.water}L saved`,
-  waste: (a) => `${a.co2} kg CO₂`,
-}
-
 export function LogTab() {
-  const { addPoints, addCo2, addWater, user, setShowSignIn } = useApp()
+  const { user, setShowSignIn, applyMe } = useApp()
   const [selectedCategory, setSelectedCategory] = useState<string>('transport')
   const [loggedActions, setLoggedActions] = useState<Set<string>>(new Set())
   const [justLogged, setJustLogged] = useState<string | null>(null)
-  const [pendingImage, setPendingImage] = useState<string | null>(null)
+  const [pendingImage, setPendingImage] = useState<Blob | null>(null)
   const [logging, setLogging] = useState<string | null>(null)
   const [photoError, setPhotoError] = useState(false)
   const [verifyError, setVerifyError] = useState<string | null>(null)
@@ -123,6 +113,12 @@ export function LogTab() {
   const [autoLogActionName, setAutoLogActionName] = useState('')
   const [autoLogPoints, setAutoLogPoints] = useState(0)
   const fileRef = useRef<HTMLInputElement>(null)
+
+  // The preview is an object URL over the pending blob, so it has to be
+  // released when the blob is replaced or the tab unmounts.
+  // Derived during render, revoked when it is replaced or unmounted.
+  const preview = useMemo(() => (pendingImage ? URL.createObjectURL(pendingImage) : null), [pendingImage])
+  useEffect(() => () => { if (preview) URL.revokeObjectURL(preview) }, [preview])
 
   const activeCategory = categories.find(c => c.id === selectedCategory)!
 
@@ -161,127 +157,63 @@ export function LogTab() {
     )
   }
 
-  const MIN_CONFIDENCE = 60
-
-  const executeLog = async (action: Action, points: number, category: string) => {
-    setLoggedActions(prev => new Set(prev).add(action.id))
-    setJustLogged(action.id)
-    addPoints(points)
-    if (action.co2 > 0) addCo2(action.co2)
-    if (action.water > 0) addWater(action.water)
-
-    await addDoc(collection(db, 'posts'), {
-      userId: user.uid,
-      userName: user.displayName || '',
-      userAvatar: (user.displayName || 'U').split(' ').map(s => s[0]).join('').slice(0, 2).toUpperCase(),
-      category,
-      action: action.label,
-      impact: impactLabels[category]?.(action) ?? '',
-      points,
-      likesCount: 0,
-      commentsCount: 0,
-      ripplesCount: 0,
-      imageBase64: pendingImage,
-      timestamp: serverTimestamp(),
-    })
-
-    await addDoc(collection(db, 'userActions'), {
-      userId: user.uid,
-      actionId: action.id,
-      category,
-      label: action.label,
-      points,
-      co2: action.co2,
-      water: action.water,
-      imageBase64: pendingImage,
-      timestamp: serverTimestamp(),
-    })
-
-    setPendingImage(null)
-    setVerifying(false)
-    setLogging(null)
-    setTimeout(() => setJustLogged(null), 1400)
-  }
-
-  const handleLog = async (action: Action) => {
-    if (loggedActions.has(action.id) || logging || verifying) return
-    setLogging(action.id)
+  /* One request does the whole thing now: the Worker stores the photo, asks
+     the model what it shows, awards the catalogue's points for that action and
+     hands back the updated profile. The browser never names a score. */
+  const submit = async (photo: Blob, actionId?: string) => {
     setVerifying(true)
-
-    const result = await verifyActionPhoto(pendingImage!)
-
-    if (result.confidence < MIN_CONFIDENCE) {
-      setVerifyError(`Verification confidence was ${result.confidence}%. Please submit a clearer photo demonstrating your action.`)
-      setLogging(null)
-      setVerifying(false)
-      return
-    }
-
-    if (result.category !== selectedCategory) {
-      setVerifyError(`Photo shows "${result.action}" (${result.category}), not ${selectedCategory}.`)
-      setLogging(null)
-      setVerifying(false)
-      return
-    }
-
-    await executeLog(action, result.points || action.points, selectedCategory)
-  }
-
-  const handleAutoLog = async (imgArg?: string | React.MouseEvent) => {
-    const targetImage = typeof imgArg === 'string' ? imgArg : pendingImage
-    if (!targetImage) {
-      setPhotoError(true)
-      return
-    }
-    setPhotoError(false)
     setVerifyError(null)
-    setVerifying(true)
     setIsAutoLogging(true)
     setAutoLogSuccess(false)
     setAutoLogFailed(false)
     setAutoLogActionName('')
     setAutoLogPoints(0)
+    if (actionId) setLogging(actionId)
 
-    const result = await verifyActionPhoto(targetImage)
+    try {
+      const result = await api.verifyPhoto(photo, actionId)
 
-    if (result.confidence < MIN_CONFIDENCE) {
-      setVerifyError(`Low confidence (${result.confidence}%). Could not reliably recognize action.`)
-      setVerifying(false)
-      setAutoLogFailed(true)
-      setTimeout(() => {
-        setIsAutoLogging(false)
-        setAutoLogFailed(false)
-      }, 1500)
-      return
-    }
-
-    let action = categories.flatMap(c => c.actions).find(a => a.label.toLowerCase().includes(result.action.toLowerCase()))
-    let catId = categories.find(c => action && c.actions.includes(action))?.id
-
-    if (!action) {
-      catId = categories.find(c => c.id === result.category)?.id || 'transport'
-      const cat = categories.find(c => c.id === catId)!
-      action = {
-        id: `auto-${Date.now()}`,
-        label: result.action,
-        points: result.points,
-        co2: 0,
-        water: 0,
-        Icon: cat.icon
+      if (!result.accepted) {
+        setVerifyError(result.reason || `Verification confidence was ${result.confidence}%. Please submit a clearer photo.`)
+        setAutoLogFailed(true)
+        setTimeout(() => { setIsAutoLogging(false); setAutoLogFailed(false) }, 1500)
+        return
       }
+
+      if (result.me) applyMe(result.me)
+      if (result.category) setSelectedCategory(result.category)
+      if (actionId) {
+        setLoggedActions(prev => new Set(prev).add(actionId))
+        setJustLogged(actionId)
+        setTimeout(() => setJustLogged(null), 1400)
+      }
+
+      setPendingImage(null)
+      setAutoLogActionName(result.label ?? 'action logged')
+      setAutoLogPoints(result.points ?? 0)
+      setAutoLogSuccess(true)
+      setTimeout(() => { setIsAutoLogging(false); setAutoLogSuccess(false) }, 1500)
+    } catch (error) {
+      setVerifyError(error instanceof ApiError ? error.message : 'Could not verify that photo. Please try again.')
+      setAutoLogFailed(true)
+      setTimeout(() => { setIsAutoLogging(false); setAutoLogFailed(false) }, 1500)
+    } finally {
+      setVerifying(false)
+      setLogging(null)
     }
+  }
 
-    setSelectedCategory(catId!)
-    setLogging(action.id)
-    await executeLog(action, result.points, catId!)
+  const handleLog = async (action: Action) => {
+    if (loggedActions.has(action.id) || logging || verifying) return
+    if (!pendingImage) { setPhotoError(true); return }
+    await submit(pendingImage, action.id)
+  }
 
-    setAutoLogActionName(action.label)
-    setAutoLogPoints(result.points)
-    setAutoLogSuccess(true)
-    setTimeout(() => {
-      setIsAutoLogging(false)
-      setAutoLogSuccess(false)
-    }, 1500)
+  const handleAutoLog = async (imgArg?: Blob | React.MouseEvent) => {
+    const targetImage = imgArg instanceof Blob ? imgArg : pendingImage
+    if (!targetImage) { setPhotoError(true); return }
+    setPhotoError(false)
+    await submit(targetImage)
   }
 
   const handleImagePick = () => {
@@ -294,11 +226,11 @@ export function LogTab() {
     e.target.value = ''
     if (!file) return
     try {
-      const base64 = await compressImage(file)
-      setPendingImage(base64)
+      const blob = await compressImage(file)
+      setPendingImage(blob)
       setPhotoError(false)
       setVerifyError(null)
-      handleAutoLog(base64)
+      handleAutoLog(blob)
     } catch {
       setPendingImage(null)
       setVerifyError('That photo could not be read on this device. Try taking a new one, or pick a JPEG or PNG.')
@@ -394,7 +326,7 @@ export function LogTab() {
 
         {pendingImage ? (
           <div className="relative rounded-2xl overflow-hidden border border-white/25 flex justify-center bg-black/30 mb-4">
-            <img src={pendingImage} alt="Proof" className="max-h-[45vh] w-full object-contain" />
+            <img src={preview ?? undefined} alt="Proof" className="max-h-[45vh] w-full object-contain" />
             <button
               onClick={() => { setPendingImage(null); setPhotoError(false); setVerifyError(null) }}
               aria-label="remove photo"

@@ -7,8 +7,9 @@ export class UnreadableImageError extends Error {
 
 /* Phone cameras produce images far larger than anything the feed shows, and a
    tall portrait shot constrained only by width still lands on an oversized
-   canvas, so both axes are capped. */
-export function compressImage(file: File, maxEdge = 900, quality = 0.7): Promise<string> {
+   canvas, so both axes are capped. Photos now travel as binary to R2 rather
+   than as base64 in a database row, so this returns a Blob. */
+export function compressImage(file: File, maxEdge = 1280, quality = 0.82): Promise<Blob> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader()
     reader.onload = () => {
@@ -22,28 +23,19 @@ export function compressImage(file: File, maxEdge = 900, quality = 0.7): Promise
           return
         }
         const scale = Math.min(1, maxEdge / Math.max(w, h))
-        w = Math.round(w * scale)
-        h = Math.round(h * scale)
-        canvas.width = w
-        canvas.height = h
+        canvas.width = w = Math.round(w * scale)
+        canvas.height = h = Math.round(h * scale)
         const ctx = canvas.getContext('2d')
         if (!ctx) {
           reject(new UnreadableImageError())
           return
         }
         ctx.drawImage(img, 0, 0, w, h)
-        const dataUrl = canvas.toDataURL('image/jpeg', quality)
-        if (dataUrl.length > 1048000) {
-          if (quality > 0.3) {
-            resolve(compressImage(file, maxEdge, quality - 0.2))
-          } else if (maxEdge > 640) {
-            resolve(compressImage(file, 640, 0.6))
-          } else {
-            resolve(canvas.toDataURL('image/jpeg', 0.2))
-          }
-        } else {
-          resolve(dataUrl)
-        }
+        canvas.toBlob(
+          blob => (blob ? resolve(blob) : reject(new UnreadableImageError())),
+          'image/jpeg',
+          quality,
+        )
       }
       // Formats the browser cannot decode (a HEIC picked from Files, for one)
       // fail here rather than silently producing a blank post.
@@ -54,3 +46,6 @@ export function compressImage(file: File, maxEdge = 900, quality = 0.7): Promise
     reader.readAsDataURL(file)
   })
 }
+
+/* A local preview while an upload is in flight. Callers must revoke it. */
+export const previewUrl = (blob: Blob) => URL.createObjectURL(blob)

@@ -1,36 +1,15 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowRight, Camera, Footprints, Heart, MessageCircle, Leaf, Train, Zap, Droplets, Trash2, X, Send, Image, MoreVertical, Edit2, Trash } from 'lucide-react'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useMemo } from 'react'
 import { useApp } from '../App'
-import { db } from '../firebase'
-import { collection, query, orderBy, limit, onSnapshot, doc, updateDoc, increment, addDoc, serverTimestamp, deleteDoc, getDocs, runTransaction, deleteField } from 'firebase/firestore'
+import { api, ApiError, type Post, type Comment } from '../api'
+import { useLive } from '../useLive'
 import { SkeletonCard } from '../components/Skeleton'
 import { compressImage } from '../utils'
 import { DotNumber } from '../components/DotNumber'
 
-interface FeedPost {
-  id: string
-  userId: string
-  userName: string
-  userAvatar: string
-  category: string
-  action: string
-  impact: string
-  points: number
-  likesCount: number
-  likes?: Record<string, boolean>
-  commentsCount: number
-  imageBase64?: string
-  timestamp: { seconds: number } | null
-}
-
-interface Comment {
-  id: string
-  userId: string
-  userName: string
-  text: string
-  timestamp: { seconds: number } | null
-}
+const initials = (name: string) =>
+  name.split(' ').map(part => part[0]).join('').slice(0, 2).toUpperCase() || 'AN'
 
 const categoryIcons: Record<string, { icon: typeof Leaf; color: string; bg: string }> = {
   transport: { icon: Train, color: 'text-gulf-400', bg: 'bg-gulf-400/10' },
@@ -40,9 +19,9 @@ const categoryIcons: Record<string, { icon: typeof Leaf; color: string; bg: stri
   waste: { icon: Trash2, color: 'text-ember-400', bg: 'bg-ember-400/10' },
 }
 
-function timeAgo(ts: { seconds: number } | null) {
-  if (!ts?.seconds) return 'just now'
-  const diff = Date.now() - ts.seconds * 1000
+function timeAgo(seconds: number) {
+  if (!seconds) return 'just now'
+  const diff = Date.now() - seconds * 1000
   const mins = Math.floor(diff / 60000)
   if (mins < 1) return 'just now'
   if (mins < 60) return `${mins}m ago`
@@ -52,33 +31,31 @@ function timeAgo(ts: { seconds: number } | null) {
   return `${days}d ago`
 }
 
-function CreatePost({ user }: { user: any }) {
+function CreatePost({ onPosted }: { onPosted: () => void }) {
   const [text, setText] = useState('')
-  const [image, setImage] = useState<string | null>(null)
+  const [image, setImage] = useState<Blob | null>(null)
   const [posting, setPosting] = useState(false)
-  const [imageError, setImageError] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const fileRef = useRef<HTMLInputElement>(null)
+
+  // Derived during render, revoked when it is replaced or unmounted.
+  const preview = useMemo(() => (image ? URL.createObjectURL(image) : null), [image])
+  useEffect(() => () => { if (preview) URL.revokeObjectURL(preview) }, [preview])
 
   const handlePost = async () => {
     if (!text.trim() || posting) return
     setPosting(true)
-    await addDoc(collection(db, 'posts'), {
-      userId: user.uid,
-      userName: user.displayName || '',
-      userAvatar: (user.displayName || 'U').split(' ').map((s: string) => s[0]).join('').slice(0, 2).toUpperCase(),
-      category: '',
-      action: text.trim(),
-      impact: '',
-      points: 0,
-      likesCount: 0,
-      likes: {},
-      commentsCount: 0,
-      imageBase64: image || '',
-      timestamp: serverTimestamp(),
-    })
-    setText('')
-    setImage(null)
-    setPosting(false)
+    setError(null)
+    try {
+      await api.createPost(text.trim(), image)
+      setText('')
+      setImage(null)
+      onPosted()
+    } catch (caught) {
+      setError(caught instanceof ApiError ? caught.message : 'That post did not go through.')
+    } finally {
+      setPosting(false)
+    }
   }
 
   return (
@@ -88,11 +65,12 @@ function CreatePost({ user }: { user: any }) {
         onChange={e => setText(e.target.value)}
         placeholder="Share an action with your community..."
         rows={2}
+        maxLength={500}
         className="w-full bg-transparent font-body text-[15px] leading-relaxed text-text-primary placeholder:text-text-muted resize-none outline-none"
       />
-      {image && (
+      {preview && (
         <div className="relative mt-2 rounded-xl overflow-hidden border border-border flex justify-center bg-surface-overlay/20">
-          <img src={image} alt="" className="max-h-60 object-contain" />
+          <img src={preview} alt="" className="max-h-60 object-contain" />
           <button onClick={() => setImage(null)} aria-label="remove photo" className="absolute top-2 right-2 flex h-9 w-9 items-center justify-center rounded-full bg-surface/85 backdrop-blur-sm">
             <X size={15} className="text-text-primary" />
           </button>
@@ -119,18 +97,15 @@ function CreatePost({ user }: { user: any }) {
       <input ref={fileRef} type="file" accept="image/*" onChange={async e => {
         const f = e.target.files?.[0]
         e.target.value = ''
-        if (f) {
-          try {
-            setImage(await compressImage(f))
-            setImageError(false)
-          } catch {
-            setImageError(true)
-          }
+        if (!f) return
+        try {
+          setImage(await compressImage(f))
+          setError(null)
+        } catch {
+          setError('That photo could not be read. Try a JPEG or PNG.')
         }
       }} className="hidden" />
-      {imageError && (
-        <p className="mt-2 font-body text-[11px] text-red-400">That photo could not be read. Try a JPEG or PNG.</p>
-      )}
+      {error && <p role="alert" className="mt-2 font-body text-[11px] text-red-400">{error}</p>}
     </div>
   )
 }
@@ -222,27 +197,14 @@ function FieldStationRail() {
 }
 
 export function FeedTab() {
-  const [posts, setPosts] = useState<FeedPost[]>([])
-  const [loaded, setLoaded] = useState(false)
   const { user, setActiveTab, setShowSignIn } = useApp()
 
-  useEffect(() => {
-    if (!user) {
-      setPosts([])
-      setLoaded(true)
-      return
-    }
-    setLoaded(false)
-    const q = query(collection(db, 'posts'), orderBy('timestamp', 'desc'), limit(50))
-    const unsub = onSnapshot(q, (snap) => {
-      setPosts(snap.docs.map(d => ({ id: d.id, ...d.data() } as FeedPost)))
-      setLoaded(true)
-    }, (error) => {
-      console.warn('Unable to load the community feed.', error)
-      setLoaded(true)
-    })
-    return unsub
-  }, [user])
+  /* The old build held an onSnapshot listener open and streamed every post,
+     base64 photos included. This fetches a page of rows whose images are
+     URLs, and revalidates on focus and a slow timer. */
+  const stream = useLive(signal => api.feed(signal), [user?.uid], { enabled: !!user, intervalMs: 45_000 })
+  const posts: Post[] = stream.data?.posts ?? []
+  const loaded = !stream.loading
 
   return (
     <motion.div
@@ -263,13 +225,13 @@ export function FeedTab() {
 
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
         <div className="min-w-0"><div className="community-heading"><h2>Better together</h2><p>Everyday wins from the Rippl community.</p></div>
-          {user && <CreatePost user={user} />}
+          {user && <CreatePost onPosted={stream.refresh} />}
           {!loaded ? (
             <div className="space-y-3">{Array.from({ length: 3 }).map((_, i) => <SkeletonCard key={i} />)}</div>
           ) : posts.length === 0 ? (
             <div className="community-empty"><p className="text-[13px] text-text-primary">{user ? 'Be the first to share a little good.' : 'Good things happen together.'}</p>{!user && <p className="community-empty-detail">Sign in to see what others are doing and share your own small wins.</p>}{user && <button onClick={() => setActiveTab('log')} className="mt-3 text-[12px] font-medium text-text-muted underline underline-offset-4">Log the first action</button>}</div>
           ) : (
-            <div className="flex flex-col space-y-3"><AnimatePresence mode="popLayout" initial={false}>{posts.map((post, i) => <FeedCard key={post.id} post={post} index={i} />)}</AnimatePresence></div>
+            <div className="flex flex-col space-y-3"><AnimatePresence mode="popLayout" initial={false}>{posts.map((post, i) => <FeedCard key={post.id} post={post} index={i} onChanged={stream.refresh} />)}</AnimatePresence></div>
           )}
         </div>
         <FieldStationRail />
@@ -278,11 +240,10 @@ export function FeedTab() {
   )
 }
 
-function FeedCard({ post, index }: { post: FeedPost; index: number }) {
-  const [liked, setLiked] = useState(false)
+function FeedCard({ post, index, onChanged }: { post: Post; index: number; onChanged: () => void }) {
+  const { user, isAdmin, setShowSignIn } = useApp()
+  const [liked, setLiked] = useState(post.liked)
   const [likeCount, setLikeCount] = useState(post.likesCount)
-  const appCtx = useApp()
-  const { user, setShowSignIn } = appCtx
   const cat = categoryIcons[post.category] || categoryIcons.transport
   const [menuOpen, setMenuOpen] = useState(false)
   const [editing, setEditing] = useState(false)
@@ -291,10 +252,10 @@ function FeedCard({ post, index }: { post: FeedPost; index: number }) {
   const [comments, setComments] = useState<Comment[]>([])
   const [commentText, setCommentText] = useState('')
   const [commentCount, setCommentCount] = useState(post.commentsCount)
+  const [error, setError] = useState<string | null>(null)
   const menuRef = useRef<HTMLDivElement>(null)
 
-  const isOwner = user?.uid === post.userId
-  const isAdmin = (appCtx.userData as any)?.isAdmin
+  const isOwner = user?.uid === post.author.uid
 
   useEffect(() => {
     const handleClick = (e: Event) => {
@@ -304,84 +265,86 @@ function FeedCard({ post, index }: { post: FeedPost; index: number }) {
     return () => document.removeEventListener('pointerdown', handleClick)
   }, [])
 
-  useEffect(() => {
+  /* A refetch replaces the post object. Reconciling during render rather than
+     in an effect keeps an optimistic like from flashing back for a frame. */
+  const [seen, setSeen] = useState(post)
+  if (seen !== post) {
+    setSeen(post)
+    setLiked(post.liked)
     setLikeCount(post.likesCount)
-    setLiked(!!(user && post.likes && post.likes[user.uid]))
-  }, [post, user])
+    setCommentCount(post.commentsCount)
+  }
 
+  /* Anyone signed in can like anyone's post now. Under the old Firestore
+     rules only the author could, and the rejection was swallowed. */
   const handleLike = async () => {
     if (!user) { setShowSignIn(true); return }
+    const optimistic = !liked
+    setLiked(optimistic)
+    setLikeCount(c => (optimistic ? c + 1 : Math.max(0, c - 1)))
     try {
-      let wasLiked = false
-      await runTransaction(db, async (tx) => {
-        const ref = doc(db, 'posts', post.id)
-        const snap = await tx.get(ref)
-        const data = snap.data() as any
-        wasLiked = !!(data?.likes && data.likes[user.uid])
-        if (wasLiked) {
-          tx.set(ref, { likes: { [user.uid]: deleteField() }, likesCount: increment(-1) }, { merge: true })
-        } else {
-          tx.set(ref, { likes: { [user.uid]: true }, likesCount: increment(1) }, { merge: true })
-        }
-      })
-      setLiked(!wasLiked)
-      setLikeCount(c => wasLiked ? Math.max(0, c - 1) : c + 1)
+      const result = await api.like(post.id)
+      setLiked(result.liked)
+      setLikeCount(result.likesCount)
     } catch {
+      setLiked(!optimistic)
+      setLikeCount(c => (optimistic ? Math.max(0, c - 1) : c + 1))
+    }
+  }
+
+  const act = async (work: () => Promise<unknown>, after?: () => void) => {
+    setError(null)
+    try {
+      await work()
+      after?.()
+    } catch (caught) {
+      setError(caught instanceof ApiError ? caught.message : 'That did not go through.')
     }
   }
 
   const handleDelete = async () => {
     if (!confirm('Delete this post?')) return
-    await deleteDoc(doc(db, 'posts', post.id))
     setMenuOpen(false)
+    await act(() => api.deletePost(post.id), onChanged)
   }
 
   const handleRemoveImage = async () => {
     if (!confirm('Remove image from this post?')) return
-    await updateDoc(doc(db, 'posts', post.id), { imageBase64: '' })
     setMenuOpen(false)
-  }
-
-  const handleAdminEditPoints = async () => {
-    const val = prompt('Set points for this post (number):', String(post.points))
-    if (!val) return
-    const n = parseInt(val, 10)
-    if (isNaN(n)) return
-    await updateDoc(doc(db, 'posts', post.id), { points: n })
-    setMenuOpen(false)
+    await act(() => api.removePostImage(post.id), onChanged)
   }
 
   const handleEdit = async () => {
     if (!editText.trim()) return
-    await updateDoc(doc(db, 'posts', post.id), { action: editText.trim() })
-    setEditing(false)
-    setMenuOpen(false)
+    await act(() => api.editPost(post.id, editText.trim()), () => {
+      setEditing(false)
+      setMenuOpen(false)
+      onChanged()
+    })
   }
 
   const loadComments = async () => {
-    const q = query(collection(db, 'posts', post.id, 'comments'), orderBy('timestamp', 'asc'))
-    const snap = await getDocs(q)
-    setComments(snap.docs.map(d => ({ id: d.id, ...d.data() } as Comment)))
+    await act(async () => {
+      const result = await api.comments(post.id)
+      setComments(result.comments)
+    })
   }
 
   const handleCommentClick = () => {
     if (!user) { setShowSignIn(true); return }
     setShowComments(true)
-    loadComments()
+    void loadComments()
   }
 
   const handleAddComment = async () => {
     if (!commentText.trim() || !user) return
-    await addDoc(collection(db, 'posts', post.id, 'comments'), {
-      userId: user.uid,
-      userName: user.displayName || 'Anonymous',
-      text: commentText.trim(),
-      timestamp: serverTimestamp(),
-    })
-    await updateDoc(doc(db, 'posts', post.id), { commentsCount: increment(1) })
-    setCommentCount(c => c + 1)
+    const text = commentText.trim()
     setCommentText('')
-    loadComments()
+    await act(() => api.addComment(post.id, text), () => {
+      setCommentCount(c => c + 1)
+      void loadComments()
+      onChanged()
+    })
   }
 
   return (
@@ -396,12 +359,12 @@ function FeedCard({ post, index }: { post: FeedPost; index: number }) {
       >
         <div className="flex items-start gap-3">
           <div className="w-10 h-10 rounded-full border border-white/15 bg-black flex items-center justify-center shrink-0">
-            <span className="text-[10px] font-mono font-medium text-white">{post.userAvatar}</span>
+            <span className="text-[10px] font-mono font-medium text-white">{initials(post.author.displayName)}</span>
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
-              <span className="font-body text-[13px] font-medium text-text-primary">{post.userName}</span>
-              <span className="font-mono text-[9px] text-text-muted">{timeAgo(post.timestamp)}</span>
+              <span className="font-body text-[13px] font-medium text-text-primary">{post.author.displayName}</span>
+              <span className="font-mono text-[9px] text-text-muted">{timeAgo(post.createdAt)}</span>
             </div>
             {editing ? (
               <div className="mt-1">
@@ -419,9 +382,9 @@ function FeedCard({ post, index }: { post: FeedPost; index: number }) {
             ) : (
               <p className="font-body text-[14px] text-text-secondary mt-2 leading-relaxed">{post.action}</p>
             )}
-            {post.imageBase64 && (
+            {post.imageUrl && (
               <div className="mt-2 rounded-xl overflow-hidden border border-border flex justify-center bg-surface-overlay/20">
-                <img src={post.imageBase64} alt="" className="max-h-80 object-contain" />
+                <img src={post.imageUrl} alt="" loading="lazy" className="max-h-80 object-contain" />
               </div>
             )}
             {post.category && cat && (
@@ -466,7 +429,7 @@ function FeedCard({ post, index }: { post: FeedPost; index: number }) {
                     <Trash size={12} className="text-red-400" />
                     <span className="font-body text-[11px] text-red-400">Delete</span>
                   </button>
-                  {isAdmin && post.imageBase64 && (
+                  {(isAdmin || isOwner) && post.imageUrl && (
                     <button
                       onClick={handleRemoveImage}
                       className="flex min-h-11 w-full items-center gap-2 rounded-lg px-3 py-2 text-left transition-colors hover:bg-surface-overlay"
@@ -475,19 +438,13 @@ function FeedCard({ post, index }: { post: FeedPost; index: number }) {
                       <span className="font-body text-[11px] text-text-primary">Remove image</span>
                     </button>
                   )}
-                  {isAdmin && (
-                    <button
-                      onClick={handleAdminEditPoints}
-                      className="flex min-h-11 w-full items-center gap-2 rounded-lg px-3 py-2 text-left transition-colors hover:bg-surface-overlay"
-                    >
-                      <span className="font-body text-[11px] text-text-primary">Set points</span>
-                    </button>
-                  )}
                 </motion.div>
               )}
             </div>
           )}
         </div>
+
+        {error && <p role="alert" className="mt-2 font-body text-[11px] text-red-400">{error}</p>}
 
         <div className="flex items-center justify-between mt-3.5 pt-3 border-t border-border">
           <button onClick={handleLike} aria-pressed={liked} aria-label={liked ? 'unlike' : 'like'} className="group/btn -my-1 flex min-h-11 flex-1 items-center justify-start gap-1.5 rounded-xl px-2">
@@ -529,13 +486,13 @@ function FeedCard({ post, index }: { post: FeedPost; index: number }) {
                 <div key={c.id} className="flex items-start gap-2.5">
                   <div className="w-7 h-7 rounded-full bg-gradient-to-br from-gulf-400 to-oasis-400 flex items-center justify-center shrink-0">
                     <span className="text-[7px] font-body font-bold text-surface">
-                      {c.userName.split(' ').map(s => s[0]).join('').slice(0, 2).toUpperCase()}
+                      {initials(c.author.displayName)}
                     </span>
                   </div>
                   <div>
                     <div className="flex items-center gap-1.5">
-                      <span className="font-body text-[11px] font-semibold text-text-primary">{c.userName}</span>
-                      <span className="font-mono text-[8px] text-text-muted">{timeAgo(c.timestamp)}</span>
+                      <span className="font-body text-[11px] font-semibold text-text-primary">{c.author.displayName}</span>
+                      <span className="font-mono text-[8px] text-text-muted">{timeAgo(c.createdAt)}</span>
                     </div>
                     <p className="font-body text-[11px] text-text-secondary mt-0.5">{c.text}</p>
                   </div>

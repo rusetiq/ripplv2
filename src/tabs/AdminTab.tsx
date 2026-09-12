@@ -1,10 +1,10 @@
 import { motion } from 'framer-motion'
 import { Shield, Mail, X, Gift, Plus, Trash2, ImageIcon, Link, Tag, Coins, ArrowUpDown } from 'lucide-react'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useApp } from '../App'
-import { db } from '../firebase'
-import { collection, query, where, getDocs, doc, updateDoc, addDoc, deleteDoc, onSnapshot, orderBy } from 'firebase/firestore'
-import { resolveSponsoredImageUrl, SPONSORED_LOCAL_FALLBACKS } from '../sponsoredImages'
+import { api, ApiError } from '../api'
+import { useLive } from '../useLive'
+import { SPONSORED_LOCAL_FALLBACKS } from '../sponsoredImages'
 
 interface AdminUser {
   uid: string
@@ -21,7 +21,6 @@ interface SponsoredReward {
   imageUrl: string
   points: number
   badge: string
-  order: number
 }
 
 const EMPTY_REWARD: Omit<SponsoredReward, 'id'> = {
@@ -31,93 +30,72 @@ const EMPTY_REWARD: Omit<SponsoredReward, 'id'> = {
   imageUrl: '',
   points: 0,
   badge: '',
-  order: 0,
 }
 
 export function AdminTab() {
   const { isAdmin, user } = useApp()
-  const [users, setUsers] = useState<AdminUser[]>([])
-  const [loading, setLoading] = useState(true)
   const [searchEmail, setSearchEmail] = useState('')
   const [addingAdmin, setAddingAdmin] = useState(false)
   const [activeSection, setActiveSection] = useState<'admins' | 'rewards'>('admins')
-  const [sponsored, setSponsored] = useState<SponsoredReward[]>([])
   const [rewardForm, setRewardForm] = useState(EMPTY_REWARD)
   const [savingReward, setSavingReward] = useState(false)
   const [showRewardForm, setShowRewardForm] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
-  useEffect(() => {
-    if (!isAdmin) return
-    loadAdmins()
-  }, [isAdmin])
+  /* Admin is one flag on the user row, checked by the Worker on every request
+     below /api/admin. This gate only decides what to render. */
+  const adminList = useLive(signal => api.admins(signal), [isAdmin], { enabled: isAdmin, intervalMs: 120_000 })
+  const campaigns = useLive(signal => api.sponsored(signal), [isAdmin], { enabled: isAdmin, intervalMs: 120_000 })
 
-  useEffect(() => {
-    if (!isAdmin) return
-    const q = query(collection(db, 'sponsoredRewards'), orderBy('order', 'asc'))
-    const unsub = onSnapshot(q, (snap) => {
-      setSponsored(snap.docs.map(d => ({ id: d.id, ...(d.data() as Omit<SponsoredReward, 'id'>) })))
-    }, (error) => console.warn('Unable to load sponsored rewards.', error))
-    return unsub
-  }, [isAdmin])
+  const users: AdminUser[] = (adminList.data?.admins ?? []).map(a => ({
+    uid: a.uid,
+    displayName: a.displayName || 'Unknown',
+    email: a.email,
+    isAdmin: true,
+  }))
+  const loading = adminList.loading
+  const sponsored: SponsoredReward[] = campaigns.data?.sponsored ?? []
 
-  async function loadAdmins() {
-    setLoading(true)
-    const q = query(collection(db, 'users'), where('isAdmin', '==', true))
-    const snap = await getDocs(q)
-    setUsers(snap.docs.map(d => {
-      const data = d.data()
-      return {
-        uid: d.id,
-        displayName: data.displayName || 'Unknown',
-        email: data.email || '',
-        isAdmin: true,
-      }
-    }))
-    setLoading(false)
+  const run = async (work: () => Promise<unknown>, after?: () => void) => {
+    setError(null)
+    try {
+      await work()
+      after?.()
+    } catch (caught) {
+      setError(caught instanceof ApiError ? caught.message : 'That did not go through.')
+    }
   }
 
   const handleAddAdmin = async () => {
     if (!searchEmail.trim()) return
     setAddingAdmin(true)
-    const q = query(collection(db, 'users'), where('email', '==', searchEmail.toLowerCase().trim()))
-    const snap = await getDocs(q)
-    if (snap.empty) {
-      alert('User not found. Make sure they have signed in to the app first.')
-      setAddingAdmin(false)
-      return
-    }
-    const userDoc = snap.docs[0]
-    await updateDoc(doc(db, 'users', userDoc.id), { isAdmin: true, email: searchEmail.toLowerCase().trim() })
-    setSearchEmail('')
+    await run(() => api.addAdmin(searchEmail.toLowerCase().trim()), () => {
+      setSearchEmail('')
+      adminList.refresh()
+    })
     setAddingAdmin(false)
-    loadAdmins()
   }
 
   const handleRemoveAdmin = async (uid: string) => {
-    if (uid === user?.uid) {
-      alert('Cannot remove yourself as admin')
-      return
-    }
+    if (uid === user?.uid) return
     if (!confirm('Remove this admin?')) return
-    await updateDoc(doc(db, 'users', uid), { isAdmin: false })
-    loadAdmins()
+    await run(() => api.removeAdmin(uid), adminList.refresh)
   }
 
   const handleSaveReward = async () => {
     if (!rewardForm.name || !rewardForm.href || !rewardForm.imageUrl) return
     setSavingReward(true)
-    await addDoc(collection(db, 'sponsoredRewards'), {
-      ...rewardForm,
-      order: sponsored.length,
+    await run(() => api.addSponsored(rewardForm), () => {
+      setRewardForm(EMPTY_REWARD)
+      setShowRewardForm(false)
+      campaigns.refresh()
     })
-    setRewardForm(EMPTY_REWARD)
-    setShowRewardForm(false)
     setSavingReward(false)
   }
 
   const handleDeleteReward = async (id: string) => {
     if (!confirm('Delete this sponsored reward?')) return
-    await deleteDoc(doc(db, 'sponsoredRewards', id))
+    await run(() => api.removeSponsored(id), campaigns.refresh)
   }
 
   if (!isAdmin) {
@@ -161,6 +139,12 @@ export function AdminTab() {
         <h2 className="font-display text-[26px] leading-tight text-text-primary">admin panel</h2>
         <p className="mt-1 text-[13px] text-text-muted">manage platform administrators and sponsored brand rewards.</p>
       </div>
+
+      {error && (
+        <div role="alert" className="mb-5 rounded-2xl border border-red-400/30 bg-red-400/10 px-4 py-3">
+          <p className="font-body text-[12px] text-red-400">{error}</p>
+        </div>
+      )}
 
       <div className="flex gap-2 mb-6">
         <button
@@ -358,7 +342,7 @@ export function AdminTab() {
                 <div key={sp.id} className="gallery-card flex items-center gap-3.5 p-3 rounded-[20px] border border-border">
                   <img
                     className="w-14 h-14 rounded-2xl object-cover shrink-0 border border-border bg-surface-overlay"
-                    src={resolveSponsoredImageUrl(sp.imageUrl, SPONSORED_LOCAL_FALLBACKS[0])}
+                    src={sp.imageUrl || SPONSORED_LOCAL_FALLBACKS[0]}
                     alt=""
                     referrerPolicy="no-referrer"
                     onError={event => { event.currentTarget.src = SPONSORED_LOCAL_FALLBACKS[0] }}

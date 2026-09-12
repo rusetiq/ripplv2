@@ -25,7 +25,6 @@ export default function LandingPage() {
   const pageRef = useRef<HTMLElement>(null)
   const menuButtonRef = useRef<HTMLButtonElement>(null)
   const navRef = useRef<HTMLElement>(null)
-  const lenisRef = useRef<Lenis | null>(null)
 
   useEffect(() => {
     document.documentElement.classList.add('landing-page-active')
@@ -45,7 +44,6 @@ export default function LandingPage() {
       wheelMultiplier: 0.9,
       touchMultiplier: 1.5,
     })
-    lenisRef.current = lenis
 
     let rafId: number
     function raf(time: number) {
@@ -57,13 +55,10 @@ export default function LandingPage() {
     return () => {
       cancelAnimationFrame(rafId)
       lenis.destroy()
-      lenisRef.current = null
     }
   }, [])
 
-  /* The menu panel covers the hero, so it needs the dismissals a real overlay
-     has: a tap anywhere outside it, Escape from anywhere on the page, and a
-     scroll lock so the page behind cannot move under it. */
+  // This non-modal navigation keeps the page scrollable while open.
   useEffect(() => {
     if (!menuOpen) return
     const closeOnOutside = (event: PointerEvent) => {
@@ -76,13 +71,9 @@ export default function LandingPage() {
     }
     document.addEventListener('pointerdown', closeOnOutside)
     document.addEventListener('keydown', closeOnEscape)
-    document.documentElement.classList.add('landing-menu-open')
-    lenisRef.current?.stop()
     return () => {
       document.removeEventListener('pointerdown', closeOnOutside)
       document.removeEventListener('keydown', closeOnEscape)
-      document.documentElement.classList.remove('landing-menu-open')
-      lenisRef.current?.start()
     }
   }, [menuOpen])
 

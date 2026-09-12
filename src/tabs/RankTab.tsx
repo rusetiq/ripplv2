@@ -1,9 +1,9 @@
 import { motion } from 'framer-motion'
-import { LogIn, Trophy, TrendingUp } from 'lucide-react'
-import { useState, useEffect } from 'react'
+import { LogIn, Trophy } from 'lucide-react'
+import { useState } from 'react'
 import { useApp } from '../App'
-import { db } from '../firebase'
-import { collection, query, orderBy, limit, onSnapshot } from 'firebase/firestore'
+import { api } from '../api'
+import { useLive } from '../useLive'
 import { SkeletonRow } from '../components/Skeleton'
 import { DotNumber } from '../components/DotNumber'
 
@@ -11,12 +11,15 @@ type Scope = 'friends' | 'community'
 
 interface Player {
   rank: number
+  uid: string
   name: string
-  avatar: string
+  photoURL: string
   points: number
-  change: number
-  isUser?: boolean
+  isUser: boolean
 }
+
+const initials = (name: string) =>
+  name.split(' ').map(part => part[0]).join('').slice(0, 2).toUpperCase() || 'AN'
 
 const scopeLabels: Record<Scope, string> = {
   friends: 'friends',
@@ -26,32 +29,14 @@ const scopeLabels: Record<Scope, string> = {
 export function RankTab() {
   const [scope, setScope] = useState<Scope>('community')
   const { user, setShowSignIn } = useApp()
-  const [players, setPlayers] = useState<Player[]>([])
-  const [loaded, setLoaded] = useState(false)
-
-  useEffect(() => {
-    const q = query(collection(db, 'users'), orderBy('points', 'desc'), limit(50))
-    const unsub = onSnapshot(q, (snap) => {
-      if (snap.metadata.hasPendingWrites) return
-      const allUsers = snap.docs.map((d, i) => ({
-        rank: i + 1,
-        name: d.data().displayName || 'Anonymous',
-        avatar: (d.data().displayName || 'An').split(' ').map((s: string) => s[0]).join('').slice(0, 2).toUpperCase(),
-        points: d.data().points || 0,
-        change: Math.floor(Math.random() * 5),
-        isUser: d.id === user?.uid,
-      }))
-      setPlayers(allUsers)
-      setLoaded(true)
-    }, (error) => {
-      console.warn('Unable to load the leaderboard.', error)
-      setLoaded(true)
-    })
-    return unsub
-  }, [user])
+  /* Name, avatar and points only. The old build streamed whole user
+     documents, emails included, to render these three fields. */
+  const board = useLive(signal => api.leaderboard(signal), [user?.uid], { enabled: !!user, intervalMs: 90_000 })
+  const players: Player[] = board.data?.players ?? []
+  const loaded = !board.loading
 
   const podium = [players[1], players[0], players[2]].filter(Boolean)
-  const myPlayer = players.find(p => p.isUser)
+  const myPlayer = board.data?.self ?? null
 
   return (
     <motion.div
@@ -116,7 +101,7 @@ export function RankTab() {
             <div className="expressive-card sapphire-card mb-7 flex flex-col gap-4 rounded-[28px] p-5 text-white shadow-lg sm:flex-row sm:items-center sm:justify-between">
               <div className="flex min-w-0 items-center gap-3.5">
                 <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-white/25 bg-white/20 font-display text-[16px] font-bold text-white backdrop-blur-md">
-                  {myPlayer.avatar}
+                  {initials(myPlayer.name)}
                 </div>
                 <div className="min-w-0">
                   <span className="font-body text-[11px] uppercase tracking-tight text-white/80">your standing</span>
@@ -142,7 +127,7 @@ export function RankTab() {
                   <div className={`w-14 h-14 rounded-2xl flex items-center justify-center border font-display text-[15px] shadow-sm ${
                     podium[0].isUser ? 'border-oasis-400 bg-oasis-400/20 text-oasis-400' : 'border-border bg-surface-raised text-text-primary'
                   }`}>
-                    {podium[0].avatar}
+                    {initials(podium[0].name)}
                   </div>
                   <span className="absolute -bottom-1.5 -right-1.5 w-5 h-5 rounded-full bg-surface border border-border flex items-center justify-center font-mono text-[10px] text-text-muted shadow-xs">
                     2
@@ -169,7 +154,7 @@ export function RankTab() {
                   <div className={`w-18 h-18 rounded-[24px] flex items-center justify-center border-2 font-display text-[19px] shadow-xl ${
                     podium[1].isUser ? 'border-white bg-white/25 text-white' : 'border-amber-300/80 bg-amber-400/15 text-text-primary'
                   }`}>
-                    {podium[1].avatar}
+                    {initials(podium[1].name)}
                   </div>
                   <span className="absolute -bottom-2 -right-1.5 px-2.5 py-0.5 rounded-full bg-amber-500 text-white flex items-center justify-center font-mono text-[10px] font-bold shadow-md border border-white/40">
                     1st
@@ -197,7 +182,7 @@ export function RankTab() {
                   <div className={`w-14 h-14 rounded-2xl flex items-center justify-center border font-display text-[15px] shadow-sm ${
                     podium[2].isUser ? 'border-oasis-400 bg-oasis-400/20 text-oasis-400' : 'border-border bg-surface-raised text-text-primary'
                   }`}>
-                    {podium[2].avatar}
+                    {initials(podium[2].name)}
                   </div>
                   <span className="absolute -bottom-1.5 -right-1.5 w-5 h-5 rounded-full bg-surface border border-border flex items-center justify-center font-mono text-[10px] text-text-muted shadow-xs">
                     3
@@ -234,7 +219,7 @@ export function RankTab() {
                 <div className={`w-10 h-10 rounded-2xl flex items-center justify-center font-display text-[12px] ${
                   player.isUser ? 'bg-oasis-400 text-surface font-bold' : 'bg-surface-overlay text-text-primary border border-border'
                 }`}>
-                  {player.avatar}
+                  {initials(player.name)}
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="font-display text-[13px] text-text-primary truncate">
@@ -243,10 +228,6 @@ export function RankTab() {
                   <p className="font-body text-[11px] text-text-muted">
                     {player.points.toLocaleString()} community points
                   </p>
-                </div>
-                <div className="hidden shrink-0 items-center gap-1.5 rounded-full border border-border bg-surface-overlay/80 px-2.5 py-1 min-[380px]:flex">
-                  <TrendingUp size={11} className="text-oasis-400" />
-                  <span className="font-mono text-[10px] text-text-muted">+{player.change || 1}</span>
                 </div>
               </motion.div>
             ))}

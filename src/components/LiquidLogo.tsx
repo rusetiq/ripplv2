@@ -7,7 +7,7 @@ export default function LiquidLogo() {
   const [available, setAvailable] = useState(true)
   useEffect(() => {
     const canvas = canvasRef.current!
-    const gl = canvas.getContext('webgl', { alpha: true, premultipliedAlpha: false })
+    const gl = canvas.getContext('webgl', { alpha: true, premultipliedAlpha: true })
     if (!gl) { setAvailable(false); return }
     const vertex = `attribute vec2 position; varying vec2 uv; void main(){uv=position*.5+.5;gl_Position=vec4(position,0.,1.);}`
     const fragment = `precision mediump float;
@@ -34,7 +34,7 @@ export default function LiquidLogo() {
         vec3 light=vec3(.400,.639,.906);
         vec3 tone=lum<.58?mix(deep,mid,lum/.58):mix(mid,light,(lum-.58)/.42);
         tone+=vec3(.05,.10,.14)*influence*strength;
-        gl_FragColor=vec4(clamp(tone,0.,1.),alpha);
+        gl_FragColor=vec4(clamp(tone,0.,1.) * alpha,alpha);
       }`
     const shaders: WebGLShader[] = []
     const compile = (type: number, source: string) => {
@@ -102,5 +102,5 @@ export default function LiquidLogo() {
     const observer = new ResizeObserver(start); observer.observe(canvas)
     return () => { disposed = true; cancelAnimationFrame(frame); observer.disconnect(); canvas.removeEventListener('pointermove', move); canvas.removeEventListener('pointerleave', leave); canvas.removeEventListener('pointerup', leave); canvas.removeEventListener('pointerdown', move); canvas.removeEventListener('pointercancel', leave); document.removeEventListener('visibilitychange', visibility); reduced.removeEventListener('change', motionPreference); gl.deleteTexture(texture); gl.deleteBuffer(buffer); shaders.forEach(s => gl.deleteShader(s)); gl.deleteProgram(program) }
   }, [])
-  return available ? <canvas ref={canvasRef} className="liquid-canvas" role="img" aria-label="Rippl’s blue liquid logo, which ripples when you move your pointer across it" /> : <img className="liquid-fallback" src="/brand/liquid-reference.png" alt="Rippl liquid logo" />
+  return available ? <canvas ref={canvasRef} className="liquid-canvas" role="img" aria-label="Rippl’s blue liquid logo, which ripples when you move your pointer across it" /> : <span className="rippl-brand-mark liquid-fallback" role="img" aria-label="Rippl logo" />
 }

@@ -11,6 +11,7 @@
   font-family: 'Manrope', sans-serif;
   letter-spacing: -0.018em;
   scrollbar-color: #a1aaa3 #f2f4f1;
+  padding-top: calc(12px + env(safe-area-inset-top, 0px));
   padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px));
 }
 html.landing-page-active,
@@ -48,7 +49,7 @@ html.lenis, html.lenis body {
   margin-bottom: 8px;
 }
 .reference-nav {
-  --nav-surface: rgba(242, 244, 241, 0.72);
+  --nav-surface: rgba(242, 244, 241, 0.34);
   --nav-ink: #111512;
   --nav-radius: 24px;
   --nav-padding: 9px;
@@ -57,40 +58,63 @@ html.lenis, html.lenis body {
   max-width: 1160px;
   margin: auto;
   padding: var(--nav-padding);
-  border: 1px solid rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.42);
   border-radius: var(--nav-radius);
-  background: var(--nav-surface);
   color: var(--nav-ink);
   isolation: isolate;
-  -webkit-backdrop-filter: blur(14px) saturate(130%);
-  backdrop-filter: blur(14px) saturate(130%);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85), inset 0 -1px 0 rgba(255, 255, 255, 0.35), 0 8px 28px rgba(27, 52, 59, 0.08);
-  transition: border-radius .45s cubic-bezier(.22, 1, .36, 1);
+  box-shadow: inset 0 1px 0 #ffffff40, 0 6px 20px #1b343b0a;
 }
-@supports not (backdrop-filter: blur(10px)) {
-  .reference-nav {
-    background: rgba(242, 244, 241, 0.94);
-  }
+.reference-nav::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: var(--nav-surface);
+  -webkit-backdrop-filter: blur(10px) saturate(120%);
+  backdrop-filter: blur(10px) saturate(120%);
+  pointer-events: none;
 }
 .reference-nav-top { height: 56px; display: flex; align-items: center; justify-content: space-between; }
 .contrast-logo { display: grid; place-items: center; width: 56px; height: 54px; }
 .reference-nav .rippl-brand-mark { width: 40px; height: 40px; background: var(--nav-ink); }
-.reference-menu-toggle { display: grid; place-items: center; width: 52px; height: 52px; border-radius: calc(var(--nav-radius) - var(--nav-padding)); border: 1px solid #ffffffa6; background: linear-gradient(155deg, #ffffff70, #ffffff14); box-shadow: inset 0 1px 0 #ffffffd9, 0 2px 7px #23455312; color: inherit; transition: background .2s, border-radius .45s cubic-bezier(.22,1,.36,1), transform .2s; }
-@media (hover: hover) { .reference-menu-toggle:hover { background: #ffffff70; } }
-.reference-menu-toggle svg { transition: transform .45s cubic-bezier(.22,1,.36,1); }
+.reference-menu-toggle { display: grid; place-items: center; width: 52px; height: 52px; border-radius: calc(var(--nav-radius) - var(--nav-padding)); border: 1px solid #ffffff50; background: #ffffff14; box-shadow: inset 0 1px 0 #ffffff30; color: inherit; transition: background .18s; }
+@media (hover: hover) { .reference-menu-toggle:hover { background: #ffffff30; } }
+.reference-menu-toggle svg { transition: transform .2s ease; }
 .is-open .reference-menu-toggle svg { transform: rotate(45deg); }
-.reference-menu { display: grid; grid-template-rows: 0fr; visibility: hidden; transition: grid-template-rows .5s cubic-bezier(.22,1,.36,1), visibility .5s; }
-.is-open .reference-menu { grid-template-rows: 1fr; visibility: visible; }
-.reference-menu nav { min-height: 0; overflow: hidden; display: grid; grid-template-columns: 1fr 1fr; text-align: center; }
-.reference-menu nav > div { padding: 52px 10px 20px; opacity: 0; transform: translateY(-10px); transition: opacity .3s, transform .45s cubic-bezier(.22,1,.36,1); }
-.is-open .reference-menu nav > div { opacity: 1; transform: none; }
+.reference-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  padding: 9px;
+  border: 1px solid #ffffff50;
+  border-radius: var(--nav-radius);
+  background: var(--nav-surface);
+  -webkit-backdrop-filter: blur(10px) saturate(120%);
+  backdrop-filter: blur(10px) saturate(120%);
+  box-shadow: 0 8px 24px #1b343b0d;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(-6px);
+  transition: opacity .18s ease, transform .18s ease, visibility .18s;
+}
+.is-open .reference-menu { opacity: 1; visibility: visible; pointer-events: auto; transform: none; }
+.reference-menu nav { min-height: 0; display: grid; grid-template-columns: 1fr 1fr; text-align: center; }
+.reference-menu nav > div { padding: 24px 10px; }
 .reference-menu h2 { font: 400 36px/1.2 Georgia, serif; letter-spacing: -.04em; margin: 0 0 12px; }
 .reference-menu a { display: flex; align-items: center; justify-content: center; width: fit-content; min-height: 44px; margin: auto; padding: 6px 8px; font-size: 21px; line-height: 1.25; opacity: .88; transition: opacity .2s, transform .2s; }
 @media (hover: hover) { .reference-menu a:hover { opacity: 1; transform: translateX(3px); } }
-.reference-nav.is-open { --nav-radius: 42px; }
+
 @media (prefers-reduced-transparency: reduce) {
-  .reference-nav { --nav-surface: #edf2f0; -webkit-backdrop-filter: none; backdrop-filter: none; }
+  .reference-nav { --nav-surface: #edf2f0; }
+  .reference-nav::before, .reference-menu { -webkit-backdrop-filter: none; backdrop-filter: none; }
 }
+@supports not (backdrop-filter: blur(10px)) {
+  .reference-nav, .reference-menu { background: #edf2f0; }
+}
+
 .landing-reveal { opacity: 0; transform: translateY(28px); transition: opacity .75s ease var(--reveal-delay,0ms), transform .75s cubic-bezier(.22,1,.36,1) var(--reveal-delay,0ms); }
 .landing-reveal.is-revealed { opacity: 1; transform: none; }
 .hero-copy { animation: landing-enter .85s cubic-bezier(.22,1,.36,1) both; }
@@ -114,8 +138,8 @@ html.lenis, html.lenis body {
   .reference-nav .rippl-brand-mark { width: 34px; height: 34px; }
   .reference-menu h2 { font-size: 29px; }
   .reference-menu a { font-size: 17px; }
-  .is-open .reference-menu nav > div { padding: 35px 5px 20px; }
-  .reference-nav.is-open { --nav-radius: 28px; }
+  .reference-menu nav > div { padding: 20px 5px; }
+
   .landing-footer.fancy-footer { min-height: 360px; margin-inline: 10px; border-radius: 28px; }
   .footer-glow { left: -70%; right: -70%; height: 120%; bottom: -23%; }
   .particle-wordmark-canvas { width: 100%; }
@@ -430,13 +454,14 @@ html.lenis, html.lenis body {
 .hero-art {
   position: relative;
   min-width: 0;
-  width: 100%;
+  width: min(100%, 580px);
   aspect-ratio: 1;
   max-height: 580px;
   display: flex;
   align-items: center;
   justify-content: center;
   isolation: isolate;
+  margin-inline: auto;
 }
 
 /* The sculpture is mostly negative space, so on the near-white page it reads as
@@ -464,10 +489,10 @@ html.lenis, html.lenis body {
   touch-action: pan-y;
 }
 
-.liquid-fallback {
+.rippl-brand-mark.liquid-fallback {
   width: 85%;
-  border-radius: 50%;
-  filter: hue-rotate(330deg);
+  height: 85%;
+  background: #1761d2;
 }
 
 .belief-strip {
@@ -1148,7 +1173,8 @@ html.lenis, html.lenis body {
     padding-top: 20px;
   }
   .hero-art {
-    max-height: 440px;
+    width: min(100%, 440px);
+    max-height: none;
     margin: 0 auto;
   }
 }
@@ -1223,31 +1249,33 @@ html.lenis, html.lenis body {
   .landing-btn-white,
   .landing-btn-secondary { flex: 1 1 100%; padding-block: 15px; }
 
-  /* Three stacked stat cards pushed the fold well past the headline. As a rail
-     they stay legible and the overflow tells you there is more. */
+  .hero-copy { text-align: center; }
+  .hero-copy h1, .hero-description { margin-inline: auto; }
+  .hero-description { max-width: 36ch; text-wrap: pretty; }
+  .hero-title-second, .hero-actions { justify-content: center; }
+  .hero-actions { max-width: 380px; margin-inline: auto; }
   .hero-stats-strip {
-    display: flex;
-    min-width: 0;
-    grid-template-columns: none;
-    gap: 12px;
-    max-width: none;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior-x: contain;
-    margin-inline: calc(var(--page-gutter) * -1);
-    padding-inline: var(--page-gutter);
-    scroll-padding-inline: var(--page-gutter);
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    width: 100%;
+    max-width: 540px;
+    margin-inline: auto;
   }
-  .hero-stats-strip::-webkit-scrollbar { display: none; }
   .hero-stat-card {
-    flex: 0 0 clamp(146px, 46%, 190px);
-    scroll-snap-align: start;
-    min-height: 86px;
-    padding: 15px 17px;
-    border-radius: 20px;
+    min-width: 0;
+    min-height: 100px;
+    padding: 14px 8px;
+    border-radius: 18px;
+    align-items: center;
+    box-shadow: inset 0 0 0 1px #ffffff40;
   }
+  .hero-stat-card > div { flex-direction: column; align-items: center; gap: 4px; width: 100%; }
+  .hero-stat-card .dot-number { width: 100%; max-width: 108px; height: 24px; }
+  .hero-stat-unit { font-size: 10px; line-height: 1; }
+  .hero-stat-label { font-size: 10px; line-height: 1.35; margin-top: 8px; }
+  .belief-strip { align-items: center; text-align: center; padding-block: 28px; }
+  .belief-strip > span { margin-inline: auto; }
 
   .rippl-landing .expressive-card { padding: 24px 22px; border-radius: 26px; }
   .features-grid { gap: 14px; }
@@ -1280,7 +1308,7 @@ html.lenis, html.lenis body {
   .hero-title-second { flex-wrap: wrap; white-space: normal; }
   .hero-description { font-size: 15px; line-height: 1.7; margin-bottom: 26px; }
   .landing-hero { min-height: 0; padding-top: 18px; padding-bottom: 36px; gap: 24px; }
-  .hero-art { max-height: min(340px, 78vw); }
+  .hero-art { width: min(100%, 320px); max-height: none; }
 
   .landing-footer.fancy-footer {
     margin-left: calc(10px + env(safe-area-inset-left, 0px));
@@ -1302,17 +1330,10 @@ html.lenis, html.lenis body {
    reserve a full square for the artwork. */
 @media (max-height: 520px) and (orientation: landscape) {
   .landing-hero { min-height: 0; padding-block: 16px; }
-  .hero-art { max-height: 62vh; }
+  .hero-art { width: min(100%, 62vh); max-height: none; }
   .landing-section { padding-top: 44px; padding-bottom: 44px; }
 }
 
-/* While the panel is open the page behind it must not scroll away underneath.
-   Smooth scrolling is paused through the library so its position stays in sync
-   when the panel closes. */
-html.landing-menu-open,
-html.landing-menu-open body {
-  overflow: hidden;
-}
 .landing-skip {
   left: calc(6% + env(safe-area-inset-left, 0px));
 }

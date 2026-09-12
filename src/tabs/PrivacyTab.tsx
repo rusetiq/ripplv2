@@ -44,7 +44,7 @@ export function PrivacyTab() {
           <p>The information we collect includes:</p>
           <ul className="list-disc pl-5 space-y-1">
             <li>Basic account identity (name, email, and avatar from Google OAuth)</li>
-            <li>Uploaded action photos and verification outcome logs</li>
+            <li>Uploaded action photos and verification outcome logs. Photos attached to a logged action appear in the community feed, where any signed-in member can see them</li>
             <li>Calculated impact metrics (kg of CO₂, litres of water saved, day streaks)</li>
             <li>Points balances and redeemed marketplace rewards</li>
             <li>General coarse regional location to highlight community milestones</li>
@@ -56,7 +56,7 @@ export function PrivacyTab() {
             Your information is used strictly to power core app features: calculating emissions offsets, validating sustainability submissions with Gemini AI, managing rewards, and computing community rankings.
           </p>
           <p>
-            Data is shared only with trusted infrastructure providers (Firebase and Google Gemini) bound by confidentiality and security agreements.
+            Data is shared only with trusted infrastructure providers — Cloudflare (application, database and photo storage), Google Firebase Authentication (sign-in only), and Google Gemini (photo verification) — bound by confidentiality and security agreements.
           </p>
         </PolicySection>
 
@@ -77,7 +77,7 @@ export function PrivacyTab() {
 
         <PolicySection icon={<UserCheck size={16} />} title="Your Privacy Rights" color="text-oasis-400">
           <p>
-            You have the full right to export your complete action record or permanently delete your account at any time directly through your profile settings or by reaching privacy@rippl.eco.
+            You have the full right to export your complete action record or permanently delete your account at any time. Both are available directly in your profile settings: an export downloads everything we hold about you as a single file, and deletion permanently removes your profile, posts, comments, photos and impact record. You can also reach privacy@rippl.eco.
           </p>
         </PolicySection>
 

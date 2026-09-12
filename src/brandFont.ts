@@ -9,7 +9,7 @@ const FILE_PATTERN = /url\((https:\/\/fonts\.gstatic\.com[^)]+)\)/g
 let pending: Promise<string> | null = null
 
 async function asDataUrl(url: string): Promise<string> {
-  const blob = await fetch(url).then(response => response.blob())
+  const blob = await fetch(url, { signal: AbortSignal.timeout(5000) }).then(response => response.blob())
   return new Promise<string>((resolve, reject) => {
     const reader = new FileReader()
     reader.onload = () => resolve(reader.result as string)
@@ -31,7 +31,7 @@ export function brandFontEmbedCss(): Promise<string> {
   if (!pending) {
     pending = (async () => {
       try {
-        const css = latinOnly(await fetch(FONT_CSS_URL).then(response => response.text()))
+        const css = latinOnly(await fetch(FONT_CSS_URL, { signal: AbortSignal.timeout(5000) }).then(response => response.text()))
         const files = [...new Set([...css.matchAll(FILE_PATTERN)].map(match => match[1]))]
         const inlined = new Map(
           await Promise.all(files.map(async file => [file, await asDataUrl(file)] as const)),
