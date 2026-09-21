@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowRight, Camera, Footprints, Heart, MessageCircle, Leaf, Train, Zap, Droplets, Trash2, X, Send, Image, MoreVertical, Edit2, Trash } from 'lucide-react'
 import { useState, useEffect, useRef, useMemo } from 'react'
-import { useApp } from '../App'
+import { useApp } from '../AppContext'
 import { api, ApiError, type Post, type Comment } from '../api'
 import { useLive } from '../useLive'
 import { SkeletonCard } from '../components/Skeleton'

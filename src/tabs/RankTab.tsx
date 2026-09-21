@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 import { LogIn, Trophy } from 'lucide-react'
 import { useState } from 'react'
-import { useApp } from '../App'
+import { useApp } from '../AppContext'
 import { api } from '../api'
 import { useLive } from '../useLive'
 import { SkeletonRow } from '../components/Skeleton'

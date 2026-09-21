@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { TreePine, Droplets, Wind, Target, Lock, Award, CheckCircle2, Train, Sun, Globe, Flower, Shield, Trophy, LogIn, Sparkles } from 'lucide-react'
-import { useApp } from '../App'
+import { useApp } from '../AppContext'
 import { api } from '../api'
 import { useLive } from '../useLive'
 import { SkeletonMetricCard, SkeletonBadgeCard, SkeletonBarChart } from '../components/Skeleton'

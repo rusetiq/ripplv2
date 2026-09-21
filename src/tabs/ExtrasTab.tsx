@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { Shield, CreditCard, Building2, Handshake, ChevronRight, Globe, Heart, ScrollText } from 'lucide-react'
-import { useApp } from '../App'
+import { useApp } from '../AppContext'
 import { DotNumber } from '../components/DotNumber'
 
 export function ExtrasTab() {
@@ -43,7 +43,7 @@ export function ExtrasTab() {
       desc: 'community rules and guidelines',
       icon: <ScrollText size={20} className="text-text-muted" />,
     }
-  ]
+  ] as const
 
   return (
     <motion.div
@@ -66,7 +66,7 @@ export function ExtrasTab() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.04 }}
-            onClick={() => setActiveTab(link.id as any)}
+            onClick={() => setActiveTab(link.id)}
             className="gallery-card group flex w-full items-center gap-3.5 rounded-[22px] border border-border p-4 text-left transition-all hover:border-border-active"
           >
             <div className="w-11 h-11 rounded-2xl bg-surface-overlay flex items-center justify-center shrink-0">

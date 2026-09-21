@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { Waves, X } from 'lucide-react'
-import { useApp } from '../App'
+import { useApp } from '../AppContext'
 
 export function SignInModal() {
   const { showSignIn, setShowSignIn, signInWithGoogle } = useApp()

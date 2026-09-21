@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { createPortal } from 'react-dom'
-import { useApp } from '../App'
+import { useApp } from '../AppContext'
 import { X, Download, Share2, AlertCircle } from 'lucide-react'
 import { DotNumber } from './DotNumber'
 import { brandFontEmbedCss } from '../brandFont'

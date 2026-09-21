@@ -2,7 +2,7 @@ import { type ReactNode, useEffect } from 'react'
 import { BottomNav } from './BottomNav'
 import { StatusBar } from './StatusBar'
 import { AlertCircle } from 'lucide-react'
-import { useApp } from '../App'
+import { useApp } from '../AppContext'
 import '../dashboard.css'
 
 export function AppShell({ children }: { children: ReactNode }) {

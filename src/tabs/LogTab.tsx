@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { Train, Leaf, Zap, Droplets, Trash2, Plus, Check, Car, Bike, Footprints, Utensils, Recycle, ShoppingBag, Package, Sun, Snowflake, Plug, Lightbulb, Bath, Wrench, Droplet, Shirt, Gift, Ban, Camera, X, LogIn, AlertTriangle, ShieldX } from 'lucide-react'
 import { useState, useRef, useEffect, useMemo } from 'react'
-import { useApp } from '../App'
+import { useApp } from '../AppContext'
 import { api, ApiError } from '../api'
 import { compressImage } from '../utils'
 

@@ -14,7 +14,8 @@
     "db:migrate": "wrangler d1 migrations apply rippl --remote",
     "db:console": "wrangler d1 execute rippl --remote --command",
     "import:firestore": "node scripts/firestore-export.mjs",
-    "import:d1": "node scripts/d1-import.mjs"
+    "import:d1": "node scripts/d1-import.mjs",
+    "test": "node --test tests/*.test.mjs"
   },
   "dependencies": {
     "firebase": "^12.13.0",

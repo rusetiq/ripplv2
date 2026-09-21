@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 import { Shield, Mail, X, Gift, Plus, Trash2, ImageIcon, Link, Tag, Coins, ArrowUpDown } from 'lucide-react'
 import { useState } from 'react'
-import { useApp } from '../App'
+import { useApp } from '../AppContext'
 import { api, ApiError } from '../api'
 import { useLive } from '../useLive'
 import { SPONSORED_LOCAL_FALLBACKS } from '../sponsoredImages'

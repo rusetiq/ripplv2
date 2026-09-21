@@ -1,4 +1,4 @@
-import { useApp } from '../App'
+import { useApp } from '../AppContext'
 import { motion } from 'framer-motion'
 import { Shield } from 'lucide-react'
 import { navTabs } from './navigation'

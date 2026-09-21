@@ -1,4 +1,4 @@
-import { useState, createContext, useContext, useEffect, useCallback, lazy, Suspense, startTransition } from 'react'
+import { useState, useEffect, useCallback, lazy, Suspense, startTransition } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Check, AlertCircle } from 'lucide-react'
 import { DotLoader } from './components/DotLoader'
@@ -9,6 +9,7 @@ import { auth, googleProvider } from './firebase'
 import { signInWithPopup, onAuthStateChanged, signOut as fbSignOut, type User } from 'firebase/auth'
 import { api, type Me } from './api'
 import { useLive } from './useLive'
+import { AppContext, type Tab } from './AppContext'
 
 /* Only the tab that opens first is part of the initial payload; the rest arrive
    as their own chunks. They are warmed on idle so a tab switch still feels
@@ -39,35 +40,6 @@ const warmTabs = () => {
   void import('./tabs/ExtrasTab')
   void import('./tabs/ImpactTab')
 }
-
-type Tab = 'feed' | 'log' | 'rewards' | 'rank' | 'impact' | 'profile' | 'admin' | 'privacy' | 'pricing' | 'corporate' | 'partnerships' | 'extras' | 'terms'
-
-interface AppContextType {
-  activeTab: Tab
-  setActiveTab: (tab: Tab) => void
-  points: number
-  co2Saved: number
-  waterSaved: number
-  streak: number
-  level: number
-  darkMode: boolean
-  setDarkMode: (d: boolean) => void
-  syncError: string | null
-  user: User | null
-  me: Me | null
-  isAdmin: boolean
-  /* Mutations return the updated profile, so a tab can push it straight into
-     context instead of waiting for the next revalidation. */
-  applyMe: (next: Me) => void
-  refreshMe: () => void
-  signInWithGoogle: () => Promise<void>
-  signOut: () => Promise<void>
-  showSignIn: boolean
-  setShowSignIn: (v: boolean) => void
-}
-
-export const AppContext = createContext<AppContextType>({} as AppContextType)
-export const useApp = () => useContext(AppContext)
 
 function App() {
   const [activeTab, setRawActiveTab] = useState<Tab>(() => window.location.pathname === '/app/terms' ? 'terms' : window.location.pathname === '/app/privacy' ? 'privacy' : 'feed')

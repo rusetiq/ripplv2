@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { Check, ArrowRight, Leaf, Star, Zap, Building2, Sparkles } from 'lucide-react'
-import { useApp } from '../App'
+import { useApp } from '../AppContext'
 import { DotNumber } from '../components/DotNumber'
 
 const freeFeatures = [

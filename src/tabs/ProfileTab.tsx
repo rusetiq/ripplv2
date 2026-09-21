@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 import { Moon, Sun, ChevronRight, LogOut, Flame, Trophy, Zap, Target, LogIn, MapPin, Camera, Share2, Newspaper, Download, Trash2 } from 'lucide-react'
 import { useState, useRef } from 'react'
-import { useApp } from '../App'
+import { useApp } from '../AppContext'
 import { api, ApiError, type Post } from '../api'
 import { useLive } from '../useLive'
 

@@ -39,18 +39,23 @@ rewards.post('/:id/redeem', async c => {
     .first()
   if (already) throw fail(409, 'You have already redeemed that reward')
 
-  /* The insert is the lock: a second concurrent redemption of the same reward
-     hits the primary key and rolls the whole batch back, so points can only
-     ever be spent once. */
-  try {
-    await c.env.DB.batch([
-      c.env.DB.prepare('INSERT INTO redemptions (user_id, reward_id, cost, created_at) VALUES (?1, ?2, ?3, ?4)')
-        .bind(user.uid, reward.id, reward.cost, nowSeconds()),
-      c.env.DB.prepare('UPDATE users SET points = points - ?1 WHERE uid = ?2 AND points >= ?1')
-        .bind(reward.cost, user.uid),
-    ])
-  } catch {
-    throw fail(409, 'You have already redeemed that reward')
+  // Recheck the current balance and level inside the transaction. Requests
+  // for different rewards may both have read the same earlier user balance.
+  const minimumPoints = Math.max(reward.cost, (reward.level - 1) * 500)
+  const result = await c.env.DB.batch([
+    c.env.DB.prepare(`
+      INSERT INTO redemptions (user_id, reward_id, cost, created_at)
+      SELECT uid, ?2, ?3, ?4 FROM users
+      WHERE uid = ?1 AND points >= ?5
+        AND NOT EXISTS (
+          SELECT 1 FROM redemptions WHERE user_id = ?1 AND reward_id = ?2
+        )
+    `).bind(user.uid, reward.id, reward.cost, nowSeconds(), minimumPoints),
+    c.env.DB.prepare('UPDATE users SET points = points - ?1 WHERE uid = ?2 AND changes() = 1')
+      .bind(reward.cost, user.uid),
+  ])
+  if (result[0].meta.changes !== 1) {
+    throw fail(409, 'Reward unavailable or balance changed. Refresh and try again.')
   }
 
   const fresh = (await c.env.DB.prepare('SELECT * FROM users WHERE uid = ?1').bind(user.uid).first<typeof user>())!

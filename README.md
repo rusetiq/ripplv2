@@ -9,9 +9,9 @@
 </p>
 
 <p align="center">
-  <a href="https://saarthai.web.app/"><img src="https://img.shields.io/badge/Launch_Platform-10B981?style=for-the-badge&logo=rocket&logoColor=white" alt="Launch Platform" /></a>
-  <a href="https://saarthai.web.app/"><img src="https://img.shields.io/badge/Verification-AI--Powered-06B6D4?style=for-the-badge&logo=google&logoColor=white" alt="Verification" /></a>
-  <a href="https://saarthai.web.app/"><img src="https://img.shields.io/badge/Database-Firestore-F59E0B?style=for-the-badge&logo=firebase&logoColor=white" alt="Database" /></a>
+  <a href="https://rippl.aarush-uae.workers.dev/app"><img src="https://img.shields.io/badge/Launch_Platform-10B981?style=for-the-badge&logo=rocket&logoColor=white" alt="Launch Platform" /></a>
+  <a href="https://rippl.aarush-uae.workers.dev/app"><img src="https://img.shields.io/badge/Verification-AI--Powered-06B6D4?style=for-the-badge&logo=google&logoColor=white" alt="Verification" /></a>
+  <a href="https://rippl.aarush-uae.workers.dev/app"><img src="https://img.shields.io/badge/Database-Cloudflare_D1-F59E0B?style=for-the-badge&logo=firebase&logoColor=white" alt="Database" /></a>
 </p>
 
 <p align="center">
@@ -84,5 +84,10 @@ The platform extends its utility to organizations striving to meet environmental
 While focused primarily on user experience, the system utilizes a modern, resilient architecture:
 * **Frontend**: Highly responsive React framework with interactive Framer Motion animations.
 * **Styling**: Tailored, component-based styles built with Tailwind CSS.
-* **Database & Auth**: Firebase Firestore for real-time document sync and Google Auth for identity management.
+* **Database & Auth**: Cloudflare D1 and R2 behind a Workers API, with Firebase Google Auth for identity management.
 * **Icons**: Crisp, uniform SVG icons from Lucide React.
+
+## Development and deployment
+
+Run `npm ci`, `npm run lint`, and `npm run build` to validate the app.
+Use `npm run deploy` to deploy the frontend and API to Cloudflare. Firebase Hosting only redirects legacy URLs and serves the Firebase Auth handler; its configuration is in `firebase.json`. See [MIGRATION.md](MIGRATION.md) for deployment and database setup.

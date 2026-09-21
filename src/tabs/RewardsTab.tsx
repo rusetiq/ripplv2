@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { Gift, TreePine, Droplets, Zap, Shield, Leaf, ShoppingBag, Recycle, Award, Check, Sparkles, ArrowLeft, Lock, ExternalLink, ArrowRight } from 'lucide-react'
 import { useState } from 'react'
-import { useApp } from '../App'
+import { useApp } from '../AppContext'
 import { api, ApiError, type Sponsored } from '../api'
 import { useLive } from '../useLive'
 import { DotNumber } from '../components/DotNumber'

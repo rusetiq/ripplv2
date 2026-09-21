@@ -1,4 +1,4 @@
-import { useApp } from '../App'
+import { useApp } from '../AppContext'
 import { Moon, Shield, Sun, ArrowUpRight, Plus, User } from 'lucide-react'
 import { navTabs } from './navigation'
 
