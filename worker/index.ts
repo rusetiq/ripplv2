@@ -1,5 +1,6 @@
 import { Hono } from 'hono'
 import { HTTPException } from 'hono/http-exception'
+import { bodyLimit } from 'hono/body-limit'
 import { secureHeaders } from 'hono/secure-headers'
 import type { App } from './types'
 import { AuthError, verifyIdToken } from './lib/auth'
@@ -45,29 +46,16 @@ app.use(
   }),
 )
 
-/* R2 objects are content-addressed, so they are safe to cache forever. This
-   route is deliberately public: an image key is an unguessable hash, and the
-   feed that references it is already behind auth. */
-app.get('/img/*', async c => {
-  const key = c.req.path.slice('/img/'.length)
-  if (!/^[0-9a-f]{2}\/[0-9a-f]{64}\.(jpg|png|webp)$/.test(key)) return c.notFound()
-
-  const object = await c.env.PHOTOS.get(key)
-  if (!object) return c.notFound()
-
-  return new Response(object.body as unknown as BodyInit, {
-    headers: {
-      'Content-Type': object.httpMetadata?.contentType ?? 'image/jpeg',
-      'Cache-Control': 'public, max-age=31536000, immutable',
-      'Content-Length': String(object.size),
-      ETag: object.httpEtag,
-    },
-  })
+// Retire public photo URLs. New clients fetch photos with a bearer token.
+app.get('/img/*', c => {
+  c.header('Cache-Control', 'no-store')
+  return c.json({ error: 'This photo URL is no longer public.' }, 410)
 })
 
 /* Every /api route below this point has a verified user. There is no
    unauthenticated data path left in the app. */
 app.use('/api/*', async (c, next) => {
+  c.header('Cache-Control', 'private, no-store')
   const header = c.req.header('authorization') ?? ''
   const token = header.startsWith('Bearer ') ? header.slice(7) : ''
   if (!token) throw fail(401, 'Sign in to continue')
@@ -85,6 +73,28 @@ app.use('/api/*', async (c, next) => {
   await next()
 })
 
+app.get('/api/photos/*', async c => {
+  const key = c.req.path.slice('/api/photos/'.length)
+  if (!/^[0-9a-f]{2}\/[0-9a-f]{64}\.(jpg|png|webp)$/.test(key)) return c.notFound()
+  // Members can see feed photos and avatars, plus their own private evidence.
+  const visible = await c.env.DB.prepare(`
+    SELECT 1 FROM posts WHERE image_key = ?1
+    UNION ALL SELECT 1 FROM users WHERE photo_key = ?1
+    UNION ALL SELECT 1 FROM user_actions WHERE image_key = ?1 AND user_id = ?2 LIMIT 1
+  `).bind(key, c.get('user').uid).first()
+  if (!visible) return c.notFound()
+  const object = await c.env.PHOTOS.get(key)
+  if (!object) return c.notFound()
+  return new Response(object.body as unknown as BodyInit, { headers: {
+    'Content-Type': object.httpMetadata?.contentType ?? 'image/jpeg',
+    'Cache-Control': 'private, no-store',
+    'Content-Length': String(object.size),
+    'X-Content-Type-Options': 'nosniff',
+  } })
+})
+
+app.use('/api/*', bodyLimit({ maxSize: 6 * 1024 * 1024, onError: c => c.json({ error: 'Upload too large' }, 413) }))
+
 app.route('/api/me', me)
 app.route('/api/actions', actions)
 app.route('/api/posts', feed)
@@ -96,7 +106,11 @@ app.route('/api/images', images)
 app.notFound(c => c.json({ error: 'Not found' }, 404))
 
 app.onError((error, c) => {
-  if (error instanceof HTTPException) return error.getResponse()
+  if (error instanceof HTTPException) {
+    const response = error.getResponse()
+    response.headers.set('Cache-Control', 'private, no-store')
+    return response
+  }
   // Never let an internal message reach the client; the log keeps the detail.
   console.error('Unhandled', error)
   return c.json({ error: 'Something went wrong on our end.' }, 500)

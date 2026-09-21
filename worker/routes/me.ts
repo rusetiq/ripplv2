@@ -46,7 +46,7 @@ me.post('/avatar', async c => {
   await c.env.DB.prepare('UPDATE users SET photo_key = ?1 WHERE uid = ?2').bind(key, user.uid).run()
   if (previous && previous !== key) await releaseImage(c.env.DB, c.env.PHOTOS, previous)
 
-  return c.json({ photoURL: `/img/${key}` })
+  return c.json({ photoURL: `/api/photos/${key}` })
 })
 
 /* Everything the account holds, as one JSON file. The privacy policy has

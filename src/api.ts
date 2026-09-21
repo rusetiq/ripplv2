@@ -129,6 +129,13 @@ export const api = {
     return response.blob()
   },
 
+  photo: async (path: string, signal: AbortSignal) => {
+    if (!path.startsWith('/api/photos/')) throw new ApiError(400, 'Invalid photo path')
+    const response = await fetch(path, { headers: await authHeader(), signal, cache: 'no-store' })
+    if (!response.ok) throw new ApiError(response.status, 'Could not load photo')
+    return response.blob()
+  },
+
   week: (signal?: AbortSignal) => request<{ days: { day: string; points: number }[] }>('/actions/week', { signal }),
 
   feed: (signal?: AbortSignal) => request<{ posts: Post[]; nextCursor: number | null }>('/posts?limit=25', { signal }),

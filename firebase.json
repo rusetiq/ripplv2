@@ -1,7 +1,12 @@
 {
   "hosting": {
     "public": "hosting-redirect",
-    "ignore": ["firebase.json", ".firebaserc", "**/.*", "**/node_modules/**"],
+    "ignore": [
+      "firebase.json",
+      ".firebaserc",
+      "**/.*",
+      "**/node_modules/**"
+    ],
     "redirects": [
       {
         "source": "/app/:rest*",
@@ -17,8 +22,16 @@
     "headers": [
       {
         "source": "**",
-        "headers": [{ "key": "Cache-Control", "value": "no-store" }]
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-store"
+          }
+        ]
       }
     ]
+  },
+  "firestore": {
+    "rules": "firestore.rules"
   }
 }

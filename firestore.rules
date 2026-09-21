@@ -1,0 +1,9 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Legacy database: Rippl now stores application data in Cloudflare D1.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

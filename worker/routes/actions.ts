@@ -22,34 +22,20 @@ actions.post('/verify', async c => {
 
   await consume(db, user.uid, 'verify', LIMITS.verifyPerDay, 86_400, 'Daily verification limit reached. Try again tomorrow.')
 
+  const requested = c.req.query('actionId')
+  const target = requested ? ACTIONS_BY_ID.get(requested) : undefined
+  if (requested && !target) throw fail(400, 'No such action')
+
   const contentType = (c.req.header('content-type') ?? '').split(';')[0].trim()
   const bytes = await c.req.arrayBuffer()
-  const key = await storeImage(c.env.PHOTOS, bytes, contentType)
-
+  if (!['image/jpeg', 'image/png', 'image/webp'].includes(contentType)) throw fail(400, 'Photos must be JPEG, PNG or WebP')
+  if (!bytes.byteLength || bytes.byteLength > LIMITS.maxImageBytes) throw fail(413, 'Photo must be between 1 byte and 5 MB')
   const verdict = await verifyPhoto(c.env, bytes, contentType)
 
-  /* When the user tapped a specific action rather than letting the model
-     choose, that action's catalogue entry is what gets awarded -- but only if
-     the photo actually shows that kind of action. */
-  const requested = c.req.query('actionId')
-  if (requested) {
-    const target = ACTIONS_BY_ID.get(requested)
-    if (!target) throw fail(400, 'No such action')
-    if (verdict.confidence >= MIN_CONFIDENCE && verdict.category !== target.category) {
-      return c.json({
-        accepted: false,
-        confidence: verdict.confidence,
-        reason: `That photo looks like a ${verdict.category} action, not ${target.category}.`,
-      })
-    }
-    Object.assign(verdict, {
-      actionId: target.id,
-      label: target.label,
-      category: target.category,
-      points: target.points,
-      co2: target.co2,
-      water: target.water,
-    })
+  // A category match is not evidence for a different, more valuable action.
+  if (target && verdict.actionId !== target.id) {
+    return c.json({ accepted: false, confidence: verdict.confidence,
+      reason: 'The photo does not verify the selected action. Try clearer evidence or automatic detection.' })
   }
 
   if (verdict.confidence < MIN_CONFIDENCE) {
@@ -65,6 +51,7 @@ actions.post('/verify', async c => {
 
   await consume(db, user.uid, 'log', LIMITS.logsPerDay, 86_400, 'Daily action limit reached. Try again tomorrow.')
 
+  const key = await storeImage(c.env.PHOTOS, bytes, contentType)
   const { streak, lastActiveDate } = streakUpdate(user)
   const at = nowSeconds()
   const impact = verdict.water > 0 ? `${verdict.water}L saved` : `${verdict.co2} kg CO₂`

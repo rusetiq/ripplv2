@@ -1,3 +1,4 @@
+import { PrivateImage } from '../components/PrivateImage'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowRight, Camera, Footprints, Heart, MessageCircle, Leaf, Train, Zap, Droplets, Trash2, X, Send, Image, MoreVertical, Edit2, Trash } from 'lucide-react'
 import { useState, useEffect, useRef, useMemo } from 'react'
@@ -384,7 +385,7 @@ function FeedCard({ post, index, onChanged }: { post: Post; index: number; onCha
             )}
             {post.imageUrl && (
               <div className="mt-2 rounded-xl overflow-hidden border border-border flex justify-center bg-surface-overlay/20">
-                <img src={post.imageUrl} alt="" loading="lazy" className="max-h-80 object-contain" />
+                <PrivateImage src={post.imageUrl} alt="" loading="lazy" className="max-h-80 object-contain" />
               </div>
             )}
             {post.category && cat && (

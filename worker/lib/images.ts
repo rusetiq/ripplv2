@@ -5,7 +5,7 @@ import { LIMITS } from './catalog'
 const ALLOWED = new Set(['image/jpeg', 'image/png', 'image/webp'])
 
 /* Keys are content-addressed, so the same photo uploaded twice costs one
-   object, and every /img/ URL can be cached forever without invalidation. */
+   object, and access is checked by the authenticated photo endpoint. */
 export async function storeImage(bucket: R2Bucket, bytes: ArrayBuffer, contentType: string): Promise<string> {
   if (!ALLOWED.has(contentType)) throw fail(400, 'Photos must be JPEG, PNG or WebP')
   if (bytes.byteLength > LIMITS.maxImageBytes) throw fail(413, 'That photo is too large (5 MB maximum)')
@@ -18,7 +18,7 @@ export async function storeImage(bucket: R2Bucket, bytes: ArrayBuffer, contentTy
 
   // head() first so a repeat upload is a metadata read rather than a write.
   if (!(await bucket.head(key))) {
-    await bucket.put(key, bytes, { httpMetadata: { contentType, cacheControl: 'public, max-age=31536000, immutable' } })
+    await bucket.put(key, bytes, { httpMetadata: { contentType, cacheControl: 'private, no-store' } })
   }
   return key
 }
@@ -34,7 +34,7 @@ export function decodeDataUrl(value: string): { bytes: ArrayBuffer; contentType:
   return { bytes: bytes.buffer, contentType: match[1] }
 }
 
-export const imageUrl = (key: string | null | undefined) => (key ? `/img/${key}` : null)
+export const imageUrl = (key: string | null | undefined) => (key ? `/api/photos/${key}` : null)
 
 /* Image keys are content hashes, so two rows -- or two accounts -- can
    legitimately share one object. Only drop it once the last reference goes. */

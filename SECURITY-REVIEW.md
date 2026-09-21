@@ -1,3 +1,20 @@
+# security fixes — 2026-09-21
+
+The review below is historical. Current changes:
+
+- selected actions must exactly match the model-identified catalogue action; client selection cannot increase the award
+- all app and tab state remounts when the signed-in account changes, including sign-out
+- photos use authenticated `/api/photos/` requests with reference visibility checks and `private, no-store`; old `/img/` URLs return 410
+- the image proxy permits only supported image CDN hosts, validates every redirect, caps redirects, rejects SVG, and cancels streams over 15 MB
+- API uploads are bounded, rejected verifications no longer persist photos, and rate limits update atomically
+- legacy Firestore client access is denied by the deployed `firestore.rules`
+- the September 11 migration-date service-account key is disabled; R2 public access through r2.dev is disabled
+- dependency audit is clean and regression tests cover the changed security boundaries
+
+The Gemini key is unchanged at the owner's request. Previously downloaded or browser-cached copies of photos cannot be recalled. These fixes are not a guarantee against every possible vulnerability.
+
+---
+
 # Rippl — Security Review
 
 **Date:** 2026-09-09

@@ -9,6 +9,7 @@ import { auth, googleProvider } from './firebase'
 import { signInWithPopup, onAuthStateChanged, signOut as fbSignOut, type User } from 'firebase/auth'
 import { api, type Me } from './api'
 import { useLive } from './useLive'
+import { AccountBoundary } from './components/AccountBoundary'
 import { AppContext, type Tab } from './AppContext'
 
 /* Only the tab that opens first is part of the initial payload; the rest arrive
@@ -42,14 +43,20 @@ const warmTabs = () => {
 }
 
 function App() {
+  const [session, setSession] = useState<{ user: User | null } | null>(null)
+  useEffect(() => onAuthStateChanged(auth, user => setSession({ user })), [])
+  if (!session) return <TabFallback />
+  // Reset all profile, feed, image and tab state synchronously on account change.
+  return <AccountBoundary accountId={session.user?.uid ?? null}><AppSession user={session.user} /></AccountBoundary>
+}
+
+function AppSession({ user }: { user: User | null }) {
   const [activeTab, setRawActiveTab] = useState<Tab>(() => window.location.pathname === '/app/terms' ? 'terms' : window.location.pathname === '/app/privacy' ? 'privacy' : 'feed')
   const setActiveTab = useCallback((tab: Tab) => { startTransition(() => setRawActiveTab(tab)) }, [])
   const [darkMode, setDarkMode] = useState(() => {
     const savedTheme = localStorage.getItem('rippl-field-theme')
     return savedTheme ? savedTheme === 'dark' : false
   })
-  const [user, setUser] = useState<User | null>(null)
-  const [ready, setReady] = useState(false)
   const [showSignIn, setShowSignIn] = useState(false)
   const [isAuthenticating, setIsAuthenticating] = useState(false)
   const [authFinished, setAuthFinished] = useState(false)
@@ -59,14 +66,6 @@ function App() {
     const idle = window.requestIdleCallback ?? ((cb: () => void) => window.setTimeout(cb, 1500))
     const handle = idle(warmTabs)
     return () => window.cancelIdleCallback?.(handle as number)
-  }, [])
-
-  useEffect(() => {
-    const unsub = onAuthStateChanged(auth, fbUser => {
-      setUser(fbUser)
-      setReady(true)
-    })
-    return unsub
   }, [])
 
   /* The profile is the one thing worth keeping warm: points and streak change
@@ -132,16 +131,6 @@ function App() {
     }
   }
 
-  if (!ready) {
-    return (
-      <div className="flex min-h-[100dvh] w-full items-center justify-center bg-surface">
-        <div role="status" className="text-center">
-          <DotLoader size={44} className="text-oasis-400 mx-auto mb-4" />
-          <p className="font-mono text-[10px] text-text-muted">Loading...</p>
-        </div>
-      </div>
-    )
-  }
 
   return (
     <AppContext.Provider value={{

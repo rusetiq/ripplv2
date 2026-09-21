@@ -12,6 +12,13 @@ interface SearchImage {
 }
 const cache = new Map<string, { results: SearchImage[]; more: boolean }>()
 const topics = ['forest', 'ocean', 'mountains', 'cycling', 'plants']
+const supportedPhoto = (value: string) => {
+  try {
+    const url = new URL(value)
+    return url.protocol === 'https:' && !url.username && !url.password && !url.port &&
+      (['images.unsplash.com', 'upload.wikimedia.org', 'images.pexels.com', 'live.staticflickr.com'].includes(url.hostname) || /^farm[0-9]+\.staticflickr\.com$/.test(url.hostname))
+  } catch { return false }
+}
 const secureUrl = (value: unknown): value is string => typeof value === 'string' && value.startsWith('https://')
 
 export function ShareImageSearch({ onChoose, onBusy }: { onChoose: (file: File) => Promise<void>; onBusy: (busy: boolean) => void }) {
@@ -49,7 +56,7 @@ export function ShareImageSearch({ onChoose, onBusy }: { onChoose: (file: File) 
         const body = await response.json()
         if (!Array.isArray(body.results)) throw new Error('Image search returned an unexpected response. Please try again.')
         data = {
-          results: body.results.filter((image: SearchImage) => image && !image.mature && ['cc0', 'pdm'].includes(image.license) && secureUrl(image.url) && secureUrl(image.thumbnail) && secureUrl(image.foreign_landing_url)),
+          results: body.results.filter((image: SearchImage) => image && !image.mature && ['cc0', 'pdm'].includes(image.license) && secureUrl(image.url) && supportedPhoto(image.url) && secureUrl(image.thumbnail) && secureUrl(image.foreign_landing_url)),
           more: nextPage < body.page_count,
         }
         if (cache.size >= 40) cache.clear()

@@ -1,3 +1,4 @@
+import { PrivateImage } from '../components/PrivateImage'
 import { motion } from 'framer-motion'
 import { Moon, Sun, ChevronRight, LogOut, Flame, Trophy, Zap, Target, LogIn, MapPin, Camera, Share2, Newspaper, Download, Trash2 } from 'lucide-react'
 import { useState, useRef } from 'react'
@@ -154,7 +155,7 @@ export function ProfileTab() {
             className="group relative shrink-0 cursor-pointer rounded-2xl"
           >
             {userPhotoBase64 || googlePhotoURL ? (
-              <img src={userPhotoBase64 || googlePhotoURL} alt="" className="w-16 h-16 rounded-2xl object-cover border border-border" />
+              <PrivateImage src={userPhotoBase64 || googlePhotoURL} alt="" className="w-16 h-16 rounded-2xl object-cover border border-border" />
             ) : (
               <div className="w-16 h-16 rounded-2xl bg-surface-overlay border border-border flex items-center justify-center font-display text-[18px] text-text-primary font-semibold">
                 {initials}

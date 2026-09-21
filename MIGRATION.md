@@ -22,7 +22,7 @@ All of this is **done and live** at `https://rippl.aarush-uae.workers.dev`:
 - Firebase Hosting replaced with redirect-only (§6)
 
 **Open:** the Gemini key was not rotated (owner's decision) — see `SECURITY-REVIEW.md` finding 1.
-**Open:** the service account key used for the import should be deleted in the Firebase console.
+**Updated 2026-09-21:** the service-account key created during the September 11 migration has been disabled and its disabled status verified. An older March key remains unchanged because its use is not established.
 
 Sections 1–5 below are kept as the from-scratch runbook.
 
@@ -133,11 +133,7 @@ Deep links are preserved: `/app/terms` → `/app/terms`, `/app/privacy` → `/ap
 `/__/auth/*` paths take precedence over the redirect rules (verified: they return 200), so sign-in keeps
 working — but disabling Hosting entirely would break it.
 
-**Still to do:**
-1. Firestore → lock rules to `allow read, write: if false;` for a week as a safety net, then delete the data.
-2. Keep Authentication enabled — the app still uses it.
-
-`firestore.rules` was deleted in this change and is recoverable from git if you need it during the transition.
+**Updated 2026-09-21:** Firestore now has deny-all client rules deployed from `firestore.rules`. Legacy data is retained; Authentication stays enabled for the live app.
 
 ---
 
@@ -163,7 +159,7 @@ Every route below `/api` requires a verified Firebase ID token (`Authorization: 
 | GET | `/api/rewards/sponsored` | |
 | POST | `/api/rewards/:id/redeem` | cost, level and balance enforced server-side |
 | GET/POST/DELETE | `/api/admin/*` | gated on `users.is_admin` |
-| GET | `/img/<key>` | R2 object, immutable cache, public by unguessable hash |
+| GET | `/api/photos/<key>` | authenticated R2 photo access, private no-store responses |
 
 ## Limits
 
