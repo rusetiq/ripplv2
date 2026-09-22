@@ -137,7 +137,7 @@ export function LogTab() {
           <h2 className="font-display text-[26px] leading-tight text-text-primary">log an action</h2>
           <p className="mt-1 text-[13px] text-text-muted">track everyday wins for personal impact</p>
         </div>
-        <div className="expressive-card aurora-card flex flex-col items-center justify-center rounded-[34px] p-7 text-center text-white shadow-xl sm:p-10">
+        <div className="expressive-card twilight-card flex flex-col items-center justify-center rounded-[34px] p-7 text-center text-white shadow-xl sm:p-10">
           <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center mb-4 text-white">
             <LogIn size={26} strokeWidth={2} />
           </div>

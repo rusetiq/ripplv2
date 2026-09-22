@@ -800,33 +800,19 @@ html:not(.light-mode) .dashboard-shell .mobile-glass-nav .text-text-muted { colo
 .share-search-results span { position: absolute; inset: 0; display: grid; place-items: center; background: #0009; color: white; }
 .share-image-search button:disabled { opacity: .55; }
 
-/* Soft, refracted colour for secondary pages. The overview keeps its own cards. */
+
+/* Secondary-page light studies. Each material has its own light geometry. */
 .app-gallery[data-card-style="luminous"] .expressive-card {
-  --glow-core: #18228a;
-  --glow-colour: #335cff;
-  --glow-bloom: #70d5ff;
-  --glow-rim: #dae7ff;
-  background:
-    radial-gradient(ellipse 55% 35% at 72% 12%, var(--glow-bloom) 0%, transparent 100%),
-    radial-gradient(ellipse 65% 50% at 4% 68%, var(--glow-colour) 0%, transparent 100%),
-    radial-gradient(ellipse 55% 40% at 92% 96%, var(--glow-colour) 0%, transparent 100%),
-    var(--glow-core);
-  border: 1px solid color-mix(in srgb, var(--glow-rim) 65%, transparent);
-  box-shadow: 0 8px 24px color-mix(in srgb, var(--glow-core) 16%, transparent);
+  --rim: #bfb2ff;
+  background: #090a10;
+  border: 1px solid #ffffff29;
+  box-shadow: 0 10px 28px #06081418, inset 0 1px 0 #ffffff18;
 }
 .app-gallery[data-card-style="luminous"] .expressive-card::before {
   inset: 0;
   z-index: -1;
-  background:
-    radial-gradient(ellipse 70% 12% at 50% 0%, var(--glow-rim), transparent 100%),
-    radial-gradient(ellipse 50% 10% at 50% 100%, var(--glow-bloom), transparent 100%);
-  box-shadow:
-    inset 0 2px 3px #ffffffc7,
-    inset 0 -2px 4px color-mix(in srgb, var(--glow-rim) 80%, transparent),
-    inset 9px 0 18px color-mix(in srgb, var(--glow-rim) 72%, transparent),
-    inset -9px 0 18px color-mix(in srgb, var(--glow-rim) 72%, transparent),
-    inset 0 12px 25px color-mix(in srgb, var(--glow-bloom) 50%, transparent),
-    inset 0 -10px 22px color-mix(in srgb, var(--glow-rim) 45%, transparent);
+  background: none;
+  box-shadow: inset 0 0 3px #ffffff45, inset 0 -1px 2px var(--rim);
 }
 .app-gallery[data-card-style="luminous"] .expressive-card::after {
   content: '';
@@ -835,57 +821,81 @@ html:not(.light-mode) .dashboard-shell .mobile-glass-nav .text-text-muted { colo
   z-index: -1;
   border-radius: inherit;
   pointer-events: none;
-  opacity: .15;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Cpath fill='%23fff' filter='url(%23n)' opacity='.5' d='M0 0h180v180H0z'/%3E%3C/svg%3E");
+  opacity: .25;
+  background-image: radial-gradient(circle, #ffffff70 .55px, transparent .85px);
+  background-size: 5px 5px;
+  mask-image: linear-gradient(125deg, transparent 8%, #0008 35%, transparent 54%, #000 85%);
 }
+/* Violet flare: a narrow white-hot source rising out of an ink field. */
 .app-gallery[data-card-style="luminous"] .aurora-card {
-  --glow-core: #67195e;
-  --glow-colour: #ce248c;
-  --glow-bloom: #ff967e;
-  --glow-rim: #ebd7ff;
+  --rim: #e4d5ff;
+  background:
+    radial-gradient(ellipse 12% 25% at 53% 111%, #fff 0%, #f7e8ff 24%, #b99bff 47%, #7349ff70 70%, transparent 100%),
+    radial-gradient(ellipse 40% 40% at 53% 114%, #7946ff 15%, #4821dc 43%, #28146488 68%, transparent 100%),
+    radial-gradient(ellipse 95% 15% at 50% 108%, #d7bbff 15%, #7346ff 49%, transparent 100%),
+    #09090f;
 }
+/* Cobalt bar: horizontal cyan light suspended inside deep blue. */
 .app-gallery[data-card-style="luminous"] .sapphire-card {
-  --glow-core: #06185e;
-  --glow-colour: #064bed;
-  --glow-bloom: #58caff;
-  --glow-rim: #d3e3ff;
+  --rim: #7ebcff;
+  background:
+    radial-gradient(ellipse 36% 9% at 71% 80%, #beffff 0%, #59d8ff 28%, #5570ff 60%, transparent 100%),
+    radial-gradient(ellipse 58% 30% at 70% 81%, #263cff 8%, #182686 50%, transparent 100%),
+    radial-gradient(ellipse 90% 85% at 50% 50%, transparent 53%, #458ac454 94%, #9ed7ff8c 100%),
+    #080e25;
 }
+/* Green column: a tall electric-green beam, with a cool white foot. */
 .app-gallery[data-card-style="luminous"] .forest-card {
-  --glow-core: #073619;
-  --glow-colour: #119522;
-  --glow-bloom: #86ed51;
-  --glow-rim: #e7ffd4;
+  --rim: #b9ffb5;
+  background:
+    radial-gradient(ellipse 15% 14% at 69% 107%, #f4ffe0 10%, #b7ffad 45%, transparent 100%),
+    radial-gradient(ellipse 23% 58% at 69% 104%, #67fa74 12%, #21cc42 43%, #087a2966 70%, transparent 100%),
+    radial-gradient(ellipse 48% 30% at 70% 108%, #44ef3f 10%, #114d21 60%, transparent 100%),
+    #080f0b;
 }
+/* Orange horizon: warm light stacks at the base, with a dark upper field. */
 .app-gallery[data-card-style="luminous"] .solar-card {
-  --glow-core: #862604;
-  --glow-colour: #ee5006;
-  --glow-bloom: #ffc64b;
-  --glow-rim: #ffe5cc;
+  --rim: #fff0ab;
+  background:
+    radial-gradient(ellipse 85% 23% at 45% 112%, #fff7b2 8%, #ffd786 42%, transparent 100%),
+    linear-gradient(0deg, #ffbf76 0%, #ff703e 12%, #d4421d 27%, #562014 46%, #170e0c 66%, #0c0b0b 100%);
 }
+/* Acid pool: asymmetric ultraviolet suspended in yellow-green. */
 .app-gallery[data-card-style="luminous"] .gold-card {
-  --glow-core: #724509;
-  --glow-colour: #c38704;
-  --glow-bloom: #ffe16b;
-  --glow-rim: #fffad9;
+  --rim: #eaff85;
+  background:
+    radial-gradient(ellipse 24% 48% at 69% 78%, #963bff 0%, #5926c4 42%, #343025 79%, transparent 100%),
+    radial-gradient(ellipse 70% 85% at 43% 64%, #171c07 12%, #354309 40%, #8faf0f 76%, #d6f324 100%);
 }
+/* Ice ribbon: opposing pink pools cut by a curved cyan/black diagonal. */
+.app-gallery[data-card-style="luminous"] .ribbon-card {
+  --rim: #8deaff;
+  background:
+    radial-gradient(ellipse 85% 28% at 18% 12%, #061a1b 24%, #073737 41%, #56d4e4 57%, transparent 77%),
+    radial-gradient(ellipse 73% 35% at 94% 106%, #031f23 20%, #48c9e7 57%, transparent 80%),
+    radial-gradient(ellipse 29% 63% at 89% 44%, #e85ddd 0%, #7372c7 53%, transparent 90%),
+    linear-gradient(115deg, #12282f 17%, #205866 47%, #689de1 72%, #cd69d6 100%);
+}
+/* Silver moon: an offset cool orb, deliberately quiet beside the vivid cards. */
 .app-gallery[data-card-style="luminous"] .silver-card {
-  --glow-core: #344776;
-  --glow-colour: #647aa8;
-  --glow-bloom: #b0d5ef;
-  --glow-rim: #eff7ff;
+  --rim: #d2e6f1;
+  background:
+    radial-gradient(ellipse 24% 38% at 93% 104%, #f0faff 0%, #b5d0e9 35%, #647db066 70%, transparent 100%),
+    radial-gradient(ellipse 65% 38% at 97% 105%, #6987a5 0%, #24364c 65%, transparent 100%),
+    linear-gradient(135deg, #12171c, #1b2634);
 }
+/* Magenta cavity: luminous pink edges around a deep plum centre. */
 .app-gallery[data-card-style="luminous"] .twilight-card {
-  --glow-core: #271052;
-  --glow-colour: #762be4;
-  --glow-bloom: #ec91ff;
-  --glow-rim: #f7dcff;
+  --rim: #ffbdfb;
+  background:
+    radial-gradient(ellipse 64% 100% at 50% 69%, #100719 9%, #391342 35%, #80288c 63%, #dd60d3 88%, #ffa7ed 100%);
 }
 .app-gallery[data-card-style="luminous"] .expressive-card :is(h1,h2,h3,h4,p) {
-  text-shadow: 0 1px 8px #00000024;
+  text-shadow: 0 1px 7px #0006;
 }
 .app-gallery[data-card-style="luminous"] .gradient-card-action {
-  background: #ffffffed;
-  border-color: #ffffff8c;
+  background: #fffffff2;
+  border-color: #ffffff80;
   color: #19202c;
   text-shadow: none;
   backdrop-filter: none;

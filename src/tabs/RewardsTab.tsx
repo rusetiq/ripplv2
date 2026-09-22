@@ -115,7 +115,7 @@ export function RewardsTab() {
           <p className="mt-1 text-[13px] text-text-muted">trade sustainability points for real-world eco perks</p>
         </div>
 
-        <div className="expressive-card aurora-card mb-6 flex flex-col items-center rounded-[34px] p-7 text-center shadow-lg sm:p-10">
+        <div className="expressive-card solar-card mb-6 flex flex-col items-center rounded-[34px] p-7 text-center shadow-lg sm:p-10">
           <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center mb-4 text-white">
             <Gift size={28} strokeWidth={1.8} />
           </div>

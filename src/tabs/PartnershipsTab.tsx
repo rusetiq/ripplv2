@@ -16,7 +16,7 @@ export function PartnershipsTab() {
         <p className="mt-1 text-[13px] text-text-muted">connect your sustainable offerings with people actively taking climate action.</p>
       </div>
 
-      <div className="expressive-card aurora-card rounded-[30px] p-6 md:p-8 mb-6 text-white shadow-xl">
+      <div className="expressive-card ribbon-card rounded-[30px] p-6 md:p-8 mb-6 text-white shadow-xl">
         <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-white mb-4 border border-white/20">
           <Handshake size={24} strokeWidth={1.8} />
         </div>
