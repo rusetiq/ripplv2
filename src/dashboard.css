@@ -867,14 +867,10 @@ html:not(.light-mode) .dashboard-shell .mobile-glass-nav .text-text-muted { colo
     radial-gradient(ellipse 24% 48% at 69% 78%, #963bff 0%, #5926c4 42%, #343025 79%, transparent 100%),
     radial-gradient(ellipse 70% 85% at 43% 64%, #171c07 12%, #354309 40%, #8faf0f 76%, #d6f324 100%);
 }
-/* Ice ribbon: opposing pink pools cut by a curved cyan/black diagonal. */
-.app-gallery[data-card-style="luminous"] .ribbon-card {
+/* Soft lilac and teal colour pools. */
+.app-gallery[data-card-style="luminous"] .partnership-art {
   --rim: #8deaff;
-  background:
-    radial-gradient(ellipse 85% 28% at 18% 12%, #061a1b 24%, #073737 41%, #56d4e4 57%, transparent 77%),
-    radial-gradient(ellipse 73% 35% at 94% 106%, #031f23 20%, #48c9e7 57%, transparent 80%),
-    radial-gradient(ellipse 29% 63% at 89% 44%, #e85ddd 0%, #7372c7 53%, transparent 90%),
-    linear-gradient(115deg, #12282f 17%, #205866 47%, #689de1 72%, #cd69d6 100%);
+  background: radial-gradient(ellipse 65% 130% at 105% 10%, #b28dc3 0%, #68659a 45%, transparent 100%), radial-gradient(ellipse 55% 100% at 30% 120%, #4a9c9d 0%, transparent 100%), #213946;
 }
 /* Silver moon: an offset cool orb, deliberately quiet beside the vivid cards. */
 .app-gallery[data-card-style="luminous"] .silver-card {
@@ -917,16 +913,16 @@ html:not(.light-mode) .dashboard-shell .mobile-glass-nav .text-text-muted { colo
 }
 .app-gallery[data-card-style="luminous"] .standing-art {
   --rim: #b5c9ff;
-  background: linear-gradient(116deg, transparent 48%, #c2c9ff14 50%, #9999ff70 51%, #e5e3ffa8 52%, #7268fb55 54%, transparent 59%), linear-gradient(110deg, #111a36, #302758 65%, #121827);
+  background: radial-gradient(ellipse 48% 130% at 85% 105%, #8773d8 0%, #51438a 40%, transparent 85%), radial-gradient(ellipse 45% 100% at 40% -40%, #55649b 0%, transparent 90%), #171b35;
 }
 .app-gallery[data-card-style="luminous"] .champion-art {
   --rim: #ffe9ac;
-  background: radial-gradient(ellipse 51% 75% at 50% 102%, #fce8a8 0%, #c8a65b 24%, #6d512d 49%, transparent 76%), conic-gradient(from 220deg at 50% 120%, #211c18, #6f583c, #dfc893, #4c3924, #211c18 140deg, #211c18);
+  background: radial-gradient(ellipse 65% 95% at 70% 115%, #e3ca87 0%, #9b7940 38%, transparent 90%), radial-gradient(ellipse 55% 80% at -15% 0%, #9b875b 0%, transparent 100%), #30271d;
 }
 .app-gallery[data-card-style="luminous"] .champion-art::after { opacity: .08; }
 .app-gallery[data-card-style="luminous"] .milestone-art {
   --rim: #8acac0;
-  background: radial-gradient(ellipse 68% 165% at 103% 123%, transparent 37%, #8ff4d044 44%, #e2ffcaaa 47%, #3b988366 53%, transparent 62%), linear-gradient(112deg, #152b2c, #1c4842 62%, #152f39);
+  background: radial-gradient(ellipse 55% 160% at 105% 100%, #93bf95 0%, #437d69 38%, transparent 85%), radial-gradient(ellipse 45% 130% at 35% -90%, #567783 0%, transparent 100%), #173632;
 }
 .app-gallery[data-card-style="luminous"] .carbon-art {
   --rim: #a3b982;
@@ -934,7 +930,7 @@ html:not(.light-mode) .dashboard-shell .mobile-glass-nav .text-text-muted { colo
 }
 .app-gallery[data-card-style="luminous"] .water-art {
   --rim: #b3e7ec;
-  background: radial-gradient(ellipse 57% 180% at 103% 20%, transparent 34%, #6dd8e599 43%, #a5eaf1cc 46%, #3b9aad88 54%, transparent 64%), linear-gradient(145deg, #18354d, #235d73 64%, #1b334a);
+  background: radial-gradient(ellipse 65% 100% at 100% 0%, #83cbd1 0%, #407f9e 45%, transparent 95%), radial-gradient(ellipse 60% 75% at 65% 120%, #4a5ea5 0%, transparent 100%), #16364d;
 }
 .app-gallery[data-card-style="luminous"] .trees-art {
   --rim: #e3bad0;
@@ -946,7 +942,7 @@ html:not(.light-mode) .dashboard-shell .mobile-glass-nav .text-text-muted { colo
 }
 .app-gallery[data-card-style="luminous"] .rank-invite-art {
   --rim: #b2acdf;
-  background: radial-gradient(ellipse 70% 120% at 50% -94%, transparent 72%, #a5a1feaa 82%, #6665b366 89%, transparent 99%), #20213b;
+  background: radial-gradient(ellipse 75% 100% at 50% -35%, #a397cf 0%, #5b5286 45%, transparent 100%), #20213b;
 }
 .app-gallery[data-card-style="luminous"] .podium-silver-art {
   --rim: #d5e2eb;
@@ -966,15 +962,15 @@ html:not(.light-mode) .dashboard-shell .mobile-glass-nav .text-text-muted { colo
 }
 .app-gallery[data-card-style="luminous"] .enterprise-plan-art {
   --rim: #aabbeb;
-  background: repeating-linear-gradient(128deg, transparent 0 55px, #b9c5ff12 56px 57px, transparent 58px 110px), radial-gradient(ellipse 75% 65% at 110% 5%, #777cad 0%, #354568 55%, transparent 92%), #182637;
+  background: radial-gradient(ellipse 75% 100% at 110% 5%, #777cad 0%, #354568 55%, transparent 100%), #182637;
 }
 .app-gallery[data-card-style="luminous"] .credits-art {
   --rim: #c8e8b6;
-  background: radial-gradient(ellipse 105% 100% at 80% 135%, transparent 46%, #bbd98499 48%, #5e805455 61%, transparent 75%), #2a463b;
+  background: radial-gradient(ellipse 80% 110% at 85% 120%, #afbc81 0%, #63825b 45%, transparent 100%), #263c35;
 }
 .app-gallery[data-card-style="luminous"] .campaign-coral-art {
   --rim: #f7ba9d;
-  background: conic-gradient(from 130deg at 100% 0%, #ac735c, #553442, #d9937c, #ac735c);
+  background: radial-gradient(ellipse 85% 100% at 100% 10%, #d9937c 0%, #ac735c 40%, transparent 100%), #553442;
 }
 .app-gallery[data-card-style="luminous"] .campaign-lilac-art {
   --rim: #d8c1f2;
@@ -982,7 +978,7 @@ html:not(.light-mode) .dashboard-shell .mobile-glass-nav .text-text-muted { colo
 }
 .app-gallery[data-card-style="luminous"] .transport-art {
   --rim: #aad4eb;
-  background: linear-gradient(155deg, transparent 38%, #74bbcc55 43%, transparent 47%, #769bdc44 49%, transparent 57%), #1b3448;
+  background: radial-gradient(ellipse 85% 95% at 110% 65%, #6d9dbc 0%, #335e84 50%, transparent 100%), radial-gradient(ellipse 50% 70% at 0% -20%, #537d7d 0%, transparent 100%), #1b3048;
 }
 .app-gallery[data-card-style="luminous"] .food-art {
   --rim: #d2dfa8;
@@ -994,9 +990,9 @@ html:not(.light-mode) .dashboard-shell .mobile-glass-nav .text-text-muted { colo
 }
 .app-gallery[data-card-style="luminous"] .water-log-art {
   --rim: #9fd8e7;
-  background: repeating-radial-gradient(ellipse at 120% 65%, #295870 0 28px, #43899b 46px, #28546d 65px, #1c3b54 95px);
+  background: radial-gradient(ellipse 80% 85% at 90% 110%, #72c4b8 0%, #367e92 45%, transparent 100%), radial-gradient(ellipse 50% 100% at 0% 0%, #555f99 0%, transparent 100%), #203a54;
 }
 .app-gallery[data-card-style="luminous"] .waste-art {
   --rim: #c4c9a1;
-  background: conic-gradient(from 15deg at 85% 85%, #253d32, #84936a, #465d48, #263a3a, #253d32);
+  background: radial-gradient(ellipse 75% 120% at 90% 100%, #84936a 0%, #465d48 45%, transparent 100%), #263a3a;
 }
