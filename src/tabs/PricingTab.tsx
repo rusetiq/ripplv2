@@ -120,7 +120,7 @@ export function PricingTab() {
           </div>
         </div>
 
-        <div className="expressive-card sapphire-card p-6 md:p-8 rounded-[36px] shadow-xl text-white relative">
+        <div className="expressive-card enterprise-plan-art p-6 md:p-8 rounded-[36px] shadow-xl text-white relative">
           <div className="flex items-start justify-between mb-4">
             <div>
               <h3 className="font-display text-[26px] text-white mt-0.5">corporate esg</h3>
@@ -174,7 +174,7 @@ export function PricingTab() {
           </p>
         </div>
 
-        <div className="expressive-card forest-card p-6 rounded-[30px] text-white shadow-md">
+        <div className="expressive-card credits-art p-6 rounded-[30px] text-white shadow-md">
           <div className="w-10 h-10 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center mb-3 text-white">
             <Zap size={18} />
           </div>

@@ -29,7 +29,7 @@ const categories: Category[] = [
     id: 'transport',
     label: 'Transport',
     icon: Train,
-    gradientClass: 'sapphire-card',
+    gradientClass: 'transport-art',
     color: 'text-gulf-400',
     bg: 'bg-gulf-400/10',
     actions: [
@@ -43,7 +43,7 @@ const categories: Category[] = [
     id: 'food',
     label: 'Food',
     icon: Leaf,
-    gradientClass: 'forest-card',
+    gradientClass: 'food-art',
     color: 'text-oasis-400',
     bg: 'bg-oasis-400/10',
     actions: [
@@ -57,7 +57,7 @@ const categories: Category[] = [
     id: 'energy',
     label: 'Energy',
     icon: Zap,
-    gradientClass: 'solar-card',
+    gradientClass: 'energy-art',
     color: 'text-dune-400',
     bg: 'bg-dune-400/10',
     actions: [
@@ -71,7 +71,7 @@ const categories: Category[] = [
     id: 'water',
     label: 'Water',
     icon: Droplets,
-    gradientClass: 'aurora-card',
+    gradientClass: 'water-log-art',
     color: 'text-gulf-300',
     bg: 'bg-gulf-300/10',
     actions: [
@@ -85,7 +85,7 @@ const categories: Category[] = [
     id: 'waste',
     label: 'Waste',
     icon: Trash2,
-    gradientClass: 'twilight-card',
+    gradientClass: 'waste-art',
     color: 'text-ember-400',
     bg: 'bg-ember-400/10',
     actions: [

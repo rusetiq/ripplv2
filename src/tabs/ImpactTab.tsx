@@ -59,7 +59,7 @@ export function ImpactTab() {
         <p className="mt-1 text-[13px] text-text-muted">tangible environmental progress from your daily routines.</p>
       </div>
 
-      <div className="expressive-card aurora-card p-6 md:p-8 mb-6 rounded-[34px] shadow-xl text-white relative">
+      <div className="expressive-card milestone-art p-6 md:p-8 mb-6 rounded-[34px] shadow-xl text-white relative">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
           <div className="flex min-w-0 items-center gap-2.5">
             <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-2xl border border-white/20 bg-white/20 text-white backdrop-blur-md">
@@ -100,7 +100,7 @@ export function ImpactTab() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.08 }}
-              className="expressive-card forest-card flex min-h-[120px] flex-col justify-between rounded-[26px] p-5 text-white shadow-md sm:min-h-[140px]"
+              className="expressive-card carbon-art flex min-h-[120px] flex-col justify-between rounded-[26px] p-5 text-white shadow-md sm:min-h-[140px]"
             >
               <div className="w-9 h-9 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-white">
                 <Wind size={18} />
@@ -115,7 +115,7 @@ export function ImpactTab() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.12 }}
-              className="expressive-card sapphire-card flex min-h-[120px] flex-col justify-between rounded-[26px] p-5 text-white shadow-md sm:min-h-[140px]"
+              className="expressive-card water-art flex min-h-[120px] flex-col justify-between rounded-[26px] p-5 text-white shadow-md sm:min-h-[140px]"
             >
               <div className="w-9 h-9 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-white">
                 <Droplets size={18} />
@@ -133,7 +133,7 @@ export function ImpactTab() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.16 }}
-              className="expressive-card solar-card col-span-2 flex min-h-[120px] flex-col justify-between rounded-[26px] p-5 text-white shadow-md sm:col-span-1 sm:min-h-[140px]"
+              className="expressive-card trees-art col-span-2 flex min-h-[120px] flex-col justify-between rounded-[26px] p-5 text-white shadow-md sm:col-span-1 sm:min-h-[140px]"
             >
               <div className="w-9 h-9 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-white">
                 <TreePine size={18} />
@@ -148,7 +148,7 @@ export function ImpactTab() {
       </div>
 
       {!user ? (
-        <div className="expressive-card silver-card flex flex-col items-center justify-center rounded-[34px] p-7 text-center text-white shadow-lg sm:p-10">
+        <div className="expressive-card impact-invite-art flex flex-col items-center justify-center rounded-[34px] p-7 text-center text-white shadow-lg sm:p-10">
           <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center mb-4 text-white">
             <LogIn size={26} strokeWidth={1.8} />
           </div>

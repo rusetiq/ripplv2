@@ -115,7 +115,7 @@ export function RewardsTab() {
           <p className="mt-1 text-[13px] text-text-muted">trade sustainability points for real-world eco perks</p>
         </div>
 
-        <div className="expressive-card solar-card mb-6 flex flex-col items-center rounded-[34px] p-7 text-center shadow-lg sm:p-10">
+        <div className="expressive-card rewards-invite-art mb-6 flex flex-col items-center rounded-[34px] p-7 text-center shadow-lg sm:p-10">
           <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center mb-4 text-white">
             <Gift size={28} strokeWidth={1.8} />
           </div>
@@ -166,7 +166,7 @@ export function RewardsTab() {
               <span className="font-body text-[12px]">back to rewards</span>
             </button>
 
-            <div className="expressive-card forest-card rounded-[34px] p-6 md:p-8 text-white shadow-xl relative overflow-hidden">
+            <div className="expressive-card reward-detail-art rounded-[34px] p-6 md:p-8 text-white shadow-xl relative overflow-hidden">
               <div className="relative mb-6 h-48 w-full overflow-hidden rounded-2xl border border-white/20 bg-black/30 sm:h-64">
                 <img
                   src={selectedReward.image}
@@ -246,7 +246,7 @@ export function RewardsTab() {
           </motion.div>
         ) : (
           <motion.div key="list" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-            <div className="expressive-card sapphire-card p-6 md:p-8 rounded-[34px] mb-8 shadow-lg">
+            <div className="expressive-card catalog-art p-6 md:p-8 rounded-[34px] mb-8 shadow-lg">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
                   <span className="font-body text-[11px] text-white/80 uppercase tracking-tight">sustainable marketplace</span>
@@ -270,7 +270,7 @@ export function RewardsTab() {
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {sponsored.slice(0, 2).map((sp, i) => {
-                  const cardGradientClass = i === 0 ? 'solar-card' : 'aurora-card'
+                  const cardGradientClass = i === 0 ? 'campaign-coral-art' : 'campaign-lilac-art'
                   const fallbackImage = SPONSORED_LOCAL_FALLBACKS[i % SPONSORED_LOCAL_FALLBACKS.length]
                   return (
                     <motion.a

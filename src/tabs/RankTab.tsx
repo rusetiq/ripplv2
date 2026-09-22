@@ -75,7 +75,7 @@ export function RankTab() {
       </div>
 
       {!user ? (
-        <div className="expressive-card sapphire-card flex flex-col items-center justify-center rounded-[34px] p-7 text-center text-white shadow-xl sm:p-10">
+        <div className="expressive-card rank-invite-art flex flex-col items-center justify-center rounded-[34px] p-7 text-center text-white shadow-xl sm:p-10">
           <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center mb-4 text-white">
             <LogIn size={26} strokeWidth={1.8} />
           </div>
@@ -98,7 +98,7 @@ export function RankTab() {
       ) : (
         <>
           {myPlayer && (
-            <div className="expressive-card sapphire-card mb-7 flex flex-col gap-4 rounded-[28px] p-5 text-white shadow-lg sm:flex-row sm:items-center sm:justify-between">
+            <div className="expressive-card standing-art mb-7 flex flex-col gap-4 rounded-[28px] p-5 text-white shadow-lg sm:flex-row sm:items-center sm:justify-between">
               <div className="flex min-w-0 items-center gap-3.5">
                 <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-white/25 bg-white/20 font-display text-[16px] font-bold text-white backdrop-blur-md">
                   {initials(myPlayer.name)}
@@ -139,7 +139,7 @@ export function RankTab() {
                 <p className="font-mono text-[10px] text-text-muted mb-2">
                   {podium[0].points.toLocaleString()} pts
                 </p>
-                <div className="expressive-card silver-card h-24 w-full rounded-t-[22px] flex items-center justify-center shadow-md">
+                <div className="expressive-card podium-silver-art h-24 w-full rounded-t-[22px] flex items-center justify-center shadow-md">
                   <span className="font-body text-[11px] text-white/90 font-medium">silver</span>
                 </div>
               </motion.div>
@@ -166,7 +166,7 @@ export function RankTab() {
                 <p className="font-mono text-[11px] text-amber-500 font-bold mb-2">
                   {podium[1].points.toLocaleString()} pts
                 </p>
-                <div className="expressive-card gold-card h-32 w-full rounded-t-[26px] flex flex-col items-center justify-center gap-1 shadow-xl">
+                <div className="expressive-card champion-art h-32 w-full rounded-t-[26px] flex flex-col items-center justify-center gap-1 shadow-xl">
                   <Trophy size={20} className="text-white drop-shadow-sm" />
                   <span className="font-body text-[11px] text-white font-semibold">champion</span>
                 </div>
@@ -194,7 +194,7 @@ export function RankTab() {
                 <p className="font-mono text-[10px] text-text-muted mb-2">
                   {podium[2].points.toLocaleString()} pts
                 </p>
-                <div className="expressive-card solar-card h-20 w-full rounded-t-[22px] flex items-center justify-center shadow-md">
+                <div className="expressive-card podium-bronze-art h-20 w-full rounded-t-[22px] flex items-center justify-center shadow-md">
                   <span className="font-body text-[11px] text-white/90 font-medium">bronze</span>
                 </div>
               </motion.div>
