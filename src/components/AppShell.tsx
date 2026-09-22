@@ -6,7 +6,7 @@ import { useApp } from '../AppContext'
 import '../dashboard.css'
 
 export function AppShell({ children }: { children: ReactNode }) {
-  const { syncError } = useApp()
+  const { syncError, activeTab } = useApp()
 
   useEffect(() => {
     document.documentElement.classList.add('in-app')
@@ -17,7 +17,7 @@ export function AppShell({ children }: { children: ReactNode }) {
     }
   }, [])
 
-  return <div className="app-gallery dashboard-shell">
+  return <div className="app-gallery dashboard-shell" data-card-style={activeTab === 'feed' ? undefined : 'luminous'}>
     <StatusBar />
     <main className="dashboard-main" id="dashboard-content">
       <div className="dashboard-content">

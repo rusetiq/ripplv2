@@ -799,3 +799,103 @@ html:not(.light-mode) .dashboard-shell .mobile-glass-nav .text-text-muted { colo
 .share-search-results img { width: 100%; height: 100%; object-fit: cover; }
 .share-search-results span { position: absolute; inset: 0; display: grid; place-items: center; background: #0009; color: white; }
 .share-image-search button:disabled { opacity: .55; }
+
+/* Soft, refracted colour for secondary pages. The overview keeps its own cards. */
+.app-gallery[data-card-style="luminous"] .expressive-card {
+  --glow-core: #18228a;
+  --glow-colour: #335cff;
+  --glow-bloom: #70d5ff;
+  --glow-rim: #dae7ff;
+  background:
+    radial-gradient(ellipse 55% 35% at 72% 12%, var(--glow-bloom) 0%, transparent 100%),
+    radial-gradient(ellipse 65% 50% at 4% 68%, var(--glow-colour) 0%, transparent 100%),
+    radial-gradient(ellipse 55% 40% at 92% 96%, var(--glow-colour) 0%, transparent 100%),
+    var(--glow-core);
+  border: 1px solid color-mix(in srgb, var(--glow-rim) 65%, transparent);
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--glow-core) 16%, transparent);
+}
+.app-gallery[data-card-style="luminous"] .expressive-card::before {
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(ellipse 70% 12% at 50% 0%, var(--glow-rim), transparent 100%),
+    radial-gradient(ellipse 50% 10% at 50% 100%, var(--glow-bloom), transparent 100%);
+  box-shadow:
+    inset 0 2px 3px #ffffffc7,
+    inset 0 -2px 4px color-mix(in srgb, var(--glow-rim) 80%, transparent),
+    inset 9px 0 18px color-mix(in srgb, var(--glow-rim) 72%, transparent),
+    inset -9px 0 18px color-mix(in srgb, var(--glow-rim) 72%, transparent),
+    inset 0 12px 25px color-mix(in srgb, var(--glow-bloom) 50%, transparent),
+    inset 0 -10px 22px color-mix(in srgb, var(--glow-rim) 45%, transparent);
+}
+.app-gallery[data-card-style="luminous"] .expressive-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: .15;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Cpath fill='%23fff' filter='url(%23n)' opacity='.5' d='M0 0h180v180H0z'/%3E%3C/svg%3E");
+}
+.app-gallery[data-card-style="luminous"] .aurora-card {
+  --glow-core: #67195e;
+  --glow-colour: #ce248c;
+  --glow-bloom: #ff967e;
+  --glow-rim: #ebd7ff;
+}
+.app-gallery[data-card-style="luminous"] .sapphire-card {
+  --glow-core: #06185e;
+  --glow-colour: #064bed;
+  --glow-bloom: #58caff;
+  --glow-rim: #d3e3ff;
+}
+.app-gallery[data-card-style="luminous"] .forest-card {
+  --glow-core: #073619;
+  --glow-colour: #119522;
+  --glow-bloom: #86ed51;
+  --glow-rim: #e7ffd4;
+}
+.app-gallery[data-card-style="luminous"] .solar-card {
+  --glow-core: #862604;
+  --glow-colour: #ee5006;
+  --glow-bloom: #ffc64b;
+  --glow-rim: #ffe5cc;
+}
+.app-gallery[data-card-style="luminous"] .gold-card {
+  --glow-core: #724509;
+  --glow-colour: #c38704;
+  --glow-bloom: #ffe16b;
+  --glow-rim: #fffad9;
+}
+.app-gallery[data-card-style="luminous"] .silver-card {
+  --glow-core: #344776;
+  --glow-colour: #647aa8;
+  --glow-bloom: #b0d5ef;
+  --glow-rim: #eff7ff;
+}
+.app-gallery[data-card-style="luminous"] .twilight-card {
+  --glow-core: #271052;
+  --glow-colour: #762be4;
+  --glow-bloom: #ec91ff;
+  --glow-rim: #f7dcff;
+}
+.app-gallery[data-card-style="luminous"] .expressive-card :is(h1,h2,h3,h4,p) {
+  text-shadow: 0 1px 8px #00000024;
+}
+.app-gallery[data-card-style="luminous"] .gradient-card-action {
+  background: #ffffffed;
+  border-color: #ffffff8c;
+  color: #19202c;
+  text-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+.app-gallery[data-card-style="luminous"] .gradient-card-action span { color: inherit; }
+@media (hover: hover) {
+  .app-gallery[data-card-style="luminous"] .gradient-card-action:hover { background: #fff; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .app-gallery[data-card-style="luminous"] .expressive-card { transition: none; }
+  .app-gallery[data-card-style="luminous"] .expressive-card:hover { transform: none; }
+}
