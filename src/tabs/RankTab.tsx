@@ -1,13 +1,10 @@
 import { motion } from 'framer-motion'
 import { LogIn, Trophy } from 'lucide-react'
-import { useState } from 'react'
 import { useApp } from '../AppContext'
 import { api } from '../api'
 import { useLive } from '../useLive'
 import { SkeletonRow } from '../components/Skeleton'
 import { DotNumber } from '../components/DotNumber'
-
-type Scope = 'friends' | 'community'
 
 interface Player {
   rank: number
@@ -21,13 +18,7 @@ interface Player {
 const initials = (name: string) =>
   name.split(' ').map(part => part[0]).join('').slice(0, 2).toUpperCase() || 'AN'
 
-const scopeLabels: Record<Scope, string> = {
-  friends: 'friends',
-  community: 'community',
-}
-
 export function RankTab() {
-  const [scope, setScope] = useState<Scope>('community')
   const { user, setShowSignIn } = useApp()
   /* Name, avatar and points only. The old build streamed whole user
      documents, emails included, to render these three fields. */
@@ -53,27 +44,6 @@ export function RankTab() {
         <p className="mt-1 text-[13px] text-text-muted">celebrating everyday sustainability across our network.</p>
       </div>
 
-      <div className="flex p-1 bg-surface-raised/70 rounded-full mb-7 border border-border max-w-xs mx-auto">
-        {(Object.keys(scopeLabels) as Scope[]).map(s => (
-          <button
-            key={s}
-            onClick={() => setScope(s)}
-            className={`relative min-h-11 flex-1 rounded-full py-2 font-body text-[12px] font-medium transition-all ${
-              scope === s ? 'text-[#253b54]' : 'text-text-muted hover:text-text-primary'
-            }`}
-          >
-            {scope === s && (
-              <motion.div
-                layoutId="rankScopeIndicator"
-                className="absolute inset-0 bg-[#d5e0eb] rounded-full shadow-sm"
-                transition={{ type: 'spring', stiffness: 500, damping: 35 }}
-              />
-            )}
-            <span className="relative z-10">{scopeLabels[s]}</span>
-          </button>
-        ))}
-      </div>
-
       {!user ? (
         <div className="expressive-card rank-invite-art flex flex-col items-center justify-center rounded-[34px] p-7 text-center text-white shadow-xl sm:p-10">
           <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center mb-4 text-white">
@@ -81,7 +51,7 @@ export function RankTab() {
           </div>
           <p className="font-display text-[22px] text-white mb-2">sign in to view your rank</p>
           <p className="font-body text-[13px] text-white/90 mb-6 max-w-[280px] leading-relaxed">
-            join your friends and community members climbing the impact leaderboard.
+            see how your everyday actions rank on the impact leaderboard.
           </p>
           <button
             onClick={() => setShowSignIn(true)}
