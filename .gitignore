@@ -28,3 +28,22 @@ dist-ssr
 .dev.vars
 .wrangler
 scripts/firestore-dump.json
+
+# Local agent and design tooling
+/.agents/
+/.agent/
+/.claude/
+/.codex/
+/.impeccable/
+/skills-lock.json
+/DESIGN.md
+/PRODUCT.md
+/SECURITY-REVIEW.md
+
+# Generated caches and working files
+/.firebase/
+/assets/
+/share-check.html
+/share-check.jsx
+/rippl-launch-reference-backup.json
+/pptlink.txt

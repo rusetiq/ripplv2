@@ -30,3 +30,14 @@ The build is self-contained: it reads only files in this folder and does not dep
 - `editable-report.json` — object counts per slide from the PowerPoint export.
 
 `assets/rippl-demo-poster.jpg` is the still image shown before the walkthrough plays. It is not a separate print poster.
+
+## Display poster
+
+The `poster/` folder contains an A1 portrait display poster in PDF and PNG, plus an editable PowerPoint version. The poster uses the same Manrope type, dotted numerals, rounded impact cards, gradients, and blue mark as the app. Its impact values are labeled as illustrative demo figures.
+
+The two requested dotted phrases are also available separately as transparent PNGs and scalable SVGs in `poster/`:
+
+- `what-does-rippl-do.png` / `.svg`
+- `made-by-aarush-diwakar.png` / `.svg`
+
+The poster HTML and CSS, PowerPoint exporter, and dotted-lettering generator are included for editing.

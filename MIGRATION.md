@@ -21,7 +21,7 @@ All of this is **done and live** at `https://rippl.aarush-uae.workers.dev`:
 - Workers domain authorised in Firebase Auth; `GEMINI_API_KEY` set as a Worker secret
 - Firebase Hosting replaced with redirect-only (§6)
 
-**Open:** the Gemini key was not rotated (owner's decision) — see `SECURITY-REVIEW.md` finding 1.
+**Open:** the Gemini key was previously exposed in a client bundle and has not been rotated. Anyone who obtained the old key may still have access until it is rotated.
 **Updated 2026-09-21:** the service-account key created during the September 11 migration has been disabled and its disabled status verified. An older March key remains unchanged because its use is not established.
 
 Sections 1–5 below are kept as the from-scratch runbook.

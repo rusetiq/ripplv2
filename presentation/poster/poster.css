@@ -1,0 +1,48 @@
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: #d9dfda; }
+body { font-family: Manrope, sans-serif; color: #242b28; -webkit-font-smoothing: antialiased; }
+.poster { width: 594mm; height: 841mm; position: relative; overflow: hidden; background: #e9ecea; isolation: isolate; }
+.poster * { box-sizing: border-box; }
+.poster-brand { position: absolute; left: 120px; top: 100px; display: flex; gap: 18px; align-items: center; }
+.brand-mark { width: 78px; height: 78px; display: block; background: #365c92; mask: var(--brand-mark) center/contain no-repeat; mask-mode: luminance; }
+.brand-name { font-size: 75px; font-weight: 600; line-height: 1; letter-spacing: -0.065em; }
+.top-tag { position: absolute; right: 120px; top: 112px; border-radius: 100px; background: #d5e0eb; color: #253b54; padding: 17px 31px; font-size: 27px; }
+.eyebrow { position: absolute; top: 304px; left: 126px; font-size: 30px; color: #5d6860; }
+.hero-line { font-size: 189px; font-weight: 400; line-height: 1.02; letter-spacing: -0.066em; }
+.hero-line.second { color: #365c92; }
+.hero { position: absolute; left: 115px; top: 385px; width: 2000px; font-size: 189px; font-weight: 400; line-height: 1.02; letter-spacing: -0.066em; }
+.hero span { color: #365c92; }
+.hero-copy { position: absolute; left: 125px; top: 800px; width: 1800px; font-size: 43px; line-height: 1.43; color: #525d56; letter-spacing: -0.024em; }
+.impact-panel { position: absolute; left: 120px; top: 1040px; width: 2005px; height: 1125px; border-radius: 64px; background: #f6f8f5; }
+.panel-title { position: absolute; left: 200px; top: 1112px; font-size: 63px; letter-spacing: -0.05em; }
+.demo-pill { position: absolute; right: 205px; top: 1122px; border-radius: 100px; background: #d5e0eb; color: #253b54; padding: 15px 26px; font-size: 25px; }
+.stats { position: absolute; left: 200px; top: 1235px; width: 1845px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 36px; }
+.stat { border-top: 2px solid #dfe5df; padding-top: 24px; }
+.stat-value { font-size: 61px; letter-spacing: -0.055em; line-height: 1; }
+.stat-label { font-size: 28px; color: #5d6860; margin-top: 10px; }
+.impact-card { position: absolute; top: 1428px; width: 904px; height: 615px; border-radius: 56px; overflow: hidden; isolation: isolate; border: 2px solid #ffffff70; box-shadow: inset 0 2px 0 #ffffff50; }
+.impact-card.carbon { left: 200px; background: radial-gradient(ellipse 72% 25% at 49% 87%,#006b2c 0%,#008225 32%,transparent 100%), linear-gradient(180deg,#edc4a8 0%,#ecc38f 14%,#c7cc64 31%,#48d449 48%,#00bb23 66%,#009d26 83%,#559a62 100%); }
+.impact-card.water { left: 1140px; background: radial-gradient(ellipse 72% 25% at 49% 87%,#17458c 0%,#2268b3 32%,transparent 100%), linear-gradient(180deg,#d2e6ed 0%,#b9dce9 14%,#89cbe3 31%,#53acd5 48%,#2687c7 66%,#1e6db4 83%,#729ac5 100%); }
+.impact-label { position: absolute; left: 0; right: 0; top: 50px; text-align: center; font-size: 42px; color: #fdfcf4; letter-spacing: -0.025em; }
+.impact-number { position: absolute; display: block; left: 50%; top: 240px; height: 113px; width: auto; overflow: visible; transform: translateX(-50%); }
+.impact-unit { position: absolute; left: 0; right: 0; top: 381px; text-align: center; color: white; font-size: 30px; }
+.impact-dots { position: absolute; left: 100px; right: 100px; height: 105px; bottom: 24px; background-image: radial-gradient(circle,#eeffbe 2px,transparent 2.8px); background-size: 17px 17px; mask-image: radial-gradient(ellipse 49% 78% at 50% 50%,#0009,#0002 65%,transparent 100%); }
+.water .impact-dots { background-image: radial-gradient(circle,#d5efff 2px,transparent 2.8px); }
+.panel-note { position: absolute; left: 205px; top: 2085px; font-size: 24px; color: #5d6860; }
+.dot-heading { position: absolute; left: 120px; top: 2240px; width: 1890px; height: 105px; }
+.process-subtitle { position: absolute; left: 125px; top: 2365px; font-size: 30px; color: #5d6860; }
+.process-grid { position: absolute; left: 120px; top: 2424px; width: 2005px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+.process-card { height: 330px; position: relative; isolation: isolate; border-radius: 48px; overflow: hidden; color: #fff; padding: 40px; }
+.process-number { font-size: 26px; border: 1px solid #ffffff5c; border-radius: 100px; padding: 10px 20px; display: inline-block; color: #ffffffcf; background: #ffffff1c; }
+.process-title { margin-top: 42px; font-size: 46px; line-height: 1.15; letter-spacing: -0.035em; }
+.process-body { margin-top: 15px; font-size: 27px; line-height: 1.38; color: #ffffffe8; max-width: 520px; }
+.cta { position: absolute; left: 120px; top: 2765px; width: 2005px; height: 220px; border-radius: 58px; background: radial-gradient(ellipse 55% 140% at 100% 70%,#4f7772 0%,transparent 80%), #1a3336; overflow: hidden; }
+.cta-title { position: absolute; left: 200px; top: 2799px; font-size: 64px; color: #f3f5f3; letter-spacing: -0.047em; }
+.cta-button { position: absolute; left: 205px; top: 2874px; display: inline-block; border-radius: 100px; background: #d5e0eb; color: #253b54; padding: 16px 31px; font-size: 28px; }
+.cta-url { position: absolute; left: 500px; top: 2890px; color: #e1eae8; font-size: 26px; }
+.qr-back { position: absolute; left: 1780px; top: 2777px; width: 195px; height: 195px; border-radius: 22px; background: #fff; }
+.qr { position: absolute; left: 1786px; top: 2783px; width: 183px; height: 183px; image-rendering: pixelated; }
+.maker-credit { position: absolute; left: 120px; top: 3000px; width: 1449px; height: 144px; }
+.footer-mark { position: absolute; right: 120px; top: 3023px; width: 100px; height: 100px; background: #365c92; mask: var(--brand-mark) center/contain no-repeat; mask-mode: luminance; }
+@page { size: 594mm 841mm; margin: 0; }
+@media print { html, body { background: #e9ecea; } .poster { page-break-after: avoid; } }
