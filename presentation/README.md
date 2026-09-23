@@ -19,6 +19,7 @@ The build is self-contained: it reads only files in this folder and does not dep
 - `DESIGN.md` — visual specification, card inventory, slide plan, asset map, and editing guidance.
 - `build.cjs` — canonical slide content and browser-deck generator.
 - `theme.css` — card artwork and material treatments, vendored from the app's luminous card system.
+- `card-studio.html` — standalone offline editor for the gradient cards; open it directly in a browser to edit copy and lighting, then download a complete HTML card or copy CSS.
 - `export-editable.cjs` — exports native PowerPoint text, shapes, gradients, icons, and embedded walkthrough video.
 - `package.json` — exact versions of the four direct build dependencies.
 - `assets/` — Manrope font, rippl mark, sustainability icons, walkthrough video and video still, plus generated slide renders.
