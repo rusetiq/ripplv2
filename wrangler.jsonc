@@ -18,8 +18,7 @@
     {
       "binding": "DB",
       "database_name": "rippl",
-      "database_id": "53a4955c-f050-4041-ba03-ab96be5fec9b",
-      "migrations_dir": "migrations"
+      "database_id": "53a4955c-f050-4041-ba03-ab96be5fec9b"
     }
   ],
 

@@ -1,93 +1,35 @@
-<p align="center">
-  <img src="public/rippl-icon.svg" alt="RIPPL Logo" width="80" height="80" />
-</p>
+# rippl
 
-<h1 align="center">RIPPL</h1>
+small actions add up. rippl makes them visible.
 
-<p align="center">
-  <strong>Translating private daily habits into visible, verified environmental progress</strong>
-</p>
+log a sustainable action with a photo, get it checked, and see your estimated carbon and water savings. points, streaks, badges, a community feed, and rewards give you a reason to keep going.
 
-<p align="center">
-  <a href="https://rippl.aarush-uae.workers.dev/app"><img src="https://img.shields.io/badge/Launch_Platform-10B981?style=for-the-badge&logo=rocket&logoColor=white" alt="Launch Platform" /></a>
-  <a href="https://rippl.aarush-uae.workers.dev/app"><img src="https://img.shields.io/badge/Verification-AI--Powered-06B6D4?style=for-the-badge&logo=google&logoColor=white" alt="Verification" /></a>
-  <a href="https://rippl.aarush-uae.workers.dev/app"><img src="https://img.shields.io/badge/Database-Cloudflare_D1-F59E0B?style=for-the-badge&logo=firebase&logoColor=white" alt="Database" /></a>
-</p>
+[try rippl](https://rippl.aarush-uae.workers.dev/app)
 
-<p align="center">
-  <a href="#core-system-features">System Features</a> •
-  <a href="#technical-stack-overview">Tech Stack</a>
-</p>
+## how it works
 
-<hr style="border: 0; border-top: 1px solid rgba(167, 154, 124, 0.15); margin: 30px 0;" />
+1. pick an action and add a photo.
+2. ai checks whether the photo supports it.
+3. rippl awards points from a fixed action list and adds the estimated impact to your progress.
 
-> [!NOTE]
-> Individual climate actions often feel isolated when viewed alone. RIPPL is built on a simple principle: small, consistent choices, also referred to as ripples, made by many individuals accumulate into massive, measurable ecological shifts.
+the numbers are estimates, not exact measurements of what one photo saved.
 
----
+## run it locally
 
-## Core System Features
+you'll need node, a firebase project for google sign-in, and a gemini api key.
 
-### 1. Verifiable Action Logging
-Personal habit tracking has traditionally relied on unverified self-reporting. RIPPL introduces a rigorous proof-based workflow for documenting daily green actions. Users select from curated categories, each mapped to specific environmental benefits:
+```bash
+npm ci
+cp .env.example .env
+cp .dev.vars.example .dev.vars
+```
 
-| Category | Action Types | Environmental Impact Metrics |
-| :--- | :--- | :--- |
-| **Transport** | Metro commuting, carpooling, cycling, walking routes | Kilograms of Carbon Dioxide saved |
-| **Food** | Plant-based meals, zero waste practices, organic ingredients | Carbon footprint reduction |
-| **Energy** | Solar energy, AC set to 24C, efficient lighting, smart power | Kilowatt-hours conserved |
-| **Water** | Short showers, greywater reuse, optimized laundry cycles | Liters of fresh water preserved |
-| **Waste** | Recycling, organic composting, zero single-use plastics | Landfill diversion volume |
+fill in the firebase values in `.env` and the gemini key in `.dev.vars`, then:
 
-<details>
-  <summary><strong>Click to view Advanced Proof Verification Spec</strong></summary>
-  <br />
+```bash
+npm run build
+npm run db:init:local # once for a fresh local database
+npm run dev
+```
 
-To preserve the integrity of the ecosystem and prevent artificial metrics, every logged action requires photographic evidence:
-
-* **Captured Intent**: Users submit a real-time photographic record of their activity.
-* **Automated Assessment**: The platform performs an automatic verification check on the submitted visual proof, analyzing the image for contextual evidence and determining the confidence level before any credits are issued.
-* **Integrity Control**: Submissions that fail to reach the verification threshold or do not match the selected category are rejected, keeping the leaderboard reliable.
-</details>
-
-### 2. Gamification and Progress Tracking
-Sustainable choices are reinforced through an elegant progress engine that turns daily wins into structural milestones:
-* **Streaks**: Consecutive daily logs build active streaks, highlighting long-term commitment.
-* **Levels**: Earning points unlocks new player tiers, representing cumulative growth.
-* **Badges**: Special milestones yield unlockable achievements for transit patterns, water-saving targets, and high-frequency energy savings.
-* **Impact Quantification**: The platform translates actions into direct environmental metrics, focusing on carbon dioxide prevented and fresh water preserved.
-
-### 3. The Rewards Ecosystem
-Points earned through confirmed activities hold real-world value. RIPPL partners with local transit operators, eco-friendly merchants, and environmental conservation projects to offer a robust redemption store:
-* **Transit Passages**: Unlimited public transit passes.
-* **Conscious Dining**: Vouchers for partner cafes serving organic, locally-sourced items.
-* **Coastal Reforestation**: Direct redemption to sponsor the planting of native coastal flora in critical regional zones.
-* **Reusable Gear**: Premium travel cups, zero-plastic household starter kits, and self-watering interior gardening systems.
-* **Clean Tech**: Portable high-capacity solar chargers for mobile electronics.
-
-### 4. Competitive Rankings
-RIPPL turns solitary choices into collaborative competition:
-* **Peer Competition**: Connect with friends and family to compare streaks and weekly point totals.
-* **National Standing**: Participate in a regional leaderboard that highlights leading contributors and promotes nationwide momentum.
-* **Weekly Resets**: Leaderboard resets ensure that new participants always have a fair opportunity to reach the top rankings.
-
-### 5. Corporate Integrations
-The platform extends its utility to organizations striving to meet environmental objectives and elevate employee engagement:
-* **Strategic ESG Dashboarding**: Organizations track aggregated carbon offset metrics and water conservation figures generated by their workforce.
-* **Sponsorships and Branding**: Corporations integrate their own sustainable initiatives, sponsor reward packages, or run targeted campaign pathways within the application.
-* **Verification Integrations**: Custom interfaces allow corporate partners to validate carbon-conscious commutes and office habits on-site.
-
----
-
-## Technical Stack Overview
-
-While focused primarily on user experience, the system utilizes a modern, resilient architecture:
-* **Frontend**: Highly responsive React framework with interactive Framer Motion animations.
-* **Styling**: Tailored, component-based styles built with Tailwind CSS.
-* **Database & Auth**: Cloudflare D1 and R2 behind a Workers API, with Firebase Google Auth for identity management.
-* **Icons**: Crisp, uniform SVG icons from Lucide React.
-
-## Development and deployment
-
-Run `npm ci`, `npm run lint`, and `npm run build` to validate the app.
-Use `npm run deploy` to deploy the frontend and API to Cloudflare. Firebase Hosting only redirects legacy URLs and serves the Firebase Auth handler; its configuration is in `firebase.json`. See [MIGRATION.md](MIGRATION.md) for deployment and database setup.
+the app runs on a cloudflare worker with d1 for data and r2 for photos. the frontend is react and typescript; firebase handles sign-in. for production, set the worker secret with `npx wrangler secret put GEMINI_API_KEY`, initialize a fresh d1 database with `npm run db:init`, then run `npm run deploy`.

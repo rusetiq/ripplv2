@@ -36,13 +36,15 @@ scripts/firestore-dump.json
 /.codex/
 /.impeccable/
 /skills-lock.json
-/DESIGN.md
-/PRODUCT.md
-/SECURITY-REVIEW.md
+*.md
+!/README.md
 
 # Generated caches and working files
 /.firebase/
 /assets/
+/presentation/
+/migrations/
+/hosting-redirect/
 /share-check.html
 /share-check.jsx
 /rippl-launch-reference-backup.json
