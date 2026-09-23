@@ -1,0 +1,47 @@
+[
+  {
+    "slide": 1,
+    "textBoxes": 13,
+    "cards": 3
+  },
+  {
+    "slide": 2,
+    "textBoxes": 15,
+    "cards": 3
+  },
+  {
+    "slide": 3,
+    "textBoxes": 18,
+    "cards": 6
+  },
+  {
+    "slide": 4,
+    "textBoxes": 24,
+    "cards": 5
+  },
+  {
+    "slide": 5,
+    "textBoxes": 6,
+    "cards": 1
+  },
+  {
+    "slide": 6,
+    "textBoxes": 20,
+    "cards": 5
+  },
+  {
+    "slide": 7,
+    "textBoxes": 15,
+    "cards": 5
+  },
+  {
+    "slide": 8,
+    "textBoxes": 17,
+    "cards": 2
+  },
+  {
+    "slide": 9,
+    "textBoxes": 11,
+    "cards": 3
+  }
+]
