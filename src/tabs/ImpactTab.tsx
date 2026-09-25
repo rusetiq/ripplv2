@@ -26,8 +26,6 @@ const badgeDefs: Badge[] = [
   { id: 'b8', name: 'community champion', description: 'reach the top 10 community leaderboard', Icon: Trophy, gradient: 'from-dune-300 to-dune-500', glowColor: 'rgba(237, 214, 154, 0.3)' },
 ]
 
-/* The seven-day chart is aggregated by the Worker in one SQL query rather
-   than by pulling a week of action rows into the browser. */
 function useWeeklyData(enabled: boolean) {
   const week = useLive(signal => api.week(signal), [enabled], { enabled, intervalMs: 300_000 })
   return week.data?.days.map(d => d.points) ?? [0, 0, 0, 0, 0, 0, 0]

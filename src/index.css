@@ -142,12 +142,6 @@ body, body *, body *::before, body *::after, input::placeholder, textarea::place
   --color-ember-400: #a74740;
 }
 
-/* ---------------------------------------------------------------------------
-   Mobile / iOS foundations
-   Safari-specific behaviours that break touch layouts unless opted out of:
-   landscape text inflation, focus-zoom on small controls, and the synthetic
-   300ms delay that follows a double-tap-to-zoom gesture.
-   --------------------------------------------------------------------------- */
 html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
@@ -168,8 +162,6 @@ button, a, label, summary, select,
   }
 }
 
-/* Horizontal rails (category pickers, chip rows) scroll without a visible bar
-   and snap back inside their own container rather than bouncing the page. */
 @utility scrollbar-none {
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -178,8 +170,6 @@ button, a, label, summary, select,
 }
 .scrollbar-none::-webkit-scrollbar { width: 0; height: 0; display: none; }
 
-/* Long words (emails, urls, generated names) must not push a card wider than
-   the screen. */
 body {
   overflow-wrap: break-word;
 }

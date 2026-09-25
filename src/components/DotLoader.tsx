@@ -1,6 +1,5 @@
 import './DotLoader.css'
 
-/** Shifting dots adapted from the supplied loading animation. */
 export function DotLoader({ size = 40, className = '' }: { size?: number; className?: string }) {
   return (
     <svg className={`rippl-loader ${className}`} width={size} height={size} viewBox="-5 -5 36 36" fill="currentColor" aria-hidden="true">

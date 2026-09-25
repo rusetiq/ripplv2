@@ -18,8 +18,6 @@ interface AppContextType {
   user: User | null
   me: Me | null
   isAdmin: boolean
-  /* Mutations return the updated profile, so a tab can push it straight into
-     context instead of waiting for the next revalidation. */
   applyMe: (next: Me) => void
   refreshMe: () => void
   signInWithGoogle: () => Promise<void>

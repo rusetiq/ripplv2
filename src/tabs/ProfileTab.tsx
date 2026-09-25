@@ -92,8 +92,6 @@ export function ProfileTab() {
     }
   }
 
-  /* Both of these are promised by the privacy policy and had no
-     implementation before the move to D1. */
   const handleExport = async () => {
     setBusy('export')
     setAccountError(null)

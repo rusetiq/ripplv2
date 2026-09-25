@@ -116,7 +116,6 @@ export function LogTab() {
 
   // The preview is an object URL over the pending blob, so it has to be
   // released when the blob is replaced or the tab unmounts.
-  // Derived during render, revoked when it is replaced or unmounted.
   const preview = useMemo(() => (pendingImage ? URL.createObjectURL(pendingImage) : null), [pendingImage])
   useEffect(() => () => { if (preview) URL.revokeObjectURL(preview) }, [preview])
 

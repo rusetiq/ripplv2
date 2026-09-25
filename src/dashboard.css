@@ -1,5 +1,3 @@
-/* Soft dashboard surfaces inspired by the user's reference. Manrope carries
-   interface copy; dotted numerals are reserved for real impact measurements. */
 .dashboard-shell {
   --color-surface: #15191b;
   --color-surface-raised: #202628;
@@ -132,8 +130,6 @@
   .dashboard-greeting { align-items: flex-start; margin-bottom: 27px; gap: 14px; flex-wrap: wrap; }
   .dashboard-greeting h1 { font-size: 31px; letter-spacing: -.04em; }
   .dashboard-greeting p { font-size: 12px; margin-top: 9px; }
-  /* A single-column greeting leaves the primary action stranded beside the
-     heading, so it becomes a full-width button the thumb can reach. */
   .app-gallery .dashboard-log { padding: 14px 18px; margin-top: 2px; width: 100%; justify-content: space-between; }
   .dashboard-stats { gap: 20px 14px; grid-template-columns: 1fr 1fr; margin-bottom: 27px; }
   .dashboard-stats p { margin-bottom: 8px; }
@@ -177,8 +173,6 @@
 @media(max-width:600px) {
 }
 
-/* Reference card: warm peach edge, diffuse yellow band, vivid green body,
-   and a soft forest-green pool at the base. No header chips or icon chrome. */
 .app-gallery .impact-card {
   min-height: 300px;
   padding: 30px 28px 25px;
@@ -240,7 +234,6 @@
 .dashboard-shell ::selection { background: #c5d6ea; color: #182d44; }
 @media(max-width:600px) { .dashboard-brand .rippl-brand-mark { width: 34px; height: 34px; } }
 
-/* Web liquid-glass treatment: translucent surfaces and edge highlights. */
 .dashboard-shell .mobile-glass-nav {
   background: rgba(236, 243, 242, .32);
   border: 1px solid rgba(255, 255, 255, .75);
@@ -292,7 +285,6 @@ html:not(.light-mode) .dashboard-shell .mobile-glass-nav .text-text-muted { colo
   min-height: 48px;
   padding: 12px 0;
 }
-/* The bar floats clear of the home indicator instead of sitting on top of it. */
 .mobile-nav-dock {
   position: fixed;
   left: 50%;
@@ -417,13 +409,8 @@ html:not(.light-mode) .dashboard-shell .mobile-glass-nav .text-text-muted { colo
   }
 }
 
-/* ---------------------------------------------------------------------------
-   Share card
-   A 1080x1920 story frame authored at a third of that size. Everything in it
-   has to survive being cloned into an SVG foreignObject by the exporter, so it
-   uses only gradients, plain colours and inline SVG - no backdrop-filter, no
-   mask-image, and no remote imagery.
-   --------------------------------------------------------------------------- */
+/* Exported share cards use gradients, solid colours, and inline SVG because the
+   exporter clones this content into an SVG foreignObject. */
 .share-overlay {
   display: flex;
   padding:
@@ -641,14 +628,7 @@ html:not(.light-mode) .dashboard-shell .mobile-glass-nav .text-text-muted { colo
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-
-/* ---------------------------------------------------------------------------
-   Comments sheet
-   A full-screen fixed panel measures 100% of the layout viewport, which on iOS
-   sits behind the on-screen keyboard. Pinning it to the dynamic viewport keeps
-   the composer above the keyboard, and the safe-area padding keeps the header
-   clear of the notch and the composer clear of the home indicator.
-   --------------------------------------------------------------------------- */
+/* The dynamic viewport keeps the composer above the iOS keyboard. */
 .comments-sheet {
   height: 100vh;
   height: 100dvh;
@@ -669,12 +649,6 @@ html:not(.light-mode) .dashboard-shell .mobile-glass-nav .text-text-muted { colo
   max-width: calc(100vw - 32px);
 }
 
-/* ---------------------------------------------------------------------------
-   Horizontal chip rails
-   A rail that stops at the content edge reads as a full row with nothing more
-   to see. Bleeding it into the page gutter lets the last chip run under the
-   edge, which is the signal that there is more to scroll to.
-   --------------------------------------------------------------------------- */
 .category-rail {
   --rail-bleed: 0px;
   margin-inline: calc(var(--rail-bleed) * -1);
@@ -685,7 +659,6 @@ html:not(.light-mode) .dashboard-shell .mobile-glass-nav .text-text-muted { colo
 @media(max-width:600px) { .category-rail { --rail-bleed: calc(18px + env(safe-area-inset-left, 0px)); } }
 @media(max-width:380px) { .category-rail { --rail-bleed: calc(14px + env(safe-area-inset-left, 0px)); } }
 
-/* A modal that is taller than a small handset must scroll rather than clip. */
 .sign-in-overlay {
   padding:
     calc(16px + env(safe-area-inset-top, 0px))
@@ -695,13 +668,6 @@ html:not(.light-mode) .dashboard-shell .mobile-glass-nav .text-text-muted { colo
   -webkit-overflow-scrolling: touch;
 }
 
-
-/* ---------------------------------------------------------------------------
-   Handset landscape
-   Rotating a phone leaves roughly 390px of height for the whole shell, so the
-   header block has to give up most of its vertical spending before any content
-   is visible at all.
-   --------------------------------------------------------------------------- */
 @media (max-height: 500px) and (orientation: landscape) {
   .dashboard-sidebar { padding-top: calc(10px + env(safe-area-inset-top, 0px)); padding-bottom: 10px; }
   .dashboard-brand { font-size: 22px; }
@@ -720,7 +686,6 @@ html:not(.light-mode) .dashboard-shell .mobile-glass-nav .text-text-muted { colo
   .community-heading h2 { font-size: 22px; }
 }
 
-/* Fit the desktop navigation to the viewport; only the main content scrolls. */
 @media (min-width: 1024px) {
   .dashboard-sidebar {
     height: 100%;
@@ -758,7 +723,6 @@ html:not(.light-mode) .dashboard-shell .mobile-glass-nav .text-text-muted { colo
   .dashboard-sidebar:has(.dashboard-navigation > button:nth-child(7)) .sidebar-invitation { display: none; }
 }
 
-/* Photo layers are part of the exported card, keeping text crisp over blur. */
 .share-card-background { position: absolute; z-index: -2; inset: -24px; width: calc(100% + 48px); height: calc(100% + 48px); max-width: none; object-fit: cover; }
 .share-card-shade { position: absolute; z-index: -1; inset: 0; background: linear-gradient(180deg, #05121e55, #05121e66 45%, #05121ed9); }
 .share-card-grid > :last-child:nth-child(odd) { grid-column: 1 / -1; }
@@ -800,8 +764,6 @@ html:not(.light-mode) .dashboard-shell .mobile-glass-nav .text-text-muted { colo
 .share-search-results span { position: absolute; inset: 0; display: grid; place-items: center; background: #0009; color: white; }
 .share-image-search button:disabled { opacity: .55; }
 
-
-/* Secondary-page light studies. Each material has its own light geometry. */
 .app-gallery[data-card-style="luminous"] .expressive-card {
   --rim: #bfb2ff;
   background: #090a10;
@@ -826,7 +788,6 @@ html:not(.light-mode) .dashboard-shell .mobile-glass-nav .text-text-muted { colo
   background-size: 5px 5px;
   mask-image: linear-gradient(125deg, transparent 8%, #0008 35%, transparent 54%, #000 85%);
 }
-/* Violet flare: a narrow white-hot source rising out of an ink field. */
 .app-gallery[data-card-style="luminous"] .aurora-card {
   --rim: #e4d5ff;
   background:
@@ -835,7 +796,6 @@ html:not(.light-mode) .dashboard-shell .mobile-glass-nav .text-text-muted { colo
     radial-gradient(ellipse 95% 15% at 50% 108%, #d7bbff 15%, #7346ff 49%, transparent 100%),
     #09090f;
 }
-/* Cobalt bar: horizontal cyan light suspended inside deep blue. */
 .app-gallery[data-card-style="luminous"] .sapphire-card {
   --rim: #7ebcff;
   background:
@@ -844,7 +804,6 @@ html:not(.light-mode) .dashboard-shell .mobile-glass-nav .text-text-muted { colo
     radial-gradient(ellipse 90% 85% at 50% 50%, transparent 53%, #458ac454 94%, #9ed7ff8c 100%),
     #080e25;
 }
-/* Green column: a tall electric-green beam, with a cool white foot. */
 .app-gallery[data-card-style="luminous"] .forest-card {
   --rim: #b9ffb5;
   background:
@@ -853,26 +812,22 @@ html:not(.light-mode) .dashboard-shell .mobile-glass-nav .text-text-muted { colo
     radial-gradient(ellipse 48% 30% at 70% 108%, #44ef3f 10%, #114d21 60%, transparent 100%),
     #080f0b;
 }
-/* Orange horizon: warm light stacks at the base, with a dark upper field. */
 .app-gallery[data-card-style="luminous"] .solar-card {
   --rim: #fff0ab;
   background:
     radial-gradient(ellipse 85% 23% at 45% 112%, #fff7b2 8%, #ffd786 42%, transparent 100%),
     linear-gradient(0deg, #ffbf76 0%, #ff703e 12%, #d4421d 27%, #562014 46%, #170e0c 66%, #0c0b0b 100%);
 }
-/* Acid pool: asymmetric ultraviolet suspended in yellow-green. */
 .app-gallery[data-card-style="luminous"] .gold-card {
   --rim: #eaff85;
   background:
     radial-gradient(ellipse 24% 48% at 69% 78%, #963bff 0%, #5926c4 42%, #343025 79%, transparent 100%),
     radial-gradient(ellipse 70% 85% at 43% 64%, #171c07 12%, #354309 40%, #8faf0f 76%, #d6f324 100%);
 }
-/* Soft lilac and teal colour pools. */
 .app-gallery[data-card-style="luminous"] .partnership-art {
   --rim: #8deaff;
   background: radial-gradient(ellipse 65% 130% at 105% 10%, #b28dc3 0%, #68659a 45%, transparent 100%), radial-gradient(ellipse 55% 100% at 30% 120%, #4a9c9d 0%, transparent 100%), #213946;
 }
-/* Silver moon: an offset cool orb, deliberately quiet beside the vivid cards. */
 .app-gallery[data-card-style="luminous"] .silver-card {
   --rim: #d2e6f1;
   background:
@@ -880,7 +835,6 @@ html:not(.light-mode) .dashboard-shell .mobile-glass-nav .text-text-muted { colo
     radial-gradient(ellipse 65% 38% at 97% 105%, #6987a5 0%, #24364c 65%, transparent 100%),
     linear-gradient(135deg, #12171c, #1b2634);
 }
-/* Magenta cavity: luminous pink edges around a deep plum centre. */
 .app-gallery[data-card-style="luminous"] .twilight-card {
   --rim: #ffbdfb;
   background:
@@ -906,7 +860,6 @@ html:not(.light-mode) .dashboard-shell .mobile-glass-nav .text-text-muted { colo
   .app-gallery[data-card-style="luminous"] .expressive-card:hover { transform: none; }
 }
 
-/* Artwork belongs to an individual card, never to a shared colour category. */
 .app-gallery[data-card-style="luminous"] .catalog-art {
   --rim: #ffcba5;
   background: radial-gradient(ellipse 29% 140% at 101% 45%, #ffe7b5 4%, #ff965c 23%, #d74b37 45%, #5d234244 74%, transparent), linear-gradient(105deg, #27142b, #492344 65%, #824557);

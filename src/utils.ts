@@ -47,5 +47,4 @@ export function compressImage(file: File, maxEdge = 1280, quality = 0.82): Promi
   })
 }
 
-/* A local preview while an upload is in flight. Callers must revoke it. */
 export const previewUrl = (blob: Blob) => URL.createObjectURL(blob)

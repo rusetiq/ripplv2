@@ -5,7 +5,6 @@ import { DotLoader } from './components/DotLoader'
 import { AppErrorBoundary } from './components/AppErrorBoundary'
 import LandingPage from './LandingPage'
 
-// This entry point mounts the root; the app has its own refresh boundary.
 // eslint-disable-next-line react-refresh/only-export-components
 const App = lazy(() => import('./App'))
 

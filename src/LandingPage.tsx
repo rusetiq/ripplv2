@@ -58,7 +58,6 @@ export default function LandingPage() {
     }
   }, [])
 
-  // This non-modal navigation keeps the page scrollable while open.
   useEffect(() => {
     if (!menuOpen) return
     const closeOnOutside = (event: PointerEvent) => {

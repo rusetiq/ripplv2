@@ -12,7 +12,7 @@ export function PrivateImage({ src, ...props }: ImgHTMLAttributes<HTMLImageEleme
       if (controller.signal.aborted) return
       url = URL.createObjectURL(blob)
       setLoaded({ src, url })
-    }).catch(() => { /* The alt text remains visible when access is unavailable. */ })
+    }).catch(() => {})
     return () => { controller.abort(); if (url) URL.revokeObjectURL(url) }
   }, [src])
   return <img {...props} src={privatePhoto ? (loaded && loaded.src === src ? loaded.url : undefined) : src} />

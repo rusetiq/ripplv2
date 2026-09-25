@@ -23,7 +23,7 @@ async function unwrap<T>(response: Response): Promise<T> {
   try {
     message = ((await response.json()) as { error?: string }).error ?? message
   } catch {
-    /* a non-JSON error body is not worth surfacing verbatim */
+    // Keep the default message when the error body is not JSON.
   }
   throw new ApiError(response.status, message)
 }
@@ -97,7 +97,6 @@ export const api = {
   uploadAvatar: (file: Blob) =>
     request<{ photoURL: string }>('/me/avatar', { method: 'POST', body: file, headers: { 'Content-Type': file.type } }),
 
-  /* The export is a file download rather than a parsed response. */
   exportData: async () => {
     const response = await fetch('/api/me/export', { headers: await authHeader() })
     if (!response.ok) throw new ApiError(response.status, 'Could not build your export.')
@@ -123,7 +122,7 @@ export const api = {
     })
     if (!response.ok) {
       let message = 'This photo could not be loaded. Try another result.'
-      try { message = ((await response.json()) as { error?: string }).error ?? message } catch { /* non-JSON body */ }
+      try { message = ((await response.json()) as { error?: string }).error ?? message } catch { /* Keep the default message. */ }
       throw new ApiError(response.status, message)
     }
     return response.blob()

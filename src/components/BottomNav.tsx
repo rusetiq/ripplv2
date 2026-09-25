@@ -3,8 +3,6 @@ import { motion } from 'framer-motion'
 import { Shield } from 'lucide-react'
 import { navTabs } from './navigation'
 
-/* Compact mobile counterpart to the desktop sidebar. The dock class carries the
-   safe-area offset so the bar floats above the iPhone home indicator. */
 export function BottomNav() {
   const { activeTab, setActiveTab, isAdmin } = useApp()
   const tabs = isAdmin

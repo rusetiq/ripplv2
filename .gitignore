@@ -38,6 +38,8 @@ scripts/firestore-dump.json
 /skills-lock.json
 *.md
 !/README.md
+__pycache__/
+*.pyc
 
 # Generated caches and working files
 /.firebase/

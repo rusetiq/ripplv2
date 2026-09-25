@@ -200,9 +200,6 @@ function FieldStationRail() {
 export function FeedTab() {
   const { user, setActiveTab, setShowSignIn } = useApp()
 
-  /* The old build held an onSnapshot listener open and streamed every post,
-     base64 photos included. This fetches a page of rows whose images are
-     URLs, and revalidates on focus and a slow timer. */
   const stream = useLive(signal => api.feed(signal), [user?.uid], { enabled: !!user, intervalMs: 45_000 })
   const posts: Post[] = stream.data?.posts ?? []
   const loaded = !stream.loading
@@ -276,8 +273,6 @@ function FeedCard({ post, index, onChanged }: { post: Post; index: number; onCha
     setCommentCount(post.commentsCount)
   }
 
-  /* Anyone signed in can like anyone's post now. Under the old Firestore
-     rules only the author could, and the rejection was swallowed. */
   const handleLike = async () => {
     if (!user) { setShowSignIn(true); return }
     const optimistic = !liked

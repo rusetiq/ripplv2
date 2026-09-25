@@ -40,7 +40,6 @@ html.lenis, html.lenis body {
   overflow: hidden;
 }
 
-/* Match the app's translucent navigation on the light landing surface. */
 .landing-nav-wrapper {
   position: sticky;
   top: calc(12px + env(safe-area-inset-top, 0px));
@@ -172,7 +171,6 @@ html.lenis, html.lenis body {
   color: #182d44;
 }
 
-/* Keep anchor targets clear of the sticky navigation and device safe area. */
 .rippl-landing section[id] {
   scroll-margin-top: calc(108px + env(safe-area-inset-top, 0px));
 }
@@ -464,9 +462,6 @@ html.lenis, html.lenis body {
   margin-inline: auto;
 }
 
-/* The sculpture is mostly negative space, so on the near-white page it reads as
-   fragments floating on nothing. A faint pool of the brand blue gives it a
-   surface to sit on without introducing a visible container. */
 .hero-art::before {
   content: '';
   position: absolute;
@@ -1228,13 +1223,6 @@ html.lenis, html.lenis body {
   }
 }
 
-/* ---------------------------------------------------------------------------
-   Handset layout
-   The marketing page is authored for a wide canvas: three-up grids, 36px card
-   padding, and a headline held on one line. Below the tablet breakpoint each of
-   those has to give, or the page either clips or turns into a very long stack
-   of near-identical blocks.
-   --------------------------------------------------------------------------- */
 @media (max-width: 768px) {
   .rippl-landing { --page-gutter: 20px; }
 
@@ -1243,8 +1231,6 @@ html.lenis, html.lenis body {
   .landing-title { font-size: clamp(30px, 8vw, 40px); }
   .landing-subtitle { font-size: 14px; line-height: 1.7; }
 
-  /* Both hero actions become full-width rows so either can be reached with a
-     thumb without aiming. */
   .hero-actions { gap: 10px; margin-bottom: 32px; }
   .landing-btn-white,
   .landing-btn-secondary { flex: 1 1 100%; padding-block: 15px; }

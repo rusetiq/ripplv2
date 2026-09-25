@@ -20,8 +20,6 @@ const initials = (name: string) =>
 
 export function RankTab() {
   const { user, setShowSignIn } = useApp()
-  /* Name, avatar and points only. The old build streamed whole user
-     documents, emails included, to render these three fields. */
   const board = useLive(signal => api.leaderboard(signal), [user?.uid], { enabled: !!user, intervalMs: 90_000 })
   const players: Player[] = board.data?.players ?? []
   const loaded = !board.loading

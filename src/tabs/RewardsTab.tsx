@@ -78,8 +78,6 @@ export function RewardsTab() {
 
   const redeemed = me?.redeemedRewards ?? []
 
-  /* Cost, level gate, balance and the already-redeemed check are all enforced
-     by the Worker; this only decides what to show. */
   const handleRedeem = async (reward: Reward) => {
     if (!user || confirming) return
     setConfirming(true)
